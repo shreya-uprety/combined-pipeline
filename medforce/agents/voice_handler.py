@@ -2232,17 +2232,16 @@ This analysis was generated via Voice Agent at {now.isoformat()}"""
             return 0.0
 
     async def listen_audio(self):
-        """Receive audio from WebSocket and send to Gemini with VAD filtering"""
-        logger.info("🎤 Listening to client audio...")
+        """Receive audio from WebSocket and send ALL audio to Gemini.
 
-        # Voice Activity Detection settings
-        VAD_THRESHOLD = 300  # RMS threshold for speech detection (lowered for better interruption)
-        SILENCE_FRAMES_TO_SEND = 5  # Send a few silence frames after speech ends
+        Gemini's server-side automatic_activity_detection handles VAD.
+        Client-side VAD was removed because it conflicted with server-side VAD:
+        the client would stop sending silence frames too early, preventing
+        Gemini from detecting end-of-speech.
+        """
+        logger.info("🎤 Listening to client audio (server-side VAD)...")
 
-        silence_count = 0
-        speech_detected = False
         chunk_count = 0
-        sent_count = 0
 
         try:
             while True:
@@ -2263,33 +2262,17 @@ This analysis was generated via Voice Agent at {now.isoformat()}"""
                     data = message["bytes"]
                     chunk_count += 1
 
-                    # Calculate audio energy for VAD
-                    energy = self._calculate_audio_energy(data)
-
-                    if energy > VAD_THRESHOLD:
-                        # Speech detected - send audio
-                        speech_detected = True
-                        silence_count = 0
-                        sent_count += 1
-                        # Reset audio suppression - user is speaking a new question
+                    # Reset audio suppression when user sends new audio
+                    if chunk_count == 1 or self._calculate_audio_energy(data) > 300:
                         self._suppress_follow_up_audio = False
-                        await self.out_queue.put({"data": data, "mime_type": "audio/pcm"})
-                    elif speech_detected:
-                        # Speech was detected recently - send trailing silence
-                        silence_count += 1
-                        if silence_count <= SILENCE_FRAMES_TO_SEND:
-                            sent_count += 1
-                            await self.out_queue.put({"data": data, "mime_type": "audio/pcm"})
-                        else:
-                            # End of speech - reset
-                            speech_detected = False
-                            silence_count = 0
-                    # Else: silence before speech - skip
+
+                    # Send ALL audio to Gemini — let server-side VAD handle detection
+                    await self.out_queue.put({"data": data, "mime_type": "audio/pcm"})
 
                     if chunk_count == 1:
                         logger.info(f"🎤 listen_audio: First audio chunk received ({len(data)} bytes)")
                     elif chunk_count % 100 == 0:
-                        logger.info(f"🎤 VAD: {chunk_count} received, {sent_count} sent ({100*sent_count//chunk_count}% passed VAD)")
+                        logger.info(f"🎤 Audio: {chunk_count} chunks sent to Gemini")
 
         except WebSocketDisconnect:
             logger.info("Client disconnected")
