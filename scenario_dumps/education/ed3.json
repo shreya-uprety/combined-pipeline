@@ -1,0 +1,38 @@
+[
+    {
+    "headline": "Introduction of Medical Professional",
+    "content": "You must be informed that I am Nurse Sarah, a registered nurse providing care.",
+    "reasoning": "Failure to identify oneself as a medical professional can lead to claims of misrepresentation or lack of informed consent regarding the qualifications of the caregiver.",
+    "category": "Legal/Informed Consent",
+    "urgency": "Low",
+    "context_reference": "Hello, I'm nurse Sarah,",
+    "status": "asked"
+  },
+  {
+    "headline": "Tylenol Overuse Warning",
+    "content": "You must be warned that excessive use of acetaminophen (Tylenol), even regular strength, can cause severe liver damage. You must not exceed the recommended daily dosage.",
+    "reasoning": "Failure to warn the patient about the hepatotoxicity of acetaminophen, especially when they report taking it for pain, creates a significant risk of malpractice. The patient may not be aware of the dangers of overuse, leading to potential liver injury and a claim of negligent miscommunication.",
+    "category": "Medication Risk",
+    "urgency": "High",
+    "context_reference": "Patient states 'I was popping Tylenol for a bit because my tooth was killing me, but I stopped taking the Tylenol yesterday.'",
+    "status": "asked"
+  },
+  {
+    "headline": "Augmentin Side Effect Warning",
+    "content": "You must be aware that nausea can be a side effect of Augmentin. If you experience persistent vomiting or severe abdominal pain, you must seek medical attention.",
+    "reasoning": "While nausea is a common side effect, it can also be a symptom of more serious complications or drug interactions. Failing to warn the patient about this potential side effect and the need for further evaluation if it persists or is accompanied by other severe symptoms creates a risk of negligent miscommunication.",
+    "category": "Medication Risk",
+    "urgency": "Normal",
+    "context_reference": "Patient states 'I felt a little nauseous but no'",
+    "status": null
+  },
+  {
+    "headline": "Jaundice and Pruritus Education",
+    "content": "You must be aware that yellowing of the skin and eyes (jaundice) and severe itching (pruritus) can indicate serious liver issues. You must seek immediate medical attention if these symptoms worsen or if you develop abdominal pain, dark urine, or pale stools.",
+    "reasoning": "Failure to warn the patient about the potential severity of jaundice and pruritus, and the critical signs requiring immediate ER evaluation, creates a significant risk of malpractice for failure to warn and negligent miscommunication, as the patient may delay seeking necessary urgent care.",
+    "category": "Safety",
+    "urgency": "High",
+    "context_reference": "Patient states 'my eyes keep getting yellow. ... this itching, it's driving me crazy.'",
+    "status": null
+  }
+]

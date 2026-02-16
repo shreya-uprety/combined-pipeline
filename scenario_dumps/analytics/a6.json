@@ -1,0 +1,41 @@
+{
+    "overall_score": 90,
+    "metrics": {
+        "empathy": {
+            "score": 95,
+            "reasoning": "The nurse demonstrated exceptional emotional intelligence, validating the patient's anxiety immediately and maintaining a supportive tone throughout.",
+            "example_quote": "I can hear how worried you are, and that is completely understandable. We are going to work through this together.",
+            "pros": "The nurse used 'we' statements to establish a partnership, making the patient feel supported. They explicitly validated the emotion ('scary,' 'worried') before moving into clinical questions.",
+            "cons": "There was a very brief moment where the nurse shifted to protocol while the patient was taking a breath, but this did not negatively impact the overall rapport."
+        },
+        "clarity": {
+            "score": 92,
+            "reasoning": "Instructions were crystal clear, avoiding medical jargon, and the nurse utilized the 'teach-back' method effectively.",
+            "feedback": "Excellent job verifying that the patient understood the dosage instructions.",
+            "pros": "The nurse explained the difference between symptoms effectively using layperson terms. When giving instructions on hydration, the nurse specified distinct amounts rather than vague advice like 'drink plenty of fluids.'",
+            "cons": "The explanation regarding the specific timing for the next medication dose was slightly complex, though the nurse did clarify it when asked."
+        },
+        "information_gathering": {
+            "score": 88,
+            "reasoning": "The nurse collected a comprehensive history efficiently, covering onset, duration, and severity.",
+            "pros": "The nurse successfully identified all 'red flag' symptoms early in the call. Questions were specific (e.g., 'Has the pain radiated to your arm or jaw?') rather than general.",
+            "cons": "The nurse missed asking about recent travel history in the initial assessment phase, though this was rectified towards the end of the call. Asking this earlier would have been more efficient for triage."
+        },
+        "patient_engagement": {
+            "score": 85,
+            "turn_taking_ratio": "Nurse 55% / Patient 45%",
+            "pros": "The conversation felt like a genuine dialogue. The nurse allowed the patient to finish their descriptions without interruption, fostering a high level of trust.",
+            "cons": "At one point, the patient began to digress into a personal anecdote unrelated to the symptoms. The nurse allowed this to go on slightly too long before gently steering the conversation back to the clinical assessment."
+        }
+    },
+    "key_strengths": [
+        "Exceptional use of empathetic validation to de-escalate anxiety.",
+        "Clear, jargon-free instructions regarding home care steps.",
+        "Strong use of the teach-back method to ensure patient understanding."
+    ],
+    "improvement_areas": [
+        "Ensure all environmental risk factors (like travel or recent contacts) are gathered in the initial block of questions.",
+        "Refine techniques for gently redirecting the patient when conversation goes off-topic to maintain efficiency."
+    ],
+    "sentiment_trend": "The interaction began with the patient displaying high anxiety and panic. As the nurse provided validation and clear steps, the sentiment shifted noticeably to relief and gratitude, ending on a calm and confident note."
+}

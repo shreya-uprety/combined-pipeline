@@ -1,0 +1,288 @@
+[
+    {
+        "content": "What brings you in today?",
+        "qid": "00001",
+       "rank": 999,
+        "status": "asked",
+        "answer": "My eyes are yellow. My sister saw it two days ago.",
+        "headline": "Chief Complaint",
+        "domain": "Initial Assessment",
+        "system_affected": "General",
+        "clinical_intent": "To identify the primary reason for the medical encounter and understand the patient's most pressing symptoms or concerns.",
+        "tags": [
+            "intake",
+            "triage",
+            "symptoms",
+            "reason-for-visit"
+        ]
+    },
+    {
+        "content": "Current Medications",
+        "qid": "00004",
+        "rank": 999,
+        "status": "asked",
+        "answer": "I take lisinopril for my blood pressure. I stopped taking Tylenol yesterday.",
+        "headline": "Current Medications",
+        "domain": "Medication Review",
+        "system_affected": "General",
+        "clinical_intent": "To obtain a comprehensive list of all current medications the patient is taking.",
+        "tags": [
+            "medication",
+            "prescription",
+            "over-the-counter"
+        ]
+    },
+    {
+        "qid": "A1B2C",
+        "content": "Can you estimate how many Extra Strength Tylenol or Tylenol PM pills you have been taking daily over the past few weeks?",
+        "status": "asked",
+        "answer": "probably six to eight pills a day",
+        "rank": 999,
+        "headline": "Acetaminophen Use",
+        "domain": "Medication Review",
+        "system_affected": "General",
+        "clinical_intent": "To assess the frequency and dosage of over-the-counter pain reliever use, potentially indicating underlying pain or overuse issues.",
+        "tags": [
+            "acetaminophen",
+            "tylenol",
+            "pain relief",
+            "medication use"
+        ]
+    },
+    {
+        "qid": "D3E4F",
+        "content": "Have you experienced any nausea, vomiting, or abdominal pain since starting the Augmentin?",
+        "status": "asked",
+        "answer": "I've had a dull ache under my ribs, like it feels heavy. No vomiting, but I just feel nauseous all the time. I haven't been very hungry either.",
+        "rank": 999,
+        "headline": "Augmentin GI Side Effects",
+        "domain": "Medication Review",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess for gastrointestinal adverse effects related to Augmentin.",
+        "tags": [
+            "Augmentin",
+            "nausea",
+            "vomiting",
+            "abdominal pain",
+            "GI upset"
+        ]
+    },
+    {
+        "qid": "aBc12",
+        "content": "When did you start noticing the yellowing of your eyes and the itching after you finished your Augmentin prescription?",
+        "status": "asked",
+        "answer": "I finished the pills three weeks ago. The yellow started maybe two days ago. This itching, it's the worst though. It feels like there are ants under my skin, especially on my arms and chest.",
+        "rank": 999,
+        "headline": "Jaundice and Pruritus Onset",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To establish the timeline of jaundice and itching in relation to antibiotic use, potentially indicating drug-induced liver injury or other hepatobiliary issues.",
+        "tags": [
+            "jaundice",
+            "pruritus",
+            "drug reaction",
+            "hepatitis"
+        ]
+    },
+    {
+        "qid": "xYz34",
+        "content": "Have you had any recent travel, new sexual partners, or exposure to anyone with hepatitis in the past few months?",
+        "status": "asked",
+        "answer": "No travel, no new partners. Nobody I know has hepatitis.",
+        "rank": 999,
+        "headline": "Hepatitis Exposure Risk",
+        "domain": "Medical History",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess for potential exposure to hepatitis through travel, sexual history, or contact with infected individuals.",
+        "tags": [
+            "hepatitis",
+            "exposure",
+            "risk assessment",
+            "infectious disease"
+        ]
+    },
+    {
+        "qid": "5877d8c6-d425-4bb4-967b-351884970f4c",
+        "content": "Have you experienced any confusion or changes in your mental state recently?",
+        "status": "asked",
+        "answer": "I've been really tired, like wiped out.",
+        "rank": 999,
+        "headline": "Cognitive and Mental Changes",
+        "domain": "Symptom Triage",
+        "system_affected": "Neurological",
+        "clinical_intent": "To screen for changes in mental status and sleep patterns, which can be indicative of delirium, infection, medication side effects, or other systemic issues.",
+        "tags": [
+            "confusion",
+            "disorientation",
+            "sleep pattern",
+            "delirium"
+        ]
+    },
+    {
+        "qid": "dd7a995c-9d08-41a8-b587-280d435454cd",
+        "content": "Have you had any recent fevers, chills, or flu-like symptoms in the past month?",
+        "status": "asked",
+        "answer": "I felt a little warm a few times, but nothing major. No chills, just this tiredness and the itching.",
+        "rank": 999,
+        "headline": "Recent Fever and Chills",
+        "domain": "Symptom Triage",
+        "system_affected": "General",
+        "clinical_intent": "To identify recent onset of fever or chills, indicative of a potential acute infection or inflammatory condition.",
+        "tags": [
+            "fever",
+            "chills",
+            "infection",
+            "recent onset"
+        ]
+    },
+    {
+        "qid": "11b1e201-5454-4853-97da-61585d62facf",
+        "content": "Have you noticed any changes in the color of your urine or stools since your eyes started to yellow?",
+        "status": "asked",
+        "answer": "My pee got really dark, like Coke. That happened three days ago. This morning my stool was pale, almost white.",
+        "rank": 999,
+        "headline": "Stool and Urine Color",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess for changes in stool or urine color that may indicate liver dysfunction, biliary obstruction, or gastrointestinal bleeding.",
+        "tags": [
+            "stool color",
+            "urine color",
+            "jaundice",
+            "GI bleed"
+        ]
+    },
+    {
+        "qid": "16fc2775-69e9-43c4-88d3-800c08585fb4",
+        "content": "Have you consumed any alcohol in the past month?",
+        "status": "asked",
+        "answer": "I have a few beers with the guys, nothing crazy. A couple nights a week.",
+        "rank": 999,
+        "headline": "Recent Alcohol Use",
+        "domain": "Social History",
+        "system_affected": "General",
+        "clinical_intent": "To screen for recent alcohol consumption, which can impact medical conditions, medication efficacy, and surgical risks.",
+        "tags": [
+            "alcohol",
+            "substance use",
+            "social history",
+            "consumption"
+        ]
+    },
+    {
+        "qid": "fd3d059d-f4d2-4f3f-ab11-2c18e079c274",
+        "content": "Have you experienced any unintentional weight loss recently?",
+        "status": "asked",
+        "answer": "I haven't really been eating much with the nausea and pain under my ribs. Maybe a few pounds. Mostly because I just don't want to eat.",
+        "rank": 999,
+        "headline": "Weight Loss and Bowel Changes",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To screen for unintentional weight loss and changes in bowel habits, including pale stools, which may suggest malabsorption or gastrointestinal malignancy.",
+        "tags": [
+            "weight loss",
+            "bowel habit",
+            "stool color",
+            "gastrointestinal"
+        ]
+    },
+    {
+        "content": "Drug Allergies",
+        "qid": "00005",
+        "rank": 999,
+        "status": "asked",
+        "answer": "I'm not allergic to anything.",
+        "headline": "Drug Allergies",
+        "domain": "Medical History",
+        "system_affected": "General",
+        "clinical_intent": "To identify potential adverse reactions to medications.",
+        "tags": [
+            "allergy",
+            "medication",
+            "adverse reaction"
+        ]
+    },
+    {
+        "content": "Past Surgeries",
+        "qid": "00006",
+        "rank": 999,
+        "status": "asked",
+        "answer": "No surgeries.",
+        "headline": "Past Surgical History",
+        "domain": "Surgical History",
+        "system_affected": "General",
+        "clinical_intent": "To gather information about previous surgical interventions that may impact current health status or treatment plans.",
+        "tags": [
+            "surgery",
+            "operative history",
+            "past procedures"
+        ]
+    },
+    {
+        "content": "Have you had any recent skin piercings or tattoos?",
+        "qid": "sd2dr2",
+        "rank": 999,
+        "status": "asked",
+        "answer": "No piercings or tattoos.",
+        "headline": "Tattoos History",
+        "domain": "External exposure",
+        "system_affected": "General",
+        "clinical_intent": "To gather information about previous external interventions that may impact current health status or treatment plans.",
+        "tags": [
+            "surgery",
+            "operative history",
+            "past procedures"
+        ]
+    },
+     {
+        "qid": "bf718b5f-41ae-4505-bd37-4a7a4bccaf5b",
+        "content": "Have you noticed any changes in your bowel movements, such as diarrhea or constipation, since your symptoms began?",
+        "status": null,
+        "answer": null,
+        "rank": 1,
+        "headline": "Bowel Movement Changes",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess for changes in bowel habits that may indicate a gastrointestinal issue or a side effect of a condition/medication.",
+        "tags": [
+            "bowel movement",
+            "diarrhea",
+            "constipation",
+            "GI symptoms"
+        ]
+    },
+    {
+        "qid": "b8e5d74d-74a0-4611-81ae-95f42e171272",
+        "content": "Can you clarify the name of the blood pressure medication you are taking, and when did you start it?",
+        "status": null,
+        "answer": null,
+        "rank": 3,
+        "headline": "Blood Pressure Medication Details",
+        "domain": "Medication Review",
+        "system_affected": "Cardiovascular",
+        "clinical_intent": "To confirm the specific name and start date of the patient's blood pressure medication for accurate medication reconciliation and management.",
+        "tags": [
+            "medication",
+            "blood pressure",
+            "hypertension",
+            "reconciliation"
+        ]
+    },
+    {
+        "qid": "a078e800-0ea8-45ff-a070-a103872298fc",
+        "content": "Have you experienced any rash since starting the Augmentin?",
+        "status": null,
+        "answer": null,
+        "rank": 2,
+        "headline": "Fever and Rash Post-Antibiotics",
+        "domain": "Symptom Triage",
+        "system_affected": "General",
+        "clinical_intent": "To screen for fever and rash following Augmentin use, which could indicate an allergic reaction or infection.",
+        "tags": [
+            "fever",
+            "rash",
+            "drug reaction",
+            "allergy"
+        ]
+    }
+]

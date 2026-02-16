@@ -1,0 +1,42 @@
+{
+    "overall_score": 80,
+    "metrics": {
+        "empathy": {
+            "score": 82,
+            "reasoning": "The nurse maintained a kind and professional tone throughout, acknowledging the patient's pain, though the emotional support was more formulaic than personalized.",
+            "example_quote": "I am sorry to hear you are in so much pain, that sounds very uncomfortable.",
+            "pros": "The nurse consistently used polite markers and validated the physical pain the patient was reporting. The tone remained calm, which helped keep the patient steady.",
+            "cons": "While the nurse acknowledged the physical pain, they overlooked the patient's expressed anxiety about the cost of an ambulance. The nurse moved straight to logistics without briefly reassuring the patient about the necessity of care over cost."
+        },
+        "clarity": {
+            "score": 85,
+            "reasoning": "Instructions were generally clear and easy to follow.",
+            "feedback": "The explanation of the 'R.I.C.E' method (Rest, Ice, Compression, Elevation) was broken down well.",
+            "pros": "The nurse avoided using complex medical jargon when explaining how to check for circulation in the injured foot. Instructions like 'press on your toenail until it turns white' were very visual and helpful.",
+            "cons": "At one point, the nurse used the term 'distal pulse' which confused the patient, requiring a re-explanation. It would have been better to say 'pulse in your foot' initially."
+        },
+        "information_gathering": {
+            "score": 75,
+            "reasoning": "The nurse obtained the necessary details for the primary injury but was slow to rule out associated risks.",
+            "pros": "The nurse did a great job assessing the deformity and swelling of the ankle. They established the timeline of the injury accurately.",
+            "cons": "The nurse focused entirely on the ankle for the first 3 minutes and delayed asking if the patient hit their head during the fall. Given the mechanism of injury (a fall), ruling out head trauma should have been a higher priority earlier in the call."
+        },
+        "patient_engagement": {
+            "score": 78,
+            "turn_taking_ratio": "Nurse 55% / Patient 45%",
+            "pros": "The dialogue was balanced. The nurse gave the patient space to describe how the fall happened without interrupting immediately.",
+            "cons": "The nurse tended to ask 'closed' yes/no questions in rapid succession (stacking questions), which sometimes forced the patient to choose which part of the question to answer, leading to minor confusion."
+        }
+    },
+    "key_strengths": [
+        "Strong ability to explain home-care procedures (R.I.C.E method).",
+        "Maintained a calm and professional demeanor.",
+        "Good balance of speaking time, allowing the patient to tell their story."
+    ],
+    "improvement_areas": [
+        "Prioritize ruling out critical associated symptoms (like head trauma in falls) earlier in the assessment.",
+        "Avoid stacking questions (asking two things at once).",
+        "Address non-clinical anxieties (like financial worries) with brief empathetic validation before moving on."
+    ],
+    "sentiment_trend": "The patient began the call distressed and in pain. The sentiment stabilized to 'concerned but cooperative' as the nurse provided clear instructions, though the anxiety about the situation remained present due to the lack of reassurance regarding the patient's specific fears about emergency costs."
+}

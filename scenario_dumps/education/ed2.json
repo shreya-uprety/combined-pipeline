@@ -1,0 +1,20 @@
+[
+    {
+    "headline": "Introduction of Medical Professional",
+    "content": "You must be informed that I am Nurse Sarah, a registered nurse providing care.",
+    "reasoning": "Failure to identify oneself as a medical professional can lead to claims of misrepresentation or lack of informed consent regarding the qualifications of the caregiver.",
+    "category": "Legal/Informed Consent",
+    "urgency": "Low",
+    "context_reference": "Hello, I'm nurse Sarah,",
+    "status": "asked"
+  },
+  {
+    "headline": "Tylenol Overuse Warning",
+    "content": "You must be warned that excessive use of acetaminophen (Tylenol), even regular strength, can cause severe liver damage. You must not exceed the recommended daily dosage.",
+    "reasoning": "Failure to warn the patient about the hepatotoxicity of acetaminophen, especially when they report taking it for pain, creates a significant risk of malpractice. The patient may not be aware of the dangers of overuse, leading to potential liver injury and a claim of negligent miscommunication.",
+    "category": "Medication Risk",
+    "urgency": "High",
+    "context_reference": "Patient states 'I was popping Tylenol for a bit because my tooth was killing me, but I stopped taking the Tylenol yesterday.'",
+    "status": null
+  }
+]

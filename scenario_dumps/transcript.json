@@ -1,0 +1,205 @@
+[
+    {
+        "role": "Nurse",
+        "message": "Hello Marcus, I'm Nurse Sarah, the urgent care sent you over today. Can you tell me a little bit about what brings you in today?",
+        "index": 1,
+        "audio_path": "scenario_dumps/audio_files/1.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "My eyes are yellow. My sister saw it two days ago. Now I look like I have a bad tan that won't go away.",
+        "index": 2,
+        "audio_path": "scenario_dumps/audio_files/2.WAV",
+        "highlights" : ["My eyes are yellow"]
+    },
+    {
+        "role": "Nurse",
+        "message": "I understand you're concerned about the yellow color. Can you tell me what medications you've been taking recently?",
+        "index": 3,
+        "audio_path": "scenario_dumps/audio_files/3.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "I take lisinopril for my blood pressure. I stopped taking Tylenol yesterday. I was taking a bunch of it for a toothache.",
+        "index": 4,
+        "audio_path": "scenario_dumps/audio_files/4.WAV",
+        "highlights" : ["lisinopril", "blood pressure", "Tylenol", "toothache"]
+    },
+    {
+        "role": "Nurse",
+        "message": "Thank you for letting me know. It's good you stopped taking the Tylenol. It's important to be aware that excessive use of acetaminophen, the medicine in Tylenol, can cause serious liver damage. Can you estimate how many extra strength or Tylenol PM pills you were taking daily over the past few weeks?",
+        "index": 5,
+        "audio_path": "scenario_dumps/audio_files/5.WAV",
+        "highlights" : ["excessive", "liver damage"]
+    },
+    {
+        "role": "Patient",
+        "message": "It was probably six to eight pills a day. My tooth was really throbbing. I just needed the pain to stop.",
+        "index": 6,
+        "audio_path": "scenario_dumps/audio_files/6.WAV",
+        "highlights" : ["six to eight pills a day"]
+    },
+    {
+        "role": "Nurse",
+        "message": "Thank you for sharing that. Since you took Augmentin for your tooth infection, have you had any nausea, vomiting, or any abdominal pain?",
+        "index": 7,
+        "audio_path": "scenario_dumps/audio_files/7.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "I've had a dull ache under my ribs, like it feels heavy. No vomiting, but I just feel nauseous all the time. I haven't been very hungry either.",
+        "index": 8,
+        "audio_path": "scenario_dumps/audio_files/8.WAV",
+        "highlights" : ["dull ache under my ribs", "nauseous"]
+    },
+    {
+        "role": "Nurse",
+        "message": "I appreciate you letting me know about those symptoms. The yellowing of your eyes and skin, called jaundice, and the severe itching, can sometimes be signs of liver issues. Can you tell me when you first started noticing the yellowing and itching after you finished the Augmentin?",
+        "index": 9,
+        "audio_path": "scenario_dumps/audio_files/9.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "I finished the pills three weeks ago. The yellow started maybe two days ago. This itching, it's the worst though. It feels like there are ants under my skin, especially on my arms and chest. I can't stop scratching. I need it to stop.",
+        "index": 10,
+        "audio_path": "scenario_dumps/audio_files/10.WAV",
+        "highlights" : ["three weeks ago", "itching", "arms and chest"]
+    },
+    {
+        "role": "Nurse",
+        "message": "That sounds really uncomfortable. It's important to know, have you had any recent travel, new sexual partners, or been exposed to anyone with hepatitis in the past few months?",
+        "index": 11,
+        "audio_path": "scenario_dumps/audio_files/11.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "No travel, no new partners. Nobody I know has hepatitis. I did have that tooth infection though. It was really bad.",
+        "index": 12,
+        "audio_path": "scenario_dumps/audio_files/12.WAV",
+        "highlights" : ["No travel", "no new partners", "hepatitis"]
+    },
+    {
+        "role": "Nurse",
+        "message": "Okay, thank you. Have you noticed any confusion or changes in your mental state recently?",
+        "index": 13,
+        "audio_path": "scenario_dumps/audio_files/13.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "I've been really tired, like wiped out. I had to leave work yesterday. Other than that, no. Just the pain under my ribs and all this itching. It feels like there are bugs crawling under my skin. I just need it to stop.",
+        "index": 14,
+        "audio_path": "scenario_dumps/audio_files/14.WAV",
+        "highlights" : ["tired" ,"pain", "ribs", "itching"]
+    },
+    {
+        "role": "Nurse",
+        "message": "I see. Have you had any fevers, chills, or any flu-like symptoms in the past month?",
+        "index": 15,
+        "audio_path": "scenario_dumps/audio_files/15.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "I felt a little warm a few times, but nothing major. No chills, just this tiredness and the itching. It's really getting to me.",
+        "index": 16,
+        "audio_path": "scenario_dumps/audio_files/16.WAV",
+        "highlights" : ["little warm", "No chills", "tiredness", "itching"]
+    },
+    {
+        "role": "Nurse",
+        "message": "Thank you for letting me know about the tiredness and itching. It's important to be aware that urine that looks like Coke or stools that are white or pale can be important signs of potential liver problems. Have you noticed any changes in the color of your urine or stools since your eyes started to yellow?",
+        "index": 17,
+        "audio_path": "scenario_dumps/audio_files/17.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "My pee got really dark, like Coke. That happened three days ago. This morning my stool was pale, almost white. That's what really freaked me out.",
+        "index": 18,
+        "audio_path": "scenario_dumps/audio_files/18.WAV",
+        "highlights" : ["pee", "dark", "Coke", "three days ago", "stool", "pale"]
+    },
+    {
+        "role": "Nurse",
+        "message": "Thank you for that information. Have you consumed any alcohol in the past month?",
+        "index": 19,
+        "audio_path": "scenario_dumps/audio_files/19.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "I have a few beers with the guys, nothing crazy. A couple nights a week.",
+        "index": 20,
+        "audio_path": "scenario_dumps/audio_files/20.WAV",
+        "highlights" : ["few beers", "couple nights a week"]
+    },
+    {
+        "role": "Nurse",
+        "message": "Okay, thanks for letting me know about that. Have you had any unintentional weight loss recently?",
+        "index": 21,
+        "audio_path": "scenario_dumps/audio_files/21.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "I haven't really been eating much with the nausea and pain under my ribs. Maybe a few pounds. Mostly because I just don't want to eat.",
+        "index": 22,
+        "audio_path": "scenario_dumps/audio_files/22.WAV",
+        "highlights" : ["haven't", "eating"]
+    },
+    {
+        "role": "Nurse",
+        "message": "I understand. Do you have any drug allergies?",
+        "index": 23,
+        "audio_path": "scenario_dumps/audio_files/23.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "I'm not allergic to anything. The Augmentin was fine. Just that bad toothache and all the Tylenol.",
+        "index": 24,
+        "audio_path": "scenario_dumps/audio_files/24.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Nurse",
+        "message": "Okay. Have you had any surgeries in the past?",
+        "index": 25,
+        "audio_path": "scenario_dumps/audio_files/25.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "No surgeries. Just need this itching to stop.",
+        "index": 26,
+        "audio_path": "scenario_dumps/audio_files/26.WAV",
+        "highlights" : ["No surgeries"]
+    },
+    {
+        "role": "Nurse",
+        "message": "I understand you're very itchy. Have you had any recent skin piercings or tattoos?",
+        "index": 27,
+        "audio_path": "scenario_dumps/audio_files/27.WAV",
+        "highlights" : []
+    },
+    {
+        "role": "Patient",
+        "message": "No piercings or tattoos. Just this yellow skin and the itching. It feels like I'm on fire under my skin. It's so annoying.",
+        "index": 28,
+        "audio_path": "scenario_dumps/audio_files/28.WAV",
+        "highlights" : ["No piercings or tattoos"]
+    },
+    {
+        "role": "Nurse",
+        "message": "Thank you for providing that information. We have enough to go on for now. Goodbye.",
+        "index": 29,
+        "audio_path": "scenario_dumps/audio_files/29.WAV",
+        "highlights" : []
+    }
+]

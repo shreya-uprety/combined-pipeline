@@ -1,0 +1,23 @@
+{
+  "clinical_handover": {
+    "hpi_narrative": "The patient presents with a chief complaint of yellowing of the skin and eyes, accompanied by significant fatigue and a heavy sensation in the stomach. They report taking approximately six to eight Extra Strength Tylenol pills daily for jaw pain over the past few weeks. The patient also describes intense itching with a 'pins and needles' sensation, dark cola-colored urine for several days, and recent pale, almost white stools. They endorse a dull, heavy ache under the right ribs, decreased appetite, and nausea, but deny fever, vomiting, confusion, or recent travel. The symptoms began around the time of finishing an Augmentin prescription.",
+    "key_biomarkers_extracted": [
+      "AST 450 U/L",
+      "ALT 620 U/L",
+      "Total Bilirubin: 5.2 mg/dL",
+      "Alk Phos: 180 U/L"
+    ],
+    "clinical_impression_summary": "The primary concern is Drug-Induced Liver Injury (DILI) secondary to acetaminophen overdose, presenting with acute jaundice and cholestasis. Differential diagnoses include biliary obstruction. Severity is high due to potential liver damage.",
+    "suggested_doctor_actions": [
+      "Review patient's exact Tylenol and Augmentin dosing history.",
+      "Assess for signs of hepatic encephalopathy.",
+      "Order comprehensive liver function panel, including INR.",
+      "Consider abdominal ultrasound to evaluate for biliary obstruction.",
+      "Assess for signs of pruritus management."
+    ]
+  },
+  "audit_summary": {
+    "performance_narrative": "The nurse demonstrated strong information-gathering skills, systematically collecting details about the patient's symptoms, medication use, and relevant history. Communication was generally clear, with explanations provided for medical terms and warnings about potential risks. The nurse maintained a professional and reassuring tone, acknowledging the patient's discomfort. However, there were opportunities for deeper empathetic engagement, as the patient's distress, particularly regarding itching, was acknowledged but not fully explored. The nurse's tendency to repeat questions, especially regarding Tylenol dosage, and a slight imbalance in turn-taking could be improved.",
+    "areas_for_improvement_summary": "The nurse should focus on varying empathetic phrases to avoid repetition and explore the patient's emotional experience more deeply. Aim for a more balanced turn-taking ratio to allow the patient more opportunity to elaborate. Ensure questions about medications are contextualized to avoid confusion, such as the mention of Augmentin without prior discussion."
+  }
+}

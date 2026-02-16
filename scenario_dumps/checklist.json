@@ -1,0 +1,164 @@
+[
+  {
+    "id": "1",
+    "title": "Nurse Identification",
+    "description": "Nurse introduced herself as 'Nurse Sarah'.",
+    "reasoning": "This fulfills the 'Documentation Standards' by clearly identifying the caregiver, which is crucial for accountability and patient trust. Failure to identify oneself can lead to claims of misrepresentation.",
+    "category": "Legal/Safety",
+    "completed": true,
+    "priority": "low"
+  },
+  {
+    "id": "2",
+    "title": "Red Flag Symptom - Jaundice",
+    "description": "Patient reported 'I'm turning yellow. My sister said, my eyes were yellow.' Nurse acknowledged this and later provided a warning about seeking medical attention for jaundice.",
+    "reasoning": "Jaundice is a critical 'Red Flag' symptom for liver dysfunction. The nurse's acknowledgment and subsequent warning align with the 'Duty of Care' to ensure the patient understands the seriousness of this symptom and seeks appropriate medical attention, mitigating 'Failure to Warn' liability.",
+    "category": "Legal/Safety",
+    "completed": true,
+    "priority": "high"
+  },
+  {
+    "id": "3",
+    "title": "Acetaminophen Overdose Risk Assessment",
+    "description": "Nurse asked about Tylenol dosage multiple times, and the patient reported taking 'six or eight' Extra Strength Tylenol pills daily for weeks. The nurse provided a warning: 'It's important to remember, not to exceed the daily dosage of Tylenol, or Tylenol PM as too much can cause serious liver damage.'",
+    "reasoning": "The patient's reported high intake of acetaminophen is a significant risk factor for Drug-Induced Liver Injury (DILI). The nurse's repeated questioning and explicit warning about liver damage directly address the 'Informed Consent Doctrine' and 'Failure to Warn' regarding material risks of medication overuse, mitigating liability for potential liver injury.",
+    "category": "Informed Consent",
+    "completed": true,
+    "priority": "high"
+  },
+  {
+    "id": "4",
+    "title": "Red Flag Symptom - Dark Urine and Pale Stool",
+    "description": "Patient reported 'my urine was really dark like Coke for a few days and this morning, my poop was almost white, pretty freaky.' Nurse acknowledged this and stated, 'these can indicate a potential liver problem which is why it's important to seek medical attention.'",
+    "reasoning": "Dark urine and pale stools are critical indicators of potential liver or biliary obstruction. The nurse's acknowledgment and explanation of the potential liver problem fulfill the 'Duty of Care' and 'Failure to Warn' obligations, ensuring the patient understands the severity of these symptoms.",
+    "category": "Legal/Safety",
+    "completed": true,
+    "priority": "high"
+  },
+  {
+    "id": "5",
+    "title": "Red Flag Symptom - Abdominal Pain",
+    "description": "Patient reported 'Yeah right under my ribs it's not sharp just kind of heavy dull ache.' Nurse acknowledged this and later stated, 'please make sure to report any abdominal pain, especially in the upper right area to your doctor immediately, as it can be a sign of liver or gallbladder issues.'",
+    "reasoning": "Right upper quadrant (RUQ) pain, even if dull, is a significant symptom in the context of jaundice and other liver-related complaints. The nurse's acknowledgment and warning align with the 'Duty of Care' to ensure prompt medical evaluation, mitigating 'Failure to Warn' liability.",
+    "category": "Legal/Safety",
+    "completed": true,
+    "priority": "high"
+  },
+  {
+    "id": "6",
+    "title": "Red Flag Symptom - Paresthesia/Itching",
+    "description": "Patient reported 'my arm is itching again. It feels like there are ants under my skin.' and 'This itching is driving me crazy. It feels like, there are ants under my skin.' The nurse acknowledged the itching multiple times and stated, 'It's important to report any new or worsening Sensations like the itching to your doctor. As that can, sometimes be a sign of a underlying condition.'",
+    "reasoning": "Severe itching and paresthesia can be significant symptoms associated with cholestasis and liver disease. The nurse's acknowledgment and warning about reporting these sensations fulfill the 'Duty of Care' and 'Failure to Warn' obligations, ensuring the patient understands the potential seriousness.",
+    "category": "Legal/Safety",
+    "completed": true,
+    "priority": "medium"
+  },
+  {
+    "id": "7",
+    "title": "Red Flag Symptom - Fatigue",
+    "description": "Patient reported 'Yeah, the fatigue is the worst. I had to leave work yesterday.' The nurse acknowledged this symptom.",
+    "reasoning": "Significant fatigue, especially when coupled with jaundice and other symptoms, is a concerning sign that requires thorough evaluation. While the nurse acknowledged it, the provided patient education section indicates this was 'pending' for a high urgency warning. This could be a missed opportunity for immediate escalation or a more direct warning.",
+    "category": "Legal/Safety",
+    "completed": false,
+    "priority": "high"
+  },
+  {
+    "id": "8",
+    "title": "Red Flag Symptom - Decreased Appetite",
+    "description": "Patient reported 'Yeah, I'm not really hungry at all. Even my favorite foods. Don't look appealing.' The nurse acknowledged this as 'appetite has decreased.'",
+    "reasoning": "A significant decrease in appetite can be a symptom of serious underlying illness, including liver disease. The patient education section indicates this was 'pending' for a high urgency warning. Failure to provide a clear warning about the significance of decreased appetite could lead to a 'Failure to Warn' claim.",
+    "category": "Legal/Safety",
+    "completed": false,
+    "priority": "medium"
+  },
+  {
+    "id": "9",
+    "title": "Red Flag Symptom - Feeling 'Hit by a Truck'",
+    "description": "Patient reported 'I feel like I've been hit by a truck and my stomach feels heavy.' The nurse stated, 'Thank you for explaining those symptoms feeling like you've been hit by a truck or Having a heavy stomach are serious symptoms. So please make sure to report that to the doctor.'",
+    "reasoning": "The patient's subjective description of feeling 'hit by a truck' is a severe symptom that warrants immediate attention. The nurse's response, while directing the patient to report it, could have been more proactive in emphasizing the urgency, aligning with the 'Duty of Care' and 'Failure to Warn' principles.",
+    "category": "Legal/Safety",
+    "completed": true,
+    "priority": "high"
+  },
+  {
+    "id": "10",
+    "title": "Assessment of Nausea/Vomiting/Abdominal Pain Post-Augmentin",
+    "description": "Nurse asked about nausea, vomiting, or abdominal pain since starting Augmentin. Patient reported 'Nausea, no vomiting and yeah, the pain under my ribs started a bit. After I finish those pills.'",
+    "reasoning": "Monitoring for gastrointestinal side effects of medications like Augmentin is part of the 'Duty of Care.' The nurse inquired about these symptoms, and the patient reported nausea and pain, which were acknowledged. This aligns with standard clinical practice guidelines for medication monitoring.",
+    "category": "Diagnostic Accuracy",
+    "completed": true,
+    "priority": "medium"
+  },
+  {
+    "id": "11",
+    "title": "Inquiry about Confusion/Disorientation",
+    "description": "Nurse asked, 'Have you experienced any confusion or disorientation such as difficulty? Remembering things or feeling unusually sleepy?' Patient responded, 'Know my head feels okay, just this weird yellow skin and this itching, it feels like there are Send her my skin.'",
+    "reasoning": "Confusion or disorientation can be a sign of hepatic encephalopathy, a serious complication of liver failure. The nurse correctly screened for this symptom as part of the 'Duty of Care' and adherence to 'Clinical Practice Guidelines' for liver disease assessment.",
+    "category": "Legal/Safety",
+    "completed": true,
+    "priority": "high"
+  },
+  {
+    "id": "12",
+    "title": "Inquiry about Gallbladder History",
+    "description": "Nurse asked about prior history of gallstones or gallbladder disease. Patient's answer was related to pain under ribs and feeling of heaviness.",
+    "reasoning": "Assessing for a history of gallstones or gallbladder disease is relevant to the differential diagnosis of cholestatic jaundice and RUQ pain. This aligns with 'Clinical Practice Guidelines' for evaluating hepatobiliary symptoms.",
+    "category": "Diagnostic Accuracy",
+    "completed": true,
+    "priority": "medium"
+  },
+  {
+    "id": "13",
+    "title": "Inquiry about Recent Travel/Exposure",
+    "description": "Nurse asked, 'Have you traveled recently, or had any known exposure to anyone? Sick?' Patient responded, 'No, I haven't traveled and no one. I know is sick.'",
+    "reasoning": "Screening for travel history and exposure to illness is crucial for ruling out infectious causes of liver injury or other systemic diseases, adhering to 'Clinical Practice Guidelines' and the 'Duty of Care.'",
+    "category": "Diagnostic Accuracy",
+    "completed": true,
+    "priority": "medium"
+  },
+  {
+    "id": "14",
+    "title": "Inquiry about Skin Piercings/Tattoos",
+    "description": "Nurse asked, 'Have you had any recent skin piercings or tattoos?' Patient responded, 'No, nothing new like that.'",
+    "reasoning": "Inquiring about recent skin piercings or tattoos is relevant for assessing potential risks of infection or blood-borne pathogen exposure, aligning with general 'Duty of Care' and safety protocols.",
+    "category": "Legal/Safety",
+    "completed": true,
+    "priority": "low"
+  },
+  {
+    "id": "15",
+    "title": "Patient Engagement - Turn-Taking Ratio",
+    "description": "Consultation Analytics show a 'turn_taking_ratio' of 'Nurse 70% / Patient 30%'. The nurse dominated the conversation, leaving less room for the patient to elaborate freely.",
+    "reasoning": "A significantly imbalanced turn-taking ratio, as indicated by the 'Consultation Analytics,' suggests the nurse may not have allowed the patient sufficient opportunity to fully express their concerns. This can be cited in 'Abandonment of Care' or 'Failure to Diagnose' claims if critical information was missed due to lack of patient elaboration.",
+    "category": "Communication",
+    "completed": false,
+    "priority": "medium"
+  },
+  {
+    "id": "16",
+    "title": "Patient Engagement - Empathetic Validation",
+    "description": "The nurse used repetitive empathetic phrases like 'I understand the itching is very bothersome.' The 'Consultation Analytics' noted 'missed opportunities to delve deeper into the emotional impact of these symptoms.'",
+    "reasoning": "While the nurse attempted empathy, the repetition and lack of deeper exploration can be perceived as dismissive, impacting patient trust. This relates to 'Duty of Care' and can contribute to a perception of poor communication, potentially increasing the likelihood of a lawsuit if the patient feels unheard.",
+    "category": "Communication",
+    "completed": false,
+    "priority": "low"
+  },
+  {
+    "id": "17",
+    "title": "Clarity of Information - Augmentin Context",
+    "description": "The nurse asked about Augmentin side effects without prior context of the patient mentioning Augmentin.",
+    "reasoning": "Asking about medication side effects without establishing the patient is taking the medication can cause confusion and disrupt the flow of information. This impacts 'Clarity' in communication, which is part of the 'Duty of Care' to ensure the patient understands the interaction.",
+    "category": "Communication",
+    "completed": false,
+    "priority": "low"
+  },
+  {
+    "id": "18",
+    "title": "Follow-up Instructions/Safety Net",
+    "description": "The transcript does not contain explicit follow-up instructions or a clear 'safety net' statement from the nurse after the information gathering is complete, beyond directing the patient to report symptoms to the doctor.",
+    "reasoning": "Failure to provide clear follow-up instructions or a defined 'safety net' can lead to 'Abandonment of Care' claims if the patient is left uncertain about what to do next or when to seek further help. This is a critical component of the 'Duty of Care.'",
+    "category": "Legal/Safety",
+    "completed": false,
+    "priority": "high"
+  }
+]

@@ -1,0 +1,103 @@
+[
+    {
+    "did": "A1B2C",
+    "headline": "Drug-Induced Liver Injury (DILI)",
+    "diagnosis": "Drug-Induced Liver Injury secondary to Acetaminophen Overdose, Acute",
+    "indicators_point": [
+        {
+        "criteria": "Patient reports taking 'six to eight pills a day' of Extra Strength Tylenol or Tylenol PM for jaw pain.",
+        "check": true
+        },
+        {
+        "criteria": "Patient states they stopped taking Tylenol yesterday.",
+        "check": true
+        },
+        {
+        "criteria": "Elevated AST (450 U/L) and ALT (620 U/L).",
+        "check": true
+        },
+        {
+        "criteria": "Overt jaundice (Total Bilirubin: 5.2 mg/dL) and scleral icterus noted.",
+        "check": true
+        },
+        {
+        "criteria": "Patient reports dark, coke-colored urine and pale, almost white stool.",
+        "check": true
+        },
+        {
+        "criteria": "Patient reports severe itching ('ants under my skin').",
+        "check": true
+        },
+        {
+        "criteria": "Patient reports nausea and decreased appetite.",
+        "check": true
+        },
+        {
+        "criteria": "Patient reports a 'dull ache under my ribs'.",
+        "check": true
+        }
+    ],
+    "reasoning": "The patient's history of excessive acetaminophen (Tylenol) intake, coupled with significantly elevated liver enzymes (AST, ALT), overt jaundice, and characteristic changes in urine and stool color, strongly suggests acute drug-induced liver injury. The timing of symptom onset after a period of high Tylenol use, and the cessation of Tylenol use, further supports this diagnosis. The itching and abdominal discomfort are also consistent with hepatic dysfunction.",
+    "followup_question": "Can you clarify the name of the blood pressure medication you are taking, and when did you start it?",
+    "rank": 1,
+    "severity": "Moderate"
+    },
+    {
+    "did": "xYz78",
+    "headline": "Cholestatic Jaundice",
+    "diagnosis": "Cholestatic Jaundice, Post-Antibiotic, Acute",
+    "indicators_point": [
+        {
+        "criteria": "Patient was prescribed Amoxicillin-Clavulanate (Augmentin) for a dental abscess.",
+        "check": true
+        },
+        {
+        "criteria": "Jaundice and itching started approximately 2 days after finishing the Augmentin.",
+        "check": false
+        },
+        {
+        "criteria": "Elevated Alk Phos (180 U/L) and Total Bilirubin (5.2 mg/dL).",
+        "check": true
+        },
+        {
+        "criteria": "Pale, almost white stools.",
+        "check": true
+        },
+        {
+        "criteria": "Dark urine.",
+        "check": true
+        }
+    ],
+    "reasoning": "While acetaminophen toxicity is the leading diagnosis, the patient's recent course of Augmentin and the onset of jaundice and itching after completing the antibiotic course raise suspicion for a drug-induced cholestatic reaction. Augmentin is known to cause liver injury, including cholestasis. The elevated alkaline phosphatase and bilirubin, along with pale stools and dark urine, are classic signs of cholestasis. The timing relative to the antibiotic course makes this a plausible, though less likely than acetaminophen toxicity, differential diagnosis.",
+    "followup_question": "Can you clarify the name of the blood pressure medication you are taking, and when did you start it?",
+    "rank": 2,
+    "severity": "Low"
+    },
+    {
+    "did": "D3E4F",
+    "headline": "Alcohol-Associated Hepatitis",
+    "diagnosis": "Alcohol-Associated Hepatitis, Moderate",
+    "indicators_point": [
+        {
+        "criteria": "Elevated AST (450 U/L) and ALT (620 U/L).",
+        "check": true
+        },
+        {
+        "criteria": "Overt jaundice (Total Bilirubin: 5.2 mg/dL).",
+        "check": true
+        },
+        {
+        "criteria": "Patient reports severe itching.",
+        "check": true
+        },
+        {
+        "criteria": "INR is borderline at 1.2, suggesting some synthetic dysfunction.",
+        "check": true
+        }
+    ],
+    "reasoning": "While drug-induced liver injury is the primary concern, the patient's reported alcohol consumption, even if described as moderate, cannot be entirely discounted as a contributing factor or a differential diagnosis, especially given the elevated liver enzymes and jaundice. The pattern of LFTs and bilirubin elevation can be seen in alcoholic hepatitis. The borderline INR suggests some degree of liver synthetic dysfunction, which can be exacerbated by alcohol.",
+    "followup_question": "Have you noticed any changes in your bowel movements, such as diarrhea or constipation, since your symptoms began?",
+    "rank": 3,
+    "severity": "Very Low"
+    }
+]

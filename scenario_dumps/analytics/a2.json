@@ -1,0 +1,41 @@
+{
+        "overall_score": 45,
+        "metrics": {
+            "empathy": {
+            "score": 30,
+            "reasoning": "The nurse's introduction was brief and lacked any immediate attempt to connect with the patient on an emotional level.",
+            "example_quote": "N/A - No empathetic statements made.",
+            "pros": "The nurse introduced herself by name, which is a basic but important step in establishing a connection.",
+            "cons": "The introduction was very clinical and did not include any phrases to acknowledge potential patient anxiety or discomfort. There was no validation of feelings or emotional support offered."
+            },
+            "clarity": {
+            "score": 70,
+            "reasoning": "The nurse used simple language in her introduction.",
+            "feedback": "The initial message was clear and easy to understand.",
+            "pros": "The nurse used a clear and simple sentence structure, making her introduction easy for the patient to comprehend.",
+            "cons": "As the transcript is very short, there are no complex medical terms or explanations to assess for clarity. However, the initial greeting was clear."
+            },
+            "information_gathering": {
+            "score": 20,
+            "reasoning": "No information was gathered from the patient in this initial exchange.",
+            "pros": "The nurse initiated the conversation, which is the first step in gathering information.",
+            "cons": "The nurse only introduced herself and did not ask any questions to understand the patient's reason for the call or their current condition. This is a significant missed opportunity to begin the assessment."
+            },
+            "patient_engagement": {
+            "score": 30,
+            "turn_taking_ratio": "Nurse 100% / Patient 0%",
+            "pros": "The nurse initiated the conversation, which is necessary to start the interaction.",
+            "cons": "The nurse spoke for the entire duration of the provided transcript, leaving no room for the patient to respond or engage. This creates a one-sided conversation and does not encourage patient participation or active listening."
+            }
+        },
+        "key_strengths": [
+            "Introduced herself by name."
+        ],
+        "improvement_areas": [
+            "Needs to incorporate empathetic statements early in the interaction.",
+            "Must ask open-ended questions to gather patient information.",
+            "Should allow the patient to speak and actively listen.",
+            "Needs to create a more balanced turn-taking dynamic."
+        ],
+        "sentiment_trend": "Neutral to slightly negative, as the patient has not yet had a chance to express themselves, and the nurse's approach is very clinical."
+    }

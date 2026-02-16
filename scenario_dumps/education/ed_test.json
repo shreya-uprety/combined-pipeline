@@ -1,0 +1,119 @@
+[
+  {
+    "headline": "Introduction of Medical Professional",
+    "content": "You must be informed that I am Nurse Sarah, a registered nurse providing care.",
+    "reasoning": "Failure to identify oneself as a medical professional can lead to claims of misrepresentation or lack of informed consent regarding the qualifications of the caregiver.",
+    "category": "Legal/Informed Consent",
+    "urgency": "Low",
+    "context_reference": "Hello, I'm nurse Sarah,",
+    "status": "asked"
+  },
+  {
+    "headline": "Jaundice Warning",
+    "content": "You must seek immediate emergency medical attention if you notice yellowing of your skin or eyes (jaundice). This can indicate a serious liver problem.",
+    "reasoning": "Failure to warn the patient about the critical nature of jaundice, a 'red flag' symptom, could lead to a delay in seeking emergency care, resulting in severe patient harm and a malpractice claim for failure to warn.",
+    "category": "Safety",
+    "urgency": "High",
+    "context_reference": "Patient stated 'I'm turning yellow. My sister said, my eyes were yellow.'",
+    "status": "asked"
+  },
+  {
+    "headline": "Acetaminophen (Tylenol) Overdose Risk",
+    "content": "You must not exceed the maximum daily dosage of acetaminophen (Tylenol), including Tylenol PM. Taking too much can cause severe liver damage. Report all acetaminophen products taken.",
+    "reasoning": "The patient's mention of Tylenol for jaw pain, combined with jaundice symptoms, raises suspicion of potential acetaminophen overdose. Failure to warn about the liver toxicity risks associated with exceeding dosage limits, and to document the patient's intake, exposes the clinic to liability if liver damage occurs.",
+    "category": "Medication Risk",
+    "urgency": "High",
+    "context_reference": "Nurse asked about 'how many of the extra strength or Tylenol PM pills? You've been taking'",
+    "status": "asked"
+  },
+  {
+    "headline": "Symptom Severity Assessment",
+    "content": "You must report severe symptoms such as feeling like you've been 'hit by a truck' or experiencing significant stomach heaviness to the doctor immediately. These may indicate a serious underlying condition.",
+    "reasoning": "The patient's description of feeling 'hit by a truck' and 'stomach feels heavy' are severe symptoms that require immediate medical evaluation. Failing to escalate these symptoms or warn the patient of their potential seriousness could result in a claim of negligent miscommunication or failure to diagnose.",
+    "category": "Safety",
+    "urgency": "High",
+    "context_reference": "Patient stated 'I feel like I've been hit by a truck and my stomach feels heavy.'",
+    "status": "asked"
+  },
+  {
+    "headline": "Acetaminophen Dosage and Liver Damage Warning",
+    "content": "You must not exceed the maximum daily dosage of acetaminophen (Tylenol), including Extra Strength and Tylenol PM. Taking more than recommended can cause severe liver damage. You must report all acetaminophen products taken.",
+    "reasoning": "The patient reports taking six to eight Extra Strength Tylenol pills daily for weeks. This dosage is excessive and poses a significant risk of liver damage. Failure to warn about this risk and document the patient's intake exposes the clinic to liability for medication-related harm.",
+    "category": "Medication Risk",
+    "urgency": "High",
+    "context_reference": "Extra Strength, maybe six or eight a day.",
+    "status": "asked"
+  },
+  {
+    "headline": "Paresthesia Warning",
+    "content": "You must report any new or worsening sensations, such as itching or feeling like ants under the skin (paresthesia), to your doctor immediately. These symptoms can indicate a serious underlying condition.",
+    "reasoning": "The patient describes itching and a 'pins and needles' sensation ('ants under my skin'). These symptoms, especially in conjunction with jaundice and fatigue, require immediate medical evaluation. Failure to warn the patient about the potential seriousness of these symptoms could lead to a claim of negligent miscommunication.",
+    "category": "Safety",
+    "urgency": "High",
+    "context_reference": "Oh, now my arm is itching again. It feels like there are ants under my skin.",
+    "status": "asked"
+  },
+  {
+    "headline": "Fatigue and Flu-like Symptoms Assessment",
+    "content": "You must report any significant fatigue, fever, or flu-like symptoms to your doctor. These symptoms, especially when combined with jaundice, can indicate a serious infection or systemic illness.",
+    "reasoning": "The patient reports significant fatigue, which is a concerning symptom, especially given the other reported symptoms. Failure to document and address this symptom, and to warn the patient of its potential significance, could lead to a claim of negligent miscommunication.",
+    "category": "Safety",
+    "urgency": "Normal",
+    "context_reference": "Yeah, the fatigue is the worst. I had to leave work yesterday. No fever though.",
+    "status": "pending"
+  },
+  {
+    "headline": "Dark Urine and White Stool Warning",
+    "content": "You must report any dark, cola-colored urine or pale, white, or clay-colored stools to your doctor immediately. These changes can indicate a serious liver or bile duct issue.",
+    "reasoning": "The patient's report of dark urine and white stool are critical indicators of potential liver or biliary obstruction. Failure to warn the patient about the significance of these symptoms and document their reporting could lead to a claim of negligent miscommunication and failure to diagnose, especially given the concurrent jaundice.",
+    "category": "Safety",
+    "urgency": "High",
+    "context_reference": "Yeah, my urine was really dark like Coke for a few days and this morning, my poop was almost white, pretty freaky.",
+    "status": "asked"
+  },
+  {
+    "headline": "Abdominal Pain Assessment",
+    "content": "You must report any abdominal pain, particularly in the upper right quadrant under the ribs, even if it is a dull ache, to your doctor immediately. This can be a sign of liver or gallbladder issues.",
+    "reasoning": "The patient's description of a 'heavy dull ache' under the ribs, in conjunction with jaundice and changes in urine/stool color, is a significant symptom requiring immediate medical evaluation. Failure to document and address this symptom, and to warn the patient of its potential seriousness, could lead to a claim of negligent miscommunication.",
+    "category": "Safety",
+    "urgency": "High",
+    "context_reference": "Yeah right under my ribs it's not sharp just kind of heavy dull ache.",
+    "status": "asked"
+  },
+  {
+    "headline": "Acetaminophen Dosage Reinforcement",
+    "content": "It is critical that you do not exceed the maximum daily dosage of acetaminophen (Tylenol), including Extra Strength and Tylenol PM. Exceeding this limit can lead to severe liver damage. You must report all acetaminophen products you take.",
+    "reasoning": "The patient has repeatedly mentioned taking excessive amounts of Extra Strength Tylenol. Reinforcing the warning about maximum dosage and liver damage is crucial to mitigate the risk of medication-related harm and subsequent malpractice claims.",
+    "category": "Medication Risk",
+    "urgency": "High",
+    "context_reference": "Like I said, maybe six serrated a day. It took the edge off the pain. The stitching is driving me crazy though. Feels like there are ants under my skin.",
+    "status": "asked"
+  },
+  {
+    "headline": "Nausea, Vomiting, and Abdominal Pain Monitoring",
+    "content": "You must report any nausea, vomiting, or abdominal pain, especially in the right upper quadrant, to your doctor immediately. These symptoms can indicate serious complications, particularly when taking medications like Augmentin.",
+    "reasoning": "The patient reports experiencing nausea and abdominal pain after starting Augmentin. These symptoms, coupled with existing jaundice and other concerns, require immediate medical evaluation to rule out serious side effects or complications, thus preventing a claim of negligent miscommunication.",
+    "category": "Safety",
+    "urgency": "High",
+    "context_reference": "Nausea, no vomiting and yeah, the pain under my ribs started a bit. After I finish those pills, my chest is itching now too, feels like their aunts under my skin.",
+    "status": "asked"
+  },
+  {
+    "headline": "Severe Symptom Reporting",
+    "content": "You must report severe symptoms such as feeling like you've been 'hit by a truck' or experiencing significant stomach heaviness to the doctor immediately. These may indicate a serious underlying condition.",
+    "reasoning": "The patient's description of feeling 'hit by a truck' and 'stomach feels heavy' are severe symptoms that require immediate medical evaluation. Failing to escalate these symptoms or warn the patient of their potential seriousness could result in a claim of negligent miscommunication or failure to diagnose.",
+    "category": "Safety",
+    "urgency": "High",
+    "context_reference": "Thank you for explaining those symptoms feeling like you've been hit by a truck or Having a heavy stomach are serious symptoms. So please make sure to report that to the doctor.",
+    "status": "pending"
+  },
+  {
+    "headline": "Decreased Appetite and Weight Loss Monitoring",
+    "content": "You must report any significant decrease in appetite or unintentional weight loss to your doctor. These symptoms can be indicative of serious underlying medical conditions.",
+    "reasoning": "The patient reports a significant decrease in appetite. This symptom, especially in the context of jaundice and other reported issues, requires medical evaluation. Failure to document and address this symptom, and to warn the patient of its potential seriousness, could lead to a claim of negligent miscommunication.",
+    "category": "Safety",
+    "urgency": "Normal",
+    "context_reference": "Yeah, I'm not really hungry at all. Even my favorite foods. Don't look appealing. This itching is driving me nuts, though. It feels like, there are ants under my skin.",
+    "status": "pending"
+  }
+]

@@ -27,5 +27,8 @@ numpy
 pandas
 Pillow
 
+# Audio duration detection (used by simulation_scenario.py)
+mutagen
+
 # Pydantic (implied by fastapi, but explicit)
 pydantic

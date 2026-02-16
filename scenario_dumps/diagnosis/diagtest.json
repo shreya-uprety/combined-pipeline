@@ -1,0 +1,194 @@
+[
+  {
+    "did": "A1B2C",
+    "headline": "Drug-Induced Liver Injury (DILI)",
+    "diagnosis": "Drug-Induced Liver Injury secondary to Acetaminophen Overdose, Acute",
+    "indicators_point": [
+      {
+        "criteria": "Patient reports taking 'six or eight' Extra Strength Tylenol or Tylenol PM pills daily for jaw pain over the past few weeks.",
+        "check": true
+      },
+      {
+        "criteria": "Elevated AST (450 U/L) and ALT (620 U/L).",
+        "check": true
+      },
+      {
+        "criteria": "Overt jaundice (Total Bilirubin: 5.2 mg/dL, wife noted yellow eyes).",
+        "check": true
+      },
+      {
+        "criteria": "Pruritus ('itching again', 'feels like there are ants under my skin').",
+        "check": true
+      },
+      {
+        "criteria": "Dark urine ('urine was really dark like Coke for a few days').",
+        "check": true
+      },
+      {
+        "criteria": "Stool color change ('this morning, my poop was almost white').",
+        "check": true
+      },
+      {
+        "criteria": "RUQ pain ('right under my ribs it's not sharp just kind of heavy dull ache').",
+        "check": true
+      },
+      {
+        "criteria": "Fatigue ('the fatigue is the worst. I had to leave work yesterday').",
+        "check": false
+      },
+      {
+        "criteria": "Decreased appetite ('I'm not really hungry at all').",
+        "check": false
+      },
+      {
+        "criteria": "Nausea ('low-grade nausea').",
+        "check": false
+      },
+      {
+        "criteria": "Confusion or disorientation",
+        "check": false
+      }
+    ],
+    "reasoning": "The patient's history of significant acetaminophen (Tylenol) intake, combined with elevated liver enzymes (AST, ALT), overt jaundice, pruritus, and characteristic stool/urine color changes, strongly suggests drug-induced liver injury (DILI) due to acetaminophen toxicity. The acute presentation is supported by the recent onset of symptoms and elevated LFTs.",
+    "followup_question": "Have you experienced any confusion or disorientation, such as difficulty remembering things or feeling unusually sleepy?",
+    "rank": 1,
+    "severity": "High"
+  },
+  {
+    "did": "D3E4F",
+    "headline": "Cholestasis",
+    "diagnosis": "Cholestasis secondary to Biliary Obstruction, Acute",
+    "indicators_point": [
+      {
+        "criteria": "Overt jaundice (Total Bilirubin: 5.2 mg/dL, wife noted yellow eyes).",
+        "check": true
+      },
+      {
+        "criteria": "Pruritus ('itching again', 'feels like there are ants under my skin').",
+        "check": true
+      },
+      {
+        "criteria": "Dark urine ('urine was really dark like Coke for a few days').",
+        "check": true
+      },
+      {
+        "criteria": "Stool color change ('this morning, my poop was almost white').",
+        "check": true
+      },
+      {
+        "criteria": "RUQ pain ('right under my ribs it's not sharp just kind of heavy dull ache', 'there most of the time. It's like there's something heavy inside').",
+        "check": true
+      },
+      {
+        "criteria": "Elevated Alk Phos (180 U/L).",
+        "check": true
+      },
+      {
+        "criteria": "Decreased appetite ('I'm not really hungry at all').",
+        "check": true
+      },
+      {
+        "criteria": "Nausea ('low-grade nausea').",
+        "check": false
+      },
+      {
+        "criteria": "Elevated AST",
+        "check": false
+      },
+      {
+        "criteria": "Elevated ALT",
+        "check": false
+      },
+      {
+        "criteria": "Patient reports a 'heavy' stomach",
+        "check": false
+      },
+      {
+        "criteria": "Prior episodes of gallstones or gallbladder disease",
+        "check": false
+      }
+    ],
+    "reasoning": "The combination of jaundice, pruritus, acholic stools ('almost white poop'), dark urine, elevated alkaline phosphatase, and RUQ discomfort suggests a cholestatic process, indicating impaired bile flow. While DILI is a strong primary consideration, biliary obstruction (e.g., from a stone or stricture) is a significant differential that would also cause these cholestatic features.",
+    "followup_question": "Have you had any prior history of gallstones or gallbladder disease?",
+    "rank": 2,
+    "severity": "Moderate"
+  },
+  {
+    "did": "aBcDe",
+    "headline": "Drug-Induced Liver Injury (DILI)",
+    "diagnosis": "Drug-Induced Liver Injury secondary to Acetaminophen Overdose, Acute",
+    "indicators_point": [
+      {
+        "criteria": "Patient reports taking 'six or eight' Extra Strength Tylenol or Tylenol PM pills daily for jaw pain over the past few weeks.",
+        "check": true
+      },
+      {
+        "criteria": "Elevated AST (450 U/L), ALT (620 U/L), Alk Phos (180 U/L), and Total Bilirubin (5.2 mg/dL).",
+        "check": true
+      },
+      {
+        "criteria": "Symptoms of jaundice ('eyes are yellow'), pruritus ('itching'), fatigue ('feel like I've been hit by a truck'), and nausea.",
+        "check": true
+      },
+      {
+        "criteria": "Dark urine ('like Coke') and pale stool ('almost white').",
+        "check": true
+      },
+      {
+        "criteria": "Dull ache under the ribs, described as a 'heavy feeling'.",
+        "check": true
+      },
+      {
+        "criteria": "Vomiting",
+        "check": false
+      },
+      {
+        "criteria": "Significant abdominal pain",
+        "check": false
+      }
+    ],
+    "reasoning": "The patient presents with overt jaundice, significantly elevated liver enzymes (AST, ALT, Alk Phos, Bilirubin), and symptoms consistent with liver dysfunction (fatigue, nausea, pruritus, dark urine, pale stools). The most striking factor is the reported excessive daily intake of acetaminophen (Tylenol/Tylenol PM), which is a well-known cause of drug-induced liver injury. The timing of symptoms following the dental abscess treatment and Augmentin prescription, coupled with the high Tylenol intake for jaw pain, strongly suggests acetaminophen toxicity as the primary cause of acute liver injury.",
+    "followup_question": "Have you experienced any vomiting or significant abdominal pain since your symptoms began?",
+    "rank": 3,
+    "severity": "Moderate"
+  },
+  {
+    "did": "fGhIj",
+    "headline": "Cholestatic Jaundice",
+    "diagnosis": "Cholestatic Jaundice of Unknown Etiology, Acute",
+    "indicators_point": [
+      {
+        "criteria": "Overt jaundice (yellow eyes).",
+        "check": true
+      },
+      {
+        "criteria": "Significant pruritus ('itching', 'feels like there are ants under my skin').",
+        "check": true
+      },
+      {
+        "criteria": "Dark urine ('like Coke') and pale stool ('almost white').",
+        "check": true
+      },
+      {
+        "criteria": "Elevated Alk Phos (180 U/L) and Total Bilirubin (5.2 mg/dL).",
+        "check": true
+      },
+      {
+        "criteria": "Dull, heavy ache under the ribs.",
+        "check": true
+      },
+      {
+        "criteria": "Patient denies recent travel or known sick contacts.",
+        "check": true
+      },
+      {
+        "criteria": "Recent skin piercings or tattoos",
+        "check": false
+      }
+    ],
+    "reasoning": "The patient exhibits signs and symptoms of cholestasis, including jaundice, pruritus, dark urine, and pale stools, along with elevated bilirubin and alkaline phosphatase. While drug-induced liver injury is a strong possibility, other causes of cholestatic jaundice should be considered. Given the absence of typical viral hepatitis prodrome and lack of travel or known exposures, an idiopathic or less common cause of biliary obstruction or intrahepatic cholestasis is possible.",
+    "followup_question": "Have you had any recent skin piercings or tattoos?",
+    "rank": 4,
+    "severity": "Moderate"
+  }
+]
