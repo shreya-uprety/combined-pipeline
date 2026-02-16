@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedForce Agent - Integrated Chat & Voice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1400px;
+            width: 100%;
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .patient-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .patient-select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .patient-select option {
+            background: #667eea;
+            color: white;
+        }
+
+        .board-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .board-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .chat-section {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .tools-section {
+            flex: 1;
+            padding: 20px;
+            background: #f9f9f9;
+            overflow-y: auto;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            line-height: 1.5;
+        }
+
+        .user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .assistant .message-bubble {
+            background: white;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 4px;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-area input:focus {
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-voice {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-voice:hover {
+            background: #ee5a52;
+        }
+
+        .btn-voice.active {
+            background: #51cf66;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .tools-section h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .tool-group {
+            margin-bottom: 24px;
+        }
+
+        .tool-group h4 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .tool-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .tool-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(4px);
+        }
+
+        .tool-btn.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .tool-btn.success {
+            border-color: #51cf66;
+            background: #e6f9ed;
+        }
+
+        .tool-btn.error {
+            border-color: #ff6b6b;
+            background: #fff0f0;
+        }
+
+        .results-panel {
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+        }
+
+        .results-panel h4 {
+            color: #ffd43b;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .result-item {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .result-item.success {
+            border-left-color: #51cf66;
+        }
+
+        .result-item.error {
+            border-left-color: #ff6b6b;
+        }
+
+        .result-item .timestamp {
+            color: #888;
+            font-size: 10px;
+        }
+
+        .result-item .operation {
+            color: #ffd43b;
+            font-weight: bold;
+        }
+
+        .result-item .details {
+            color: #aaa;
+            margin-top: 4px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Report Modal Styles */
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .report-modal.active {
+            display: flex;
+        }
+
+        .report-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 900px;
+            max-height: 80vh;
+            width: 90%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .report-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .report-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .report-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .report-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .report-section h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .report-section pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 12px;
+            color: #555;
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .report-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 12px;
+        }
+
+        .report-status.success {
+            background: #d3f9d8;
+            color: #2b8a3e;
+        }
+
+        .report-status.local {
+            background: #fff3bf;
+            color: #e67700;
+        }
+
+        .report-status.error {
+            background: #ffe3e3;
+            color: #c92a2a;
+        }
+
+        .status {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .status.connected {
+            background: #51cf66;
+            color: white;
+        }
+
+        .status.disconnected {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .status.processing {
+            background: #ffd43b;
+            color: #333;
+        }
+
+        .example-queries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .example-query {
+            padding: 6px 12px;
+            border-radius: 16px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .example-query:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading:nth-child(1) { animation-delay: -0.32s; }
+        .loading:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        /* TODO Tracker Styles */
+        .todo-tracker {
+            background: linear-gradient(135deg, #f0f7ff 0%, #e8f4ff 100%);
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .todo-tracker h4 {
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .todo-refresh-btn {
+            padding: 4px 10px;
+            font-size: 11px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .todo-refresh-btn:hover {
+            background: #5a6fd6;
+        }
+
+        .todo-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .todo-item.executing {
+            border-left-color: #f59e0b;
+            animation: pulse-yellow 2s infinite;
+        }
+
+        .todo-item.finished {
+            border-left-color: #10b981;
+        }
+
+        .todo-item.pending {
+            border-left-color: #6b7280;
+        }
+
+        @keyframes pulse-yellow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
+        }
+
+        .todo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .todo-title {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .todo-status {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .todo-status.pending {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .todo-status.executing {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .todo-status.finished {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .todo-subtasks {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .subtask {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+        }
+
+        .subtask-checkbox {
+            width: 14px;
+            height: 14px;
+            border: 2px solid #d1d5db;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .subtask.completed .subtask-checkbox {
+            background: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+
+        .subtask.completed .subtask-text {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .todo-empty {
+            text-align: center;
+            color: #9ca3af;
+            padding: 20px;
+            font-size: 13px;
+        }
+
+        .auto-refresh-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #6b7280;
+        }
+
+        .voice-status {
+            padding: 12px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 MedForce Agent - Integrated Chat & Voice</h1>
+            <div class="patient-info">
+                <select class="patient-select" id="patientSelect">
+                    <option value="p0001">Patient P0001</option>
+                    <option value="p0002">Patient P0002</option>
+                    <option value="p0003">Patient P0003</option>
+                    <option value="pt-dbdc623a">Patient pt-dbdc623a</option>
+                    
+                </select>
+                <a href="#" class="board-link" id="boardLink" target="_blank">📊 View Board</a>
+                <span class="status disconnected" id="wsStatus">Disconnected</span>
+            </div>
+        </div>
+
+        <div class="mode-toggle">
+            <button class="mode-btn active" id="chatModeBtn">💬 Chat Mode</button>
+            <button class="mode-btn" id="voiceModeBtn">🎤 Voice Mode</button>
+        </div>
+
+        <div class="example-queries">
+            <button class="example-query" onclick="sendQuery('Tell me about the patient')">Tell me about the patient</button>
+            <button class="example-query" onclick="sendQuery('What are the latest lab results?')">Latest lab results</button>
+            <button class="example-query" onclick="sendQuery('Show medication timeline')">Medication timeline</button>
+            <button class="example-query" onclick="sendQuery('What does EASL recommend for DILI?')">EASL guidelines</button>
+            <button class="example-query" onclick="sendQuery('Create task to follow up on labs')">Create task</button>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-section">
+                <div class="messages" id="messages"></div>
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="Type your message..." />
+                    <button class="btn btn-primary" id="sendBtn" onclick="sendMessage()">Send</button>
+                    <button class="btn btn-voice" id="voiceBtn" onclick="toggleVoice()">🎤 Voice</button>
+                </div>
+            </div>
+
+            <div class="tools-section">
+                <h3>🛠️ Quick Actions</h3>
+
+                <!-- TODO Tracker Panel -->
+                <div class="todo-tracker" id="todoTracker">
+                    <h4>
+                        📋 TODO Tracker
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <label class="auto-refresh-toggle">
+                                <input type="checkbox" id="autoRefreshTodos"> Auto-refresh
+                            </label>
+                            <button class="todo-refresh-btn" onclick="refreshTodos()">🔄 Refresh</button>
+                        </div>
+                    </h4>
+                    <div class="todo-list" id="todoList">
+                        <div class="todo-empty">
+                            No active TODOs. Click "Refresh" or create a TODO to see them here.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="voice-status" id="voiceStatus" style="display: none;">
+                    <strong>Voice Status:</strong> <span id="voiceState">Inactive</span>
+                </div>
+
+                <div class="tool-group">
+                    <h4>📋 Generate Reports</h4>
+                    <button class="tool-btn" onclick="generateDiagnosis()">🔬 Generate DILI Diagnosis</button>
+                    <button class="tool-btn" onclick="generateReport()">📄 Generate Patient Report</button>
+                    <button class="tool-btn" onclick="generateLegal()">⚖️ Generate Legal Report</button>
+                </div>
+
+                <div class="tool-group">
+                    <h4>🔍 Board Navigation</h4>
+                    <button class="tool-btn" onclick="focusBoardItem('lab results')">📊 Focus Lab Results</button>
+                    <button class="tool-btn" onclick="focusBoardItem('medication timeline')">💊 Focus Medication Timeline</button>
+                    <button class="tool-btn" onclick="focusBoardItem('risk track')">⚠️ Focus Risk Track</button>
+                    <button class="tool-btn" onclick="focusBoardItem('encounters')">📝 Focus Encounters</button>
+                    <button class="tool-btn" onclick="getBoardItems()">📋 Get All Board Items</button>
+                </div>
+
+                <div class="tool-group">
+                    <h4>✅ Task Management</h4>
+                    <button class="tool-btn" onclick="createTodo('Follow up on abnormal labs')">📝 Create Lab Follow-up TODO</button>
+                    <button class="tool-btn" onclick="createTodo('Review medication interactions')">💊 Create Med Review TODO</button>
+                    <button class="tool-btn" onclick="createTodo('Schedule hepatology consult')">📅 Create Consult TODO</button>
+                </div>
+
+                <div class="tool-group">
+                    <h4>⚡ EASL Operations</h4>
+                    <button class="tool-btn" onclick="sendToEasl('What is the DILI severity?')">🩺 DILI Severity Assessment</button>
+                    <button class="tool-btn" onclick="sendToEasl('Recommend treatment based on EASL guidelines')">💡 EASL Recommendations</button>
+                    <button class="tool-btn" onclick="sendToEasl('Causality assessment for hepatotoxicity')">🔬 Causality Assessment</button>
+                </div>
+
+                <div class="tool-group">
+                    <h4>📅 Schedule & Notifications</h4>
+                    <button class="tool-btn" onclick="createSchedule()">📅 Create Schedule Panel</button>
+                    <button class="tool-btn" onclick="sendNotification('Patient labs require review')">🔔 Send Notification</button>
+                </div>
+
+                <div class="tool-group">
+                    <h4>🔬 Lab Results & Agent Results</h4>
+                    <button class="tool-btn" onclick="createLabResults()">🧪 Create Lab Results</button>
+                    <button class="tool-btn" onclick="createAgentResult()">📊 Create Agent Analysis Result</button>
+                </div>
+
+                <div class="tool-group">
+                    <h4>🎯 Patient Context Queries</h4>
+                    <button class="tool-btn" onclick="sendQuery('What are the patient lab values?')">🔬 Lab Values</button>
+                    <button class="tool-btn" onclick="sendQuery('What medications is the patient on?')">💊 Current Medications</button>
+                    <button class="tool-btn" onclick="sendQuery('What is the patient risk level?')">⚠️ Risk Assessment</button>
+                    <button class="tool-btn" onclick="sendQuery('Show key clinical events')">📋 Key Events</button>
+                    <button class="tool-btn" onclick="sendQuery('What adverse events have occurred?')">🚨 Adverse Events</button>
+                </div>
+
+                <div class="results-panel" id="resultsPanel">
+                    <h4>📊 Operation Results</h4>
+                    <div id="resultsList">
+                        <div class="result-item">
+                            <span class="timestamp">Ready</span>
+                            <div class="details">Click any tool button to see results here...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="report-modal" id="reportModal">
+        <div class="report-content">
+            <div class="report-header">
+                <h3 id="reportTitle">📄 Report</h3>
+                <button class="report-close" onclick="closeReportModal()">✕ Close</button>
+            </div>
+            <div class="report-body" id="reportBody">
+                <!-- Report content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const serverUrl = window.location.origin;
+        let currentPatient = 'p0001';
+        let chatHistory = [];
+        let ws = null;
+        let isVoiceMode = false;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let todoRefreshInterval = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updatePatient();
+            document.getElementById('patientSelect').addEventListener('change', updatePatient);
+            document.getElementById('userInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+
+            // Mode toggle
+            document.getElementById('chatModeBtn').addEventListener('click', () => setMode('chat'));
+            document.getElementById('voiceModeBtn').addEventListener('click', () => setMode('voice'));
+
+            // Initialize TODO tracker
+            initTodoTracker();
+        });
+
+        // ============================================
+        // TODO TRACKER FUNCTIONS
+        // ============================================
+        
+        function initTodoTracker() {
+            // Initial fetch only (no auto-refresh by default to reduce API calls)
+            refreshTodos();
+            
+            // Auto-refresh is disabled by default - user can enable it
+            // Toggle auto-refresh
+            document.getElementById('autoRefreshTodos').addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    startTodoAutoRefresh();
+                } else {
+                    stopTodoAutoRefresh();
+                }
+            });
+        }
+        
+        function startTodoAutoRefresh() {
+            if (todoRefreshInterval) clearInterval(todoRefreshInterval);
+            todoRefreshInterval = setInterval(refreshTodos, 10000); // Every 10 seconds
+        }
+        
+        function stopTodoAutoRefresh() {
+            if (todoRefreshInterval) {
+                clearInterval(todoRefreshInterval);
+                todoRefreshInterval = null;
+            }
+        }
+        
+        async function refreshTodos() {
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/board-items/${currentPatient}`);
+                const data = await response.json();
+                
+                if (data.status === 'success' && data.items) {
+                    // Filter for TODO items (enhanced-todo-* or regular todo items)
+                    const todos = data.items.filter(item => 
+                        (item.id && item.id.includes('todo')) ||
+                        (item.componentType === 'enhanced-todo') ||
+                        (item.componentType === 'todo') ||
+                        (item.type === 'todo')
+                    );
+                    
+                    renderTodos(todos);
+                }
+            } catch (error) {
+                console.error('Error refreshing TODOs:', error);
+            }
+        }
+        
+        function renderTodos(todos) {
+            const todoList = document.getElementById('todoList');
+            
+            if (!todos || todos.length === 0) {
+                todoList.innerHTML = `
+                    <div class="todo-empty">
+                        No active TODOs. Create a TODO or send an EASL query to see them here.
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sort by most recent first (if they have timestamps or by ID)
+            todos.sort((a, b) => {
+                const timeA = a.createdAt || a.timestamp || 0;
+                const timeB = b.createdAt || b.timestamp || 0;
+                return new Date(timeB) - new Date(timeA);
+            });
+            
+            let html = '';
+            
+            todos.forEach(todo => {
+                // Determine status
+                let status = 'pending';
+                let statusLabel = 'Pending';
+                
+                // Check for enhanced TODO structure
+                if (todo.data) {
+                    const todoData = typeof todo.data === 'string' ? JSON.parse(todo.data) : todo.data;
+                    
+                    if (todoData.status) {
+                        status = todoData.status.toLowerCase();
+                        statusLabel = todoData.status;
+                    } else if (todoData.todos && Array.isArray(todoData.todos)) {
+                        // Check subtasks
+                        const allCompleted = todoData.todos.every(t => t.completed || t.done);
+                        const anyExecuting = todoData.todos.some(t => t.executing || t.inProgress);
+                        
+                        if (allCompleted) {
+                            status = 'finished';
+                            statusLabel = 'Finished';
+                        } else if (anyExecuting) {
+                            status = 'executing';
+                            statusLabel = 'Executing';
+                        }
+                    }
+                    
+                    const title = todoData.title || todoData.description || todo.id || 'TODO';
+                    const subtasks = todoData.todos || todoData.subtasks || [];
+                    
+                    html += `
+                        <div class="todo-item ${status}">
+                            <div class="todo-header">
+                                <span class="todo-title">${escapeHtml(title)}</span>
+                                <span class="todo-status ${status}">${statusLabel}</span>
+                            </div>
+                            ${renderSubtasks(subtasks)}
+                        </div>
+                    `;
+                } else {
+                    // Simple TODO
+                    const title = todo.title || todo.description || todo.id || 'TODO';
+                    
+                    html += `
+                        <div class="todo-item ${status}">
+                            <div class="todo-header">
+                                <span class="todo-title">${escapeHtml(title)}</span>
+                                <span class="todo-status ${status}">${statusLabel}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            todoList.innerHTML = html;
+        }
+        
+        function renderSubtasks(subtasks) {
+            if (!subtasks || subtasks.length === 0) return '';
+            
+            let html = '<div class="todo-subtasks">';
+            
+            subtasks.forEach(task => {
+                const isCompleted = task.completed || task.done;
+                const isExecuting = task.executing || task.inProgress;
+                const taskClass = isCompleted ? 'completed' : (isExecuting ? 'executing' : '');
+                const taskText = task.task || task.text || task.description || task.name || 'Task';
+                
+                html += `
+                    <div class="subtask ${taskClass}">
+                        <span class="subtask-checkbox">${isCompleted ? '✓' : (isExecuting ? '⟳' : '')}</span>
+                        <span class="subtask-text">${escapeHtml(taskText)}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function setMode(mode) {
+            isVoiceMode = (mode === 'voice');
+            document.getElementById('chatModeBtn').classList.toggle('active', mode === 'chat');
+            document.getElementById('voiceModeBtn').classList.toggle('active', mode === 'voice');
+            document.getElementById('voiceStatus').style.display = isVoiceMode ? 'block' : 'none';
+            
+            if (isVoiceMode) {
+                connectVoiceWebSocket();
+            } else {
+                disconnectWebSocket();
+            }
+        }
+
+        function updatePatient() {
+            currentPatient = document.getElementById('patientSelect').value;
+            document.getElementById('boardLink').href = `https://iso-clinic-v3-481780815788.europe-west1.run.app/board/${currentPatient}`;
+            chatHistory = [];
+            document.getElementById('messages').innerHTML = '';
+            addMessage('assistant', `Switched to patient ${currentPatient}. How can I help?`);
+
+            // Update patient on server
+            fetch(`${serverUrl}/patient/switch`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ patient_id: currentPatient })
+            }).catch(e => console.error('Failed to switch patient:', e));
+
+            // Refresh TODOs for new patient
+            refreshTodos();
+
+            // Reconnect WebSocket if in voice mode
+            if (isVoiceMode) {
+                disconnectWebSocket();
+                connectVoiceWebSocket();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            input.value = '';
+            addMessage('user', message);
+            chatHistory.push({ role: 'user', content: message, patient_id: currentPatient });
+
+            try {
+                const response = await fetch(`${serverUrl}/send-chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(chatHistory)
+                });
+
+                const data = await response.json();
+                addMessage('assistant', data.response || 'No response received');
+                chatHistory.push({ role: 'assistant', content: data.response });
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('assistant', '❌ Error: ' + error.message);
+            }
+        }
+
+        function sendQuery(query) {
+            document.getElementById('userInput').value = query;
+            sendMessage();
+        }
+
+        // Report Modal Functions
+        function showReportModal(title, data) {
+            const modal = document.getElementById('reportModal');
+            const titleEl = document.getElementById('reportTitle');
+            const bodyEl = document.getElementById('reportBody');
+            
+            titleEl.textContent = title;
+            
+            let html = '';
+            
+            // Handle different data structures
+            if (data && data.data) {
+                const reportData = data.data;
+                
+                // Board response status
+                if (reportData.board_response) {
+                    const boardStatus = reportData.board_response.status || 'unknown';
+                    const statusClass = boardStatus === 'success' ? 'success' : boardStatus === 'local' ? 'local' : 'error';
+                    html += `<div class="report-section">
+                        <h4>📡 Board Status <span class="report-status ${statusClass}">${boardStatus.toUpperCase()}</span></h4>
+                        <pre>${reportData.board_response.message || 'Report processed'}</pre>
+                    </div>`;
+                }
+                
+                // Generated content
+                if (reportData.generated) {
+                    const gen = reportData.generated;
+                    
+                    // Patient info if available
+                    if (gen.patient_name || gen.patientName) {
+                        html += `<div class="report-section">
+                            <h4>👤 Patient Information</h4>
+                            <pre>${gen.patient_name || gen.patientName || 'N/A'}
+Age: ${gen.age || 'N/A'}
+Gender: ${gen.gender || 'N/A'}
+MRN: ${gen.mrn || gen.patientId || 'N/A'}</pre>
+                        </div>`;
+                    }
+                    
+                    // Summary/Assessment
+                    if (gen.summary || gen.assessment || gen.clinical_summary) {
+                        html += `<div class="report-section">
+                            <h4>📋 Summary</h4>
+                            <pre>${gen.summary || gen.assessment || gen.clinical_summary}</pre>
+                        </div>`;
+                    }
+                    
+                    // Diagnosis
+                    if (gen.diagnosis || gen.primary_diagnosis || gen.differential_diagnosis) {
+                        html += `<div class="report-section">
+                            <h4>🔬 Diagnosis</h4>
+                            <pre>${JSON.stringify(gen.diagnosis || gen.primary_diagnosis || gen.differential_diagnosis, null, 2)}</pre>
+                        </div>`;
+                    }
+                    
+                    // RUCAM Score if DILI report
+                    if (gen.rucam_score || gen.rucam || gen.causality_assessment) {
+                        html += `<div class="report-section">
+                            <h4>⚖️ RUCAM/Causality Assessment</h4>
+                            <pre>${JSON.stringify(gen.rucam_score || gen.rucam || gen.causality_assessment, null, 2)}</pre>
+                        </div>`;
+                    }
+                    
+                    // Recommendations
+                    if (gen.recommendations || gen.treatment_recommendations || gen.plan) {
+                        html += `<div class="report-section">
+                            <h4>💡 Recommendations</h4>
+                            <pre>${JSON.stringify(gen.recommendations || gen.treatment_recommendations || gen.plan, null, 2)}</pre>
+                        </div>`;
+                    }
+                    
+                    // Full raw data
+                    html += `<div class="report-section">
+                        <h4>📄 Full Report Data</h4>
+                        <pre>${JSON.stringify(gen, null, 2)}</pre>
+                    </div>`;
+                }
+            } else {
+                html = `<div class="report-section">
+                    <h4>📄 Response</h4>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                </div>`;
+            }
+            
+            bodyEl.innerHTML = html;
+            modal.classList.add('active');
+        }
+        
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.remove('active');
+        }
+        
+        // EASL Query Result Modal
+        function showEaslModal(title, data) {
+            const modal = document.getElementById('reportModal');
+            const titleEl = document.getElementById('reportTitle');
+            const bodyEl = document.getElementById('reportBody');
+            
+            titleEl.textContent = title;
+            
+            let html = '';
+            
+            // EASL Response Status
+            const easlResp = data?.easl_response || data;
+            const status = easlResp?.status || 'unknown';
+            const statusClass = status === 'success' ? 'success' : status === 'error' ? 'error' : 'local';
+            
+            html += `<div class="report-section">
+                <h4>📡 API Response <span class="report-status ${statusClass}">${status.toUpperCase()}</span></h4>
+                <pre>${easlResp?.message || JSON.stringify(easlResp, null, 2)}</pre>
+            </div>`;
+            
+            // Context Generated
+            if (data?.context_generated) {
+                html += `<div class="report-section">
+                    <h4>📚 Context Generated</h4>
+                    <pre style="max-height: 200px; overflow-y: auto;">${data.context_generated}</pre>
+                </div>`;
+            }
+            
+            // Question Generated
+            if (data?.question_generated) {
+                html += `<div class="report-section">
+                    <h4>❓ Question Sent to EASL</h4>
+                    <pre>${data.question_generated}</pre>
+                </div>`;
+            }
+            
+            // Focused Object
+            if (data?.focused_object) {
+                html += `<div class="report-section">
+                    <h4>🎯 Focused Object ID</h4>
+                    <pre>${data.focused_object}</pre>
+                </div>`;
+            }
+            
+            // Query Sent (from easl_response)
+            if (easlResp?.query_sent) {
+                html += `<div class="report-section">
+                    <h4>📤 Query Payload</h4>
+                    <pre style="max-height: 150px; overflow-y: auto;">${easlResp.query_sent}</pre>
+                </div>`;
+            }
+            
+            // API Response details
+            if (easlResp?.api_response) {
+                html += `<div class="report-section">
+                    <h4>🌐 Board API Response</h4>
+                    <pre>${JSON.stringify(easlResp.api_response, null, 2)}</pre>
+                </div>`;
+            }
+            
+            // Full Data
+            html += `<div class="report-section">
+                <h4>📋 Full Response Data</h4>
+                <pre style="max-height: 200px; overflow-y: auto;">${JSON.stringify(data, null, 2)}</pre>
+            </div>`;
+            
+            bodyEl.innerHTML = html;
+            modal.classList.add('active');
+        }
+        
+        // Operation Result Modal (Schedule/Notification)
+        function showOperationModal(title, data) {
+            const modal = document.getElementById('reportModal');
+            const titleEl = document.getElementById('reportTitle');
+            const bodyEl = document.getElementById('reportBody');
+            
+            titleEl.textContent = title;
+            
+            let html = '';
+            
+            // Status
+            const status = data?.status || 'unknown';
+            const statusClass = status === 'success' ? 'success' : status === 'error' ? 'error' : 'local';
+            
+            html += `<div class="report-section">
+                <h4>📡 Operation Status <span class="report-status ${statusClass}">${status.toUpperCase()}</span></h4>
+                <pre>${data?.message || 'Operation completed'}</pre>
+            </div>`;
+            
+            // Payload Sent
+            if (data?.payload_sent) {
+                html += `<div class="report-section">
+                    <h4>📤 Payload Sent to Board</h4>
+                    <pre>${JSON.stringify(data.payload_sent, null, 2)}</pre>
+                </div>`;
+            }
+            
+            // API Response
+            if (data?.api_response) {
+                html += `<div class="report-section">
+                    <h4>🌐 Board API Response</h4>
+                    <pre>${JSON.stringify(data.api_response, null, 2)}</pre>
+                </div>`;
+            }
+            
+            // Full Data
+            html += `<div class="report-section">
+                <h4>📋 Full Response Data</h4>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            </div>`;
+            
+            bodyEl.innerHTML = html;
+            modal.classList.add('active');
+        }
+        
+        // Close modal on outside click
+        document.getElementById('reportModal').addEventListener('click', (e) => {
+            if (e.target.id === 'reportModal') closeReportModal();
+        });
+
+        // Results logging function
+        function logResult(operation, status, details, data = null) {
+            const resultsList = document.getElementById('resultsList');
+            const timestamp = new Date().toLocaleTimeString();
+            const statusClass = status === 'success' ? 'success' : status === 'error' ? 'error' : '';
+            
+            let detailsHtml = details;
+            if (data) {
+                try {
+                    detailsHtml += '\n' + JSON.stringify(data, null, 2).substring(0, 500);
+                    if (JSON.stringify(data).length > 500) detailsHtml += '...';
+                } catch (e) {}
+            }
+            
+            const resultItem = document.createElement('div');
+            resultItem.className = `result-item ${statusClass}`;
+            resultItem.innerHTML = `
+                <span class="timestamp">${timestamp}</span>
+                <span class="operation"> ${operation}</span>
+                <div class="details">${detailsHtml}</div>
+            `;
+            
+            resultsList.insertBefore(resultItem, resultsList.firstChild);
+            
+            // Keep only last 20 results
+            while (resultsList.children.length > 20) {
+                resultsList.removeChild(resultsList.lastChild);
+            }
+        }
+
+        async function generateDiagnosis() {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', '🔬 Generating DILI diagnosis...');
+            logResult('🔬 DILI Diagnosis', 'pending', 'Generating...');
+            
+            try {
+                const response = await fetch(`${serverUrl}/generate_diagnosis`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: currentPatient })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    btn.classList.remove('loading');
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    addMessage('assistant', '✅ DILI diagnosis generated! Click to view report.');
+                    logResult('🔬 DILI Diagnosis', 'success', `Generated for patient ${currentPatient}`, data);
+                    // Show report modal
+                    showReportModal('🔬 DILI Diagnosis Report', data);
+                    // Refresh TODO tracker (reports create animated TODOs)
+                    setTimeout(refreshTodos, 500);
+                } else {
+                    throw new Error(data.detail || 'Failed to generate');
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error generating diagnosis: ' + error.message);
+                logResult('🔬 DILI Diagnosis', 'error', error.message);
+            }
+        }
+
+        async function generateReport() {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', '📄 Generating patient report...');
+            logResult('📄 Patient Report', 'pending', 'Generating...');
+            
+            try {
+                const response = await fetch(`${serverUrl}/generate_report`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: currentPatient })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    btn.classList.remove('loading');
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    addMessage('assistant', '✅ Patient report generated! Click to view report.');
+                    logResult('📄 Patient Report', 'success', `Generated for patient ${currentPatient}`, data);
+                    // Show report modal
+                    showReportModal('📄 Patient Report', data);
+                    // Refresh TODO tracker (reports create animated TODOs)
+                    setTimeout(refreshTodos, 500);
+                } else {
+                    throw new Error(data.detail || 'Failed to generate');
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error generating report: ' + error.message);
+                logResult('📄 Patient Report', 'error', error.message);
+            }
+        }
+
+        async function generateLegal() {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', '⚖️ Generating legal report...');
+            logResult('⚖️ Legal Report', 'pending', 'Generating...');
+            
+            try {
+                const response = await fetch(`${serverUrl}/generate_legal`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: currentPatient })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    btn.classList.remove('loading');
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    addMessage('assistant', '✅ Legal report generated! Click to view report.');
+                    logResult('⚖️ Legal Report', 'success', `Generated for patient ${currentPatient}`, data);
+                    // Show report modal
+                    showReportModal('⚖️ Legal Report', data);
+                    // Refresh TODO tracker (reports create animated TODOs)
+                    setTimeout(refreshTodos, 500);
+                } else {
+                    throw new Error(data.detail || 'Failed to generate');
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error generating legal report: ' + error.message);
+                logResult('⚖️ Legal Report', 'error', error.message);
+            }
+        }
+
+        // ============================================
+        // CANVAS TOOL OPERATIONS
+        // ============================================
+
+        async function focusBoardItem(query) {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', `🔍 Focusing on: ${query}...`);
+            logResult('🔍 Focus Board Item', 'pending', `Focusing on: ${query}`);
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/focus`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: currentPatient, query: query })
+                });
+                const data = await response.json();
+                btn.classList.remove('loading');
+                
+                if (data.status === 'success') {
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    addMessage('assistant', `✅ Focused on ${data.object_id || query}`);
+                    logResult('🔍 Focus Board Item', 'success', `Focused on: ${data.object_id || query}`, data);
+                } else {
+                    btn.classList.add('error');
+                    setTimeout(() => btn.classList.remove('error'), 3000);
+                    addMessage('assistant', '⚠️ ' + (data.message || 'Could not focus item'));
+                    logResult('🔍 Focus Board Item', 'error', data.message || 'Could not focus item');
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error focusing: ' + error.message);
+                logResult('🔍 Focus Board Item', 'error', error.message);
+            }
+        }
+
+        async function getBoardItems() {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', '📋 Loading board items...');
+            logResult('📋 Get Board Items', 'pending', 'Loading...');
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/board-items/${currentPatient}`);
+                const data = await response.json();
+                btn.classList.remove('loading');
+                
+                if (data.status === 'success') {
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    
+                    // Build component summary
+                    const componentTypes = {};
+                    data.items.forEach(item => {
+                        const type = item.componentType || item.type || 'unknown';
+                        componentTypes[type] = (componentTypes[type] || 0) + 1;
+                    });
+                    const summary = Object.entries(componentTypes).map(([k,v]) => `${k}: ${v}`).join(', ');
+                    
+                    addMessage('assistant', `✅ Found ${data.count} board items: ${summary}`);
+                    logResult('📋 Get Board Items', 'success', `Found ${data.count} items\n${summary}`, {count: data.count, types: componentTypes});
+                    console.log('Board Items:', data.items);
+                } else {
+                    btn.classList.add('error');
+                    setTimeout(() => btn.classList.remove('error'), 3000);
+                    addMessage('assistant', '⚠️ ' + (data.message || 'Could not load items'));
+                    logResult('📋 Get Board Items', 'error', data.message || 'Could not load items');
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error loading board items: ' + error.message);
+                logResult('📋 Get Board Items', 'error', error.message);
+            }
+        }
+
+        async function createTodo(description) {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', `✅ Creating TODO: ${description}...`);
+            logResult('✅ Create TODO', 'pending', `Creating: ${description}`);
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/create-todo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: currentPatient, description: description })
+                });
+                const data = await response.json();
+                btn.classList.remove('loading');
+                
+                if (data.status === 'success') {
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    const todoTitle = data.data?.title || description;
+                    const todoCount = data.data?.todos?.length || 0;
+                    addMessage('assistant', `✅ TODO "${todoTitle}" created with ${todoCount} tasks!`);
+                    logResult('✅ Create TODO', 'success', `Created: ${todoTitle}\nTasks: ${todoCount}`, data.data);
+                    // Refresh TODO tracker immediately
+                    setTimeout(refreshTodos, 500);
+                } else {
+                    btn.classList.add('error');
+                    setTimeout(() => btn.classList.remove('error'), 3000);
+                    addMessage('assistant', '⚠️ ' + (data.message || 'Could not create TODO'));
+                    logResult('✅ Create TODO', 'error', data.message || 'Could not create TODO');
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error creating TODO: ' + error.message);
+                logResult('✅ Create TODO', 'error', error.message);
+            }
+        }
+
+        async function sendToEasl(question) {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', `⚡ Sending to EASL: ${question}...`);
+            logResult('⚡ Send to EASL', 'pending', `Question: ${question}`);
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/send-to-easl`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: currentPatient, question: question })
+                });
+                const data = await response.json();
+                btn.classList.remove('loading');
+                
+                if (data.status === 'success') {
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    const easlStatus = data.data?.easl_response?.status || 'unknown';
+                    addMessage('assistant', `✅ EASL query processed! Status: ${easlStatus}`);
+                    logResult('⚡ Send to EASL', 'success', `Question sent: ${question}`, data.data);
+                    // Show detailed modal
+                    showEaslModal('⚡ EASL Query Result', data.data);
+                    // Refresh TODO tracker (EASL creates animated TODOs)
+                    setTimeout(refreshTodos, 500);
+                } else {
+                    btn.classList.add('error');
+                    setTimeout(() => btn.classList.remove('error'), 3000);
+                    addMessage('assistant', '⚠️ ' + (data.message || 'Could not send to EASL'));
+                    logResult('⚡ Send to EASL', 'error', data.message || 'Could not send to EASL');
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error sending to EASL: ' + error.message);
+                logResult('⚡ Send to EASL', 'error', error.message);
+            }
+        }
+
+        async function createSchedule() {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', '📅 Creating schedule panel...');
+            logResult('📅 Create Schedule', 'pending', 'Creating schedule panel...');
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/create-schedule`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        patient_id: currentPatient,
+                        schedulingContext: 'Patient follow-up appointments for liver function monitoring and medication compliance review'
+                    })
+                });
+                const data = await response.json();
+                btn.classList.remove('loading');
+                
+                const opStatus = data.data?.status || data.status;
+                if (opStatus === 'success') {
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    addMessage('assistant', '✅ Schedule panel created on board!');
+                    logResult('📅 Create Schedule', 'success', 'Schedule panel created', data.data);
+                    showOperationModal('📅 Schedule Created', data.data);
+                } else {
+                    btn.classList.add('error');
+                    setTimeout(() => btn.classList.remove('error'), 3000);
+                    const msg = data.data?.message || data.message || 'Schedule saved locally';
+                    addMessage('assistant', '⚠️ ' + msg);
+                    logResult('📅 Create Schedule', 'local', msg, data.data);
+                    showOperationModal('📅 Schedule Result', data.data);
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error creating schedule: ' + error.message);
+                logResult('📅 Create Schedule', 'error', error.message);
+            }
+        }
+
+        async function sendNotification(message) {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', `🔔 Sending notification: ${message}...`);
+            logResult('🔔 Send Notification', 'pending', `Message: ${message}`);
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/send-notification`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: currentPatient, message: message })
+                });
+                const data = await response.json();
+                btn.classList.remove('loading');
+                
+                const opStatus = data.data?.status || data.status;
+                if (opStatus === 'success') {
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    addMessage('assistant', '✅ Notification sent to care team!');
+                    logResult('🔔 Send Notification', 'success', `Message sent: ${message}`, data.data);
+                    showOperationModal('🔔 Notification Sent', data.data);
+                } else {
+                    btn.classList.add('error');
+                    setTimeout(() => btn.classList.remove('error'), 3000);
+                    const msg = data.data?.message || data.message || 'Notification saved locally';
+                    addMessage('assistant', '⚠️ ' + msg);
+                    logResult('🔔 Send Notification', 'local', msg, data.data);
+                    showOperationModal('🔔 Notification Result', data.data);
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error sending notification: ' + error.message);
+                logResult('🔔 Send Notification', 'error', error.message);
+            }
+        }
+
+        async function createLabResults() {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', '🧪 Creating lab results on board...');
+            logResult('🧪 Create Lab Results', 'pending', 'Creating lab results...');
+            
+            // Sample lab results payload
+            const labPayload = {
+                patient_id: currentPatient,
+                labResults: [
+                    { name: "ALT", value: 110, unit: "U/L", range: "7-56", status: "high" },
+                    { name: "AST", value: 150, unit: "U/L", range: "10-40", status: "high" },
+                    { name: "Total Bilirubin", value: 6.8, unit: "mg/dL", range: "0.2-1.2", status: "high" },
+                    { name: "Albumin", value: 2.2, unit: "g/dL", range: "3.4-5.4", status: "low" },
+                    { name: "INR", value: 2.1, unit: "", range: "0.9-1.1", status: "high" }
+                ],
+                date: new Date().toISOString().split('T')[0],
+                source: "UI Test - Lab Results Panel"
+            };
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/create-lab-results`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(labPayload)
+                });
+                const data = await response.json();
+                btn.classList.remove('loading');
+                
+                if (data.status === 'success') {
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    addMessage('assistant', '✅ Lab results created on board! Check the board for the new lab panel.');
+                    logResult('🧪 Create Lab Results', 'success', '5 lab results added', data.data);
+                    showLabResultsModal('🧪 Lab Results Created', labPayload, data.data);
+                } else {
+                    btn.classList.add('error');
+                    setTimeout(() => btn.classList.remove('error'), 3000);
+                    addMessage('assistant', '⚠️ Lab results may not have been sent to board: ' + (data.message || 'Unknown error'));
+                    logResult('🧪 Create Lab Results', 'error', data.message || 'Failed', data);
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error creating lab results: ' + error.message);
+                logResult('🧪 Create Lab Results', 'error', error.message);
+            }
+        }
+
+        async function createAgentResult() {
+            const btn = event.target;
+            btn.classList.add('loading');
+            addMessage('assistant', '📊 Creating agent analysis result on board...');
+            logResult('📊 Create Agent Result', 'pending', 'Creating agent analysis...');
+            
+            // Sample agent result payload
+            const agentPayload = {
+                patient_id: currentPatient,
+                title: `Clinical Analysis - ${new Date().toLocaleTimeString()}`,
+                content: `## Clinical Analysis Summary
+
+**Patient:** ${currentPatient.toUpperCase()}  
+**Analysis Date:** ${new Date().toLocaleDateString()}  
+**Generated by:** Clinical Agent (UI Test)
+
+### Key Findings
+
+1. **Liver Function Tests**
+   - ALT: 110 U/L (↑ elevated)
+   - AST: 150 U/L (↑ elevated)
+   - Total Bilirubin: 6.8 mg/dL (↑↑ significantly elevated)
+   - Albumin: 2.2 g/dL (↓ low)
+   - INR: 2.1 (↑ elevated)
+
+2. **Clinical Impression**
+   - Evidence of hepatocellular injury
+   - Signs of synthetic dysfunction (low albumin, elevated INR)
+   - Consistent with decompensated liver disease
+
+3. **Recommendations**
+   - Continue monitoring liver function tests
+   - Consider hepatology consultation
+   - Review medication compliance
+
+---
+*This analysis was generated via UI test at ${new Date().toISOString()}*`,
+                agentName: "Clinical Agent"
+            };
+            
+            try {
+                const response = await fetch(`${serverUrl}/api/canvas/create-agent-result`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(agentPayload)
+                });
+                const data = await response.json();
+                btn.classList.remove('loading');
+                
+                if (data.status === 'success') {
+                    btn.classList.add('success');
+                    setTimeout(() => btn.classList.remove('success'), 3000);
+                    addMessage('assistant', '✅ Agent analysis result created on board! Check the board for the new analysis card.');
+                    logResult('📊 Create Agent Result', 'success', 'Analysis created', data.data);
+                    showAgentResultModal('📊 Agent Analysis Created', agentPayload, data.data);
+                } else {
+                    btn.classList.add('error');
+                    setTimeout(() => btn.classList.remove('error'), 3000);
+                    addMessage('assistant', '⚠️ Agent result may not have been sent to board: ' + (data.message || 'Unknown error'));
+                    logResult('📊 Create Agent Result', 'error', data.message || 'Failed', data);
+                }
+            } catch (error) {
+                btn.classList.remove('loading');
+                btn.classList.add('error');
+                setTimeout(() => btn.classList.remove('error'), 3000);
+                addMessage('assistant', '❌ Error creating agent result: ' + error.message);
+                logResult('📊 Create Agent Result', 'error', error.message);
+            }
+        }
+
+        function showLabResultsModal(title, payload, response) {
+            const modal = document.getElementById('reportModal');
+            document.getElementById('reportTitle').textContent = title;
+            
+            let labsHtml = '<table style="width:100%; border-collapse: collapse; margin: 16px 0;">';
+            labsHtml += '<tr style="background: #f0f4ff;"><th style="padding: 8px; text-align: left;">Test</th><th style="padding: 8px;">Value</th><th style="padding: 8px;">Range</th><th style="padding: 8px;">Status</th></tr>';
+            
+            for (const lab of payload.labResults) {
+                const statusColor = lab.status === 'high' ? '#e74c3c' : lab.status === 'low' ? '#3498db' : '#27ae60';
+                labsHtml += `<tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee;">${lab.name}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${lab.value} ${lab.unit}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${lab.range}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;"><span style="background: ${statusColor}; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px;">${lab.status.toUpperCase()}</span></td>
+                </tr>`;
+            }
+            labsHtml += '</table>';
+            
+            document.getElementById('reportBody').innerHTML = `
+                <div class="report-section">
+                    <h4>📋 Lab Results Sent to Board</h4>
+                    ${labsHtml}
+                </div>
+                <div class="report-section">
+                    <h4>🔗 Board API Response</h4>
+                    <pre>${JSON.stringify(response, null, 2)}</pre>
+                </div>
+                <div class="report-section" style="background: #e8f5e9; border-left-color: #4caf50;">
+                    <h4>✅ What to Check on Board</h4>
+                    <ul>
+                        <li>Look for a new <strong>LabTable</strong> or <strong>LabChart</strong> component</li>
+                        <li>The lab values should appear in the patient's data zone</li>
+                        <li>Values should be color-coded based on status</li>
+                    </ul>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function showAgentResultModal(title, payload, response) {
+            const modal = document.getElementById('reportModal');
+            document.getElementById('reportTitle').textContent = title;
+            
+            document.getElementById('reportBody').innerHTML = `
+                <div class="report-section">
+                    <h4>📝 Agent Analysis Content</h4>
+                    <div style="background: white; padding: 16px; border-radius: 8px; font-family: -apple-system, sans-serif;">
+                        ${payload.content.replace(/\n/g, '<br>').replace(/##/g, '<h3 style="margin: 16px 0 8px;">').replace(/#/g, '<h2>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')}
+                    </div>
+                </div>
+                <div class="report-section">
+                    <h4>🔗 Board API Response</h4>
+                    <pre>${JSON.stringify(response, null, 2)}</pre>
+                </div>
+                <div class="report-section" style="background: #e8f5e9; border-left-color: #4caf50;">
+                    <h4>✅ What to Check on Board</h4>
+                    <ul>
+                        <li>Look for a new <strong>Agent Result</strong> card on the board</li>
+                        <li>The markdown content should render as formatted text</li>
+                        <li>The card title should show: "${payload.title}"</li>
+                        <li>Agent name should display: "${payload.agentName}"</li>
+                    </ul>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function addMessage(role, content) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.textContent = content;
+            
+            messageDiv.appendChild(bubble);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Voice WebSocket Functions - Using two-phase connection for instant access
+        let voiceSessionId = null;
+        let sessionPollInterval = null;
+
+        async function connectVoiceWebSocket() {
+            addMessage('system', '🔄 Starting voice connection (this may take up to 90 seconds)...');
+            document.getElementById('wsStatus').textContent = 'Connecting...';
+            document.getElementById('wsStatus').className = 'status';
+            
+            try {
+                // Phase 1: Start background connection
+                const startResponse = await fetch(`${serverUrl}/api/voice/start/${currentPatient}`, {
+                    method: 'POST'
+                });
+                
+                if (!startResponse.ok) {
+                    throw new Error(`Failed to start voice session: ${startResponse.status}`);
+                }
+                
+                const sessionData = await startResponse.json();
+                voiceSessionId = sessionData.session_id;
+                
+                addMessage('system', `ℹ️ Voice session ${voiceSessionId} started. Connecting to Gemini...`);
+                
+                // Phase 2: Poll for status until ready
+                let pollCount = 0;
+                const maxPolls = 120; // 2 minutes of polling
+                
+                sessionPollInterval = setInterval(async () => {
+                    pollCount++;
+                    
+                    try {
+                        const statusResponse = await fetch(`${serverUrl}/api/voice/status/${voiceSessionId}`);
+                        const status = await statusResponse.json();
+                        
+                        if (status.status === 'ready') {
+                            clearInterval(sessionPollInterval);
+                            addMessage('system', `✅ Gemini connected in ${status.connection_time_seconds}s!`);
+                            
+                            // Phase 3: Connect WebSocket to pre-connected session
+                            connectToReadySession(voiceSessionId);
+                        } else if (status.status === 'error') {
+                            clearInterval(sessionPollInterval);
+                            addMessage('system', `❌ Connection failed: ${status.error_message}`);
+                            document.getElementById('wsStatus').textContent = 'Error';
+                            document.getElementById('wsStatus').className = 'status disconnected';
+                        } else if (status.status === 'connecting') {
+                            document.getElementById('wsStatus').textContent = `Connecting (${pollCount}s)...`;
+                        }
+                        
+                        if (pollCount >= maxPolls) {
+                            clearInterval(sessionPollInterval);
+                            addMessage('system', '❌ Connection timeout (2 minutes)');
+                            document.getElementById('wsStatus').textContent = 'Timeout';
+                            document.getElementById('wsStatus').className = 'status disconnected';
+                        }
+                    } catch (e) {
+                        console.error('Poll error:', e);
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                addMessage('system', `❌ Failed to start voice: ${error.message}`);
+                document.getElementById('wsStatus').textContent = 'Error';
+                document.getElementById('wsStatus').className = 'status disconnected';
+            }
+        }
+        
+        function connectToReadySession(sessionId) {
+            // Connect to the pre-connected session WebSocket
+            const wsUrl = `${serverUrl.replace('http', 'ws')}/ws/voice-session/${sessionId}`;
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                document.getElementById('wsStatus').textContent = 'Connected';
+                document.getElementById('wsStatus').className = 'status connected';
+                addMessage('assistant', '🎤 Voice mode activated. Click the voice button to start speaking.');
+            };
+
+            ws.onmessage = (event) => {
+                // Handle JSON messages (status, tool calls, etc.)
+                if (typeof event.data === 'string') {
+                    try {
+                        const data = JSON.parse(event.data);
+                        
+                        if (data.type === 'status') {
+                            // Display status message
+                            addMessage('system', `ℹ️ ${data.message}`);
+                            console.log('Status:', data);
+                        } else if (data.type === 'stop_confirmed') {
+                            // Server confirmed stop - clear audio immediately
+                            clearAudioQueue();
+                            console.log('Stop confirmed by server:', data);
+                        } else if (data.type === 'tool_call') {
+                            // Display tool execution
+                            const emoji = data.status === 'executing' ? '🔧' :
+                                         data.status === 'completed' ? '✅' : '❌';
+                            const msg = data.status === 'executing' ? `${emoji} Executing ${data.tool}...` :
+                                       data.status === 'completed' ? `${emoji} ${data.tool} completed` :
+                                       `${emoji} ${data.tool} failed: ${data.result}`;
+                            addMessage('system', msg);
+                            console.log('Tool call:', data);
+                        } else if (data.type === 'error') {
+                            addMessage('system', `❌ ${data.message}`);
+                            console.error('Error:', data);
+                        }
+                    } catch (e) {
+                        // Not JSON, ignore
+                        console.log('Non-JSON message received:', event.data);
+                    }
+                }
+                // Gemini Live returns binary audio data (PCM)
+                else if (event.data instanceof Blob) {
+                    playAudioBlob(event.data);
+                }
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                document.getElementById('wsStatus').textContent = 'Error';
+                document.getElementById('wsStatus').className = 'status disconnected';
+            };
+
+            ws.onclose = () => {
+                document.getElementById('wsStatus').textContent = 'Disconnected';
+                document.getElementById('wsStatus').className = 'status disconnected';
+            };
+        }
+        
+        // Legacy function for direct connection (kept for backward compatibility)
+        function connectVoiceWebSocketDirect() {
+            const wsUrl = `${serverUrl.replace('http', 'ws')}/ws/voice/${currentPatient}`;
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                document.getElementById('wsStatus').textContent = 'Connected';
+                document.getElementById('wsStatus').className = 'status connected';
+                addMessage('assistant', '🎤 Voice mode activated. Click the voice button to start speaking.');
+            };
+
+            ws.onmessage = (event) => {
+                // Handle JSON messages (status, tool calls, etc.)
+                if (typeof event.data === 'string') {
+                    try {
+                        const data = JSON.parse(event.data);
+                        
+                        if (data.type === 'status') {
+                            // Display status message
+                            addMessage('system', `ℹ️ ${data.message}`);
+                            console.log('Status:', data);
+                        } else if (data.type === 'stop_confirmed') {
+                            // Server confirmed stop - clear audio immediately
+                            clearAudioQueue();
+                            console.log('Stop confirmed by server:', data);
+                        } else if (data.type === 'tool_call') {
+                            // Display tool execution
+                            const emoji = data.status === 'executing' ? '🔧' :
+                                         data.status === 'completed' ? '✅' : '❌';
+                            const msg = data.status === 'executing' ? `${emoji} Executing ${data.tool}...` :
+                                       data.status === 'completed' ? `${emoji} ${data.tool} completed` :
+                                       `${emoji} ${data.tool} failed: ${data.result}`;
+                            addMessage('system', msg);
+                            console.log('Tool call:', data);
+                        } else if (data.type === 'error') {
+                            addMessage('system', `❌ ${data.message}`);
+                            console.error('Error:', data);
+                        }
+                    } catch (e) {
+                        // Not JSON, ignore
+                        console.log('Non-JSON message received:', event.data);
+                    }
+                }
+                // Gemini Live returns binary audio data (PCM)
+                else if (event.data instanceof Blob) {
+                    playAudioBlob(event.data);
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                document.getElementById('wsStatus').textContent = 'Error';
+                document.getElementById('wsStatus').className = 'status disconnected';
+            };
+
+            ws.onclose = () => {
+                document.getElementById('wsStatus').textContent = 'Disconnected';
+                document.getElementById('wsStatus').className = 'status disconnected';
+            };
+        }
+
+        function disconnectWebSocket() {
+            // Clear any polling interval
+            if (sessionPollInterval) {
+                clearInterval(sessionPollInterval);
+                sessionPollInterval = null;
+            }
+            
+            // Close the voice session on server
+            if (voiceSessionId) {
+                fetch(`${serverUrl}/api/voice/session/${voiceSessionId}`, {
+                    method: 'DELETE'
+                }).catch(console.error);
+                voiceSessionId = null;
+            }
+            
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        }
+
+        async function toggleVoice() {
+            if (!isVoiceMode) {
+                alert('Please switch to Voice Mode first');
+                return;
+            }
+
+            if (!isRecording) {
+                await startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        let audioContext = null;
+        let sourceNode = null;
+        let streamProcessorNode = null;
+
+        async function startRecording() {
+            try {
+                // Initialize Web Audio API
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                    sampleRate: 16000
+                });
+
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: {
+                        channelCount: 1,
+                        sampleRate: 16000,
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: true
+                    } 
+                });
+
+                sourceNode = audioContext.createMediaStreamSource(stream);
+                
+                // Create a ScriptProcessor to capture audio chunks in real-time
+                const bufferSize = 4096;
+                streamProcessorNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
+                
+                streamProcessorNode.onaudioprocess = (e) => {
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        const inputData = e.inputBuffer.getChannelData(0);
+                        // Convert Float32Array to Int16Array (PCM 16-bit)
+                        const pcmData = new Int16Array(inputData.length);
+                        for (let i = 0; i < inputData.length; i++) {
+                            const s = Math.max(-1, Math.min(1, inputData[i]));
+                            pcmData[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                        }
+                        // Send raw PCM bytes to WebSocket
+                        // Gemini's built-in interruption detection will handle stop
+                        ws.send(pcmData.buffer);
+                    }
+                };
+
+                sourceNode.connect(streamProcessorNode);
+                streamProcessorNode.connect(audioContext.destination);
+
+                isRecording = true;
+                document.getElementById('voiceBtn').classList.add('active');
+                document.getElementById('voiceBtn').textContent = '⏹️ Stop';
+                document.getElementById('voiceState').textContent = 'Listening...';
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                alert('Could not access microphone. Please check permissions.');
+            }
+        }
+
+        function stopRecording() {
+            // Note: Voice-activated stop works by speaking to Gemini (e.g., saying "stop")
+            // The button just stops the microphone and clears local audio playback
+
+            // Clear audio playback
+            clearAudioQueue();
+
+            if (streamProcessorNode) {
+                streamProcessorNode.disconnect();
+                streamProcessorNode = null;
+            }
+            if (sourceNode) {
+                sourceNode.disconnect();
+                sourceNode.mediaStream.getTracks().forEach(track => track.stop());
+                sourceNode = null;
+            }
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+
+            isRecording = false;
+            document.getElementById('voiceBtn').classList.remove('active');
+            document.getElementById('voiceBtn').textContent = '🎤 Voice';
+            document.getElementById('voiceState').textContent = 'Ready';
+        }
+
+        // Audio playback for Gemini Live PCM audio - queue-based sequential with buffering
+        const audioQueue = [];
+        let isProcessingAudio = false;
+        let playbackContext = null;
+        let currentSource = null;
+        let nextStartTime = 0;
+
+        async function playAudioBlob(blob) {
+            audioQueue.push(blob);
+            if (!isProcessingAudio) {
+                processNextAudioChunk();
+            }
+        }
+
+        async function processNextAudioChunk() {
+            if (audioQueue.length === 0) {
+                isProcessingAudio = false;
+                nextStartTime = 0;
+                document.getElementById('voiceState').textContent = 'Ready';
+                return;
+            }
+
+            isProcessingAudio = true;
+            document.getElementById('voiceState').textContent = 'Speaking...';
+
+            try {
+                // Create or resume context - CRITICAL: Use 24kHz for Gemini Live API
+                if (!playbackContext || playbackContext.state === 'closed') {
+                    playbackContext = new (window.AudioContext || window.webkitAudioContext)({
+                        sampleRate: 24000,
+                        latencyHint: 'interactive'  // Low latency for voice
+                    });
+                    nextStartTime = 0;
+                    // CRITICAL: Log actual sample rate - browser might not support exact 24kHz
+                    console.log('🎵 Created AudioContext - Requested: 24kHz, Actual:', playbackContext.sampleRate);
+                    if (playbackContext.sampleRate !== 24000) {
+                        console.warn('⚠️ Browser using different sample rate than requested! This may cause pitch issues.');
+                        console.warn('⚠️ Requested: 24000 Hz, Browser using:', playbackContext.sampleRate, 'Hz');
+                    }
+                }
+
+                if (playbackContext.state === 'suspended') {
+                    await playbackContext.resume();
+                }
+
+                const blob = audioQueue.shift();
+                const arrayBuffer = await blob.arrayBuffer();
+
+                // CRITICAL: Gemini Live API sends PCM 16-bit mono at 24kHz
+                const pcmData = new Int16Array(arrayBuffer);
+
+                // Verify data size is reasonable
+                if (pcmData.length === 0) {
+                    console.warn('Empty audio chunk received, skipping');
+                    processNextAudioChunk();
+                    return;
+                }
+
+                // IMPORTANT: createBuffer's sampleRate parameter tells WebAudio what rate the SOURCE data is
+                // The context will automatically resample to its own rate (usually 48kHz) when playing
+                // So we MUST use 24000 here since that's what Gemini sends
+                const GEMINI_SAMPLE_RATE = 24000;
+                const audioBuffer = playbackContext.createBuffer(1, pcmData.length, GEMINI_SAMPLE_RATE);
+                const channelData = audioBuffer.getChannelData(0);
+
+                // Convert PCM 16-bit signed integer to Float32 in range [-1.0, 1.0]
+                // Division by 32768.0 (2^15) normalizes 16-bit signed values
+                const INT16_MAX = 32768.0;
+                for (let i = 0; i < pcmData.length; i++) {
+                    // Clamp to prevent clipping from any out-of-range values
+                    const normalized = pcmData[i] / INT16_MAX;
+                    channelData[i] = Math.max(-1.0, Math.min(1.0, normalized));
+                }
+
+                // Debug: Log first chunk details to verify format
+                if (audioQueue.length === 0) {  // Log only when processing the first chunk
+                    const durationSec = audioBuffer.duration;
+                    console.log(`🎵 Audio chunk: ${pcmData.length} samples, ${durationSec.toFixed(3)}s duration, ${GEMINI_SAMPLE_RATE}Hz → ${playbackContext.sampleRate}Hz`);
+                }
+
+                // Create and play source with proper scheduling
+                const source = playbackContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(playbackContext.destination);
+
+                currentSource = source;
+
+                // Schedule playback with smooth continuity
+                const currentTime = playbackContext.currentTime;
+                if (nextStartTime < currentTime) {
+                    nextStartTime = currentTime;
+                }
+
+                // Play this chunk, then process next when done
+                source.onended = () => {
+                    currentSource = null;
+                    processNextAudioChunk();
+                };
+
+                source.start(nextStartTime);
+                nextStartTime += audioBuffer.duration;
+
+            } catch (error) {
+                console.error('Audio playback error:', error);
+                // Continue with next chunk even if this one failed
+                currentSource = null;
+                nextStartTime = 0;
+                setTimeout(() => processNextAudioChunk(), 10);
+            }
+        }
+
+        // Clear audio queue (for interruptions)
+        function clearAudioQueue() {
+            console.log('🛑 Clearing audio queue, had', audioQueue.length, 'chunks');
+            audioQueue.length = 0;
+
+            // Stop current audio source
+            if (currentSource) {
+                try {
+                    currentSource.stop();
+                    currentSource.disconnect();
+                } catch(e) {
+                    console.warn('Error stopping source:', e);
+                }
+                currentSource = null;
+            }
+
+            isProcessingAudio = false;
+            nextStartTime = 0;
+
+            // Close and recreate context to ensure clean state
+            // This prevents any timing drift or stuck states
+            if (playbackContext && playbackContext.state !== 'closed') {
+                try {
+                    playbackContext.close();
+                } catch(e) {
+                    console.warn('Error closing context:', e);
+                }
+                playbackContext = null;
+            }
+
+            document.getElementById('voiceState').textContent = 'Ready';
+            console.log('✅ Audio queue cleared and context reset');
+        }
+    </script>
+</body>
+</html>

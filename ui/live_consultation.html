@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedForce AI - Live Consultation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --panel-bg: #111118;
+            --panel-border: #1e1e2a;
+            --header-bg: #16161f;
+        }
+        body { background: var(--bg); }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-height: 0;
+        }
+        .panel-header {
+            background: var(--header-bg);
+            padding: 8px 14px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: 1px solid var(--panel-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .panel-body {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 0.78rem;
+            line-height: 1.5;
+        }
+        .panel-body::-webkit-scrollbar { width: 4px; }
+        .panel-body::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 4px; }
+
+        .flash { color: #4ec9b0; opacity: 0; transition: opacity 0.5s; font-size: 0.65rem; }
+        .flash.active { opacity: 1; }
+
+        /* Chat bubbles */
+        .chat-msg { margin-bottom: 10px; max-width: 90%; }
+        .chat-msg.nurse { margin-left: auto; }
+        .chat-msg .role { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+        .chat-msg .bubble { padding: 8px 12px; border-radius: 12px; font-size: 0.8rem; line-height: 1.4; }
+        .chat-msg.patient .role { color: #818cf8; }
+        .chat-msg.patient .bubble { background: #1e1b4b; color: #c7d2fe; border-bottom-left-radius: 4px; }
+        .chat-msg.nurse .role { color: #34d399; text-align: right; }
+        .chat-msg.nurse .bubble { background: #064e3b; color: #a7f3d0; border-bottom-right-radius: 4px; }
+
+        /* Question cards */
+        .q-card { transition: all 0.2s ease; border-left-width: 4px; }
+        .q-card:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(0,0,0,0.4); }
+
+        /* Diagnosis cards */
+        .d-card { transition: all 0.2s ease; }
+        .d-card:hover { transform: translateY(-1px); box-shadow: 0 6px 12px rgba(0,0,0,0.4); }
+        .indicator-true { color: #34d399; }
+        .indicator-false { color: #6b7280; }
+
+        /* Recording pulse */
+        .recording-pulse { animation: pulse-rec 2s infinite; }
+        @keyframes pulse-rec {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Layout */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 10px;
+            flex-grow: 1;
+            min-height: 0;
+        }
+
+        .col-chat { grid-column: 1; grid-row: 1 / span 3; }
+        .col-diagnosis { grid-column: 2; grid-row: 1 / span 2; }
+        .col-questions { grid-column: 3; grid-row: 1 / span 2; }
+        .col-analytics { grid-column: 2; grid-row: 3; }
+        .col-education { grid-column: 3; grid-row: 3; }
+
+        /* JSON fallback for raw data */
+        pre.json-raw {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.7rem;
+            line-height: 1.3;
+            color: #9ca3af;
+            white-space: pre-wrap;
+            word-break: break-word;
+            margin: 0;
+        }
+
+        /* End-of-consultation overlay */
+        .end-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            overflow-y: auto;
+            padding: 40px;
+        }
+        .end-overlay.visible { display: block; }
+    </style>
+</head>
+<body class="text-gray-100 font-sans min-h-screen flex flex-col p-3 overflow-hidden">
+
+    <!-- HEADER -->
+    <header class="flex justify-between items-center mb-3 border-b border-gray-800 pb-3 flex-shrink-0">
+        <div>
+            <h1 class="text-xl font-black">
+                <span class="text-blue-500">MedForce</span>
+                <span class="text-white">LIVE</span>
+            </h1>
+            <div class="flex items-center gap-3 mt-0.5">
+                <p id="systemState" class="text-gray-500 text-xs">Ready for consultation</p>
+                <div id="micIndicator" class="items-center gap-1.5 hidden flex">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                    </span>
+                    <span class="text-[10px] font-mono text-red-400 font-bold">RECORDING</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-3 items-center">
+            <!-- Patient ID -->
+            <div class="flex flex-col items-end">
+                <span class="text-[9px] text-gray-500 uppercase font-bold mb-1">Patient ID</span>
+                <input type="text" id="patientIdInput" value="P0001"
+                    class="bg-gray-900 text-xs text-blue-400 border border-gray-700 rounded px-2 py-1 outline-none focus:border-blue-500 w-24 text-center font-mono" />
+            </div>
+
+            <!-- Server -->
+            <div class="flex flex-col items-end">
+                <span class="text-[9px] text-gray-500 uppercase font-bold mb-1">Server</span>
+                <select id="serverSelect" class="bg-gray-900 text-xs text-blue-400 border border-gray-700 rounded px-2 py-1 outline-none focus:border-blue-500">
+                    <option value="ws://localhost:8080">Local (localhost:8080)</option>
+                    <option value="wss://clinic-hepa-v2-481780815788.europe-west1.run.app">Cloud Run</option>
+                </select>
+            </div>
+
+            <!-- Start -->
+            <button id="btnStart"
+                class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-lg font-bold text-sm transition-all active:scale-95 shadow-lg shadow-blue-900/30">
+                Start Consultation
+            </button>
+
+            <!-- End -->
+            <button id="btnEnd"
+                class="bg-red-700 hover:bg-red-600 px-5 py-2 rounded-lg font-bold text-sm transition-all active:scale-95 shadow-lg shadow-red-900/30 disabled:opacity-40 disabled:cursor-not-allowed"
+                disabled>
+                End Consultation
+            </button>
+
+            <!-- Timer -->
+            <div class="flex flex-col items-center ml-1">
+                <span class="text-[9px] text-gray-500 uppercase font-bold">Duration</span>
+                <span id="timer" class="text-sm font-mono text-gray-400">00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+
+        <!-- CHAT (left column, full height) -->
+        <div class="panel col-chat">
+            <div class="panel-header">
+                <span class="text-purple-400">Chat Transcript</span>
+                <span id="flash-chat" class="flash">UPDATED</span>
+            </div>
+            <div class="panel-body" id="chatBody">
+                <div class="text-gray-600 text-xs italic text-center mt-8">Conversation will appear here...</div>
+            </div>
+        </div>
+
+        <!-- DIAGNOSIS (middle column, top 2/3) -->
+        <div class="panel col-diagnosis">
+            <div class="panel-header">
+                <span class="text-blue-400">Differential Diagnosis</span>
+                <div class="flex items-center gap-2">
+                    <span id="diagCount" class="text-[10px] font-mono text-gray-500">0 ranked</span>
+                    <span id="flash-diagnosis" class="flash">UPDATED</span>
+                </div>
+            </div>
+            <div class="panel-body" id="diagBody">
+                <div class="text-gray-600 text-xs italic text-center mt-4">Awaiting analysis...</div>
+            </div>
+        </div>
+
+        <!-- QUESTIONS (right column, top 2/3) -->
+        <div class="panel col-questions">
+            <div class="panel-header">
+                <span class="text-yellow-400">Recommended Questions</span>
+                <div class="flex items-center gap-2">
+                    <span id="qCount" class="text-[10px] font-mono text-gray-500">0 pending</span>
+                    <span id="flash-questions" class="flash">UPDATED</span>
+                </div>
+            </div>
+            <div class="panel-body" id="questionsBody">
+                <div class="text-gray-600 text-xs italic text-center mt-4">No questions yet...</div>
+            </div>
+        </div>
+
+        <!-- ANALYTICS (middle column, bottom 1/3) -->
+        <div class="panel col-analytics">
+            <div class="panel-header">
+                <span class="text-pink-400">Analytics</span>
+                <span id="flash-analytics" class="flash">UPDATED</span>
+            </div>
+            <div class="panel-body" id="analyticsBody">
+                <pre class="json-raw">Waiting...</pre>
+            </div>
+        </div>
+
+        <!-- EDUCATION (right column, bottom 1/3) -->
+        <div class="panel col-education">
+            <div class="panel-header">
+                <span class="text-emerald-400">Patient Education</span>
+                <span id="flash-education" class="flash">UPDATED</span>
+            </div>
+            <div class="panel-body" id="educationBody">
+                <pre class="json-raw">Waiting...</pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- END-OF-CONSULTATION OVERLAY (Checklist + Report) -->
+    <div class="end-overlay" id="endOverlay">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-black text-white">Consultation Summary</h2>
+                <button onclick="document.getElementById('endOverlay').classList.remove('visible')"
+                    class="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded-lg text-sm font-bold">
+                    Close
+                </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Checklist -->
+                <div class="panel" style="max-height: 80vh;">
+                    <div class="panel-header"><span class="text-orange-400">Clinical Checklist</span></div>
+                    <div class="panel-body" id="checklistBody">
+                        <pre class="json-raw">Generating...</pre>
+                    </div>
+                </div>
+                <!-- Report -->
+                <div class="panel" style="max-height: 80vh;">
+                    <div class="panel-header"><span class="text-red-400">Clinical Report</span></div>
+                    <div class="panel-body" id="reportBody">
+                        <pre class="json-raw">Generating...</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ===================== CONFIG =====================
+    const TARGET_SAMPLE_RATE = 24000;
+
+    // ===================== STATE =====================
+    let ws = null;
+    let audioContext = null;
+    let mediaStream = null;
+    let scriptProcessor = null;
+    let isRunning = false;
+    let timerInterval = null;
+    let startTime = null;
+
+    // ===================== DOM =====================
+    const btnStart = document.getElementById('btnStart');
+    const btnEnd = document.getElementById('btnEnd');
+    const micIndicator = document.getElementById('micIndicator');
+    const systemState = document.getElementById('systemState');
+    const timerEl = document.getElementById('timer');
+
+    // ===================== START CONSULTATION =====================
+    let initialAnalysisDone = false;
+
+    btnStart.onclick = async () => {
+        try {
+            btnStart.disabled = true;
+            btnStart.innerText = "Connecting...";
+            systemState.innerText = "Connecting to server...";
+
+            // 1. Check browser support
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                throw new Error("Microphone API not supported. Use HTTPS or localhost.");
+            }
+
+            // 2. Connect WebSocket and wait for initial analysis to complete
+            //    (No audio is sent during this phase -- the server needs
+            //     the event loop free to run Gemini agents and send results)
+            await connectWebSocket();
+            // Initial analysis runs server-side now. Messages arrive via onmessage.
+            // Mic starts only after we receive initial_analysis results (see handleMessage).
+
+        } catch (err) {
+            console.error("Start error:", err);
+            let msg = err.message || "Unknown error";
+            if (err.name === 'NotAllowedError') msg = "Microphone permission denied.";
+            if (err.name === 'NotFoundError') msg = "No microphone found.";
+            alert("Failed to start:\n" + msg);
+            resetUI();
+        }
+    };
+
+    // Called once after initial analysis results arrive
+    async function startMicrophone() {
+        if (isRunning) return; // already started
+        try {
+            console.log("[MIC] Starting microphone...");
+            mediaStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                    channelCount: 1
+                }
+            });
+
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioContext.state === 'suspended') await audioContext.resume();
+
+            const source = audioContext.createMediaStreamSource(mediaStream);
+            scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+
+            source.connect(scriptProcessor);
+            scriptProcessor.connect(audioContext.destination);
+
+            let audioChunkCount = 0;
+            scriptProcessor.onaudioprocess = (e) => {
+                if (!ws || ws.readyState !== WebSocket.OPEN) return;
+                const input = e.inputBuffer.getChannelData(0);
+                const rate = e.inputBuffer.sampleRate;
+                const pcm = downsampleToInt16(input, rate, TARGET_SAMPLE_RATE);
+                ws.send(pcm);
+                audioChunkCount++;
+                if (audioChunkCount % 100 === 1) {
+                    console.log(`[AUDIO] Chunk #${audioChunkCount} sent (${pcm.byteLength}B @ ${rate}Hz -> ${TARGET_SAMPLE_RATE}Hz)`);
+                }
+            };
+
+            // UI updates
+            isRunning = true;
+            btnStart.innerText = "Listening...";
+            btnStart.classList.add('recording-pulse', 'bg-red-700');
+            btnStart.classList.remove('bg-blue-600', 'hover:bg-blue-500');
+            btnEnd.disabled = false;
+            micIndicator.classList.remove('hidden');
+            systemState.innerText = "Consultation in progress -- speak now";
+            startTimer();
+            console.log("[MIC] Microphone active, streaming audio.");
+
+        } catch (err) {
+            console.error("[MIC] Microphone error:", err);
+            alert("Microphone error: " + (err.message || err.name));
+        }
+    }
+
+    // ===================== END CONSULTATION =====================
+    btnEnd.onclick = () => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ status: true }));
+            btnEnd.disabled = true;
+            btnEnd.innerText = "Ending...";
+            systemState.innerText = "Generating final report...";
+        }
+    };
+
+    // ===================== WEBSOCKET =====================
+    function connectWebSocket() {
+        return new Promise((resolve, reject) => {
+            const base = document.getElementById('serverSelect').value;
+            const pid = document.getElementById('patientIdInput').value.trim() || "P0001";
+            const url = base + "/ws/transcriber";
+
+            ws = new WebSocket(url);
+            ws.binaryType = "arraybuffer";
+
+            ws.onopen = () => {
+                console.log("[WS] Connected, sending start for", pid);
+                ws.send(JSON.stringify({ type: "start", patient_id: pid }));
+                // Show loading state -- initial analysis takes 20-30 seconds
+                systemState.innerText = "Connected. Running initial patient analysis...";
+                document.getElementById('chatBody').innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-full text-center gap-3">
+                        <div class="animate-spin rounded-full h-8 w-8 border-2 border-blue-500 border-t-transparent"></div>
+                        <p class="text-blue-400 text-sm font-bold">Analyzing patient file...</p>
+                        <p class="text-gray-500 text-xs">Initial diagnosis takes 20-30 seconds.<br/>Please wait before speaking.</p>
+                    </div>`;
+                resolve();
+            };
+
+            ws.onerror = (e) => {
+                console.error("WebSocket error:", e);
+                reject(new Error("WebSocket connection failed. Is the server running?"));
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    console.log("[WS IN]", msg.type, msg);
+                    handleMessage(msg);
+                } catch (e) {
+                    if (e instanceof SyntaxError) return; // non-JSON, ignore
+                    console.error("[handleMessage error]", e);
+                }
+            };
+
+            ws.onclose = (e) => {
+                console.warn("[WS] Connection closed. Code:", e.code, "Reason:", e.reason);
+                if (isRunning) {
+                    systemState.innerText = "Connection lost (code " + e.code + ")";
+                    stopAudio();
+                }
+            };
+        });
+    }
+
+    // ===================== MESSAGE ROUTER =====================
+    function handleMessage(msg) {
+        switch (msg.type) {
+            case "stt_live":
+                // Instant raw STT transcript (shown until Gemini diarized chat arrives)
+                renderLiveSTT(msg.transcript || []);
+                flashIndicator("flash-chat");
+                break;
+            case "chat":
+                renderChat(msg.data || msg.questions || msg);
+                flashIndicator("flash-chat");
+                break;
+            case "diagnosis":
+                renderDiagnosis(msg.diagnosis || msg.data || []);
+                flashIndicator("flash-diagnosis");
+                break;
+            case "questions":
+                renderQuestions(msg.questions || []);
+                flashIndicator("flash-questions");
+                break;
+            case "analytics":
+                renderAnalytics(msg.data || msg);
+                flashIndicator("flash-analytics");
+                break;
+            case "education":
+                renderEducation(msg.data || []);
+                flashIndicator("flash-education");
+                break;
+            case "checklist":
+                renderChecklist(msg.data || msg.checklist || []);
+                document.getElementById('endOverlay').classList.add('visible');
+                break;
+            case "report":
+                renderReport(msg.data || msg.report || {});
+                document.getElementById('endOverlay').classList.add('visible');
+                break;
+            case "status":
+                // status updates (end signal, state changes)
+                break;
+            case "system":
+                systemState.innerText = msg.message || "System update";
+                break;
+        }
+
+        // When initial analysis completes, start the microphone
+        if (msg.source === "initial_analysis" && !initialAnalysisDone) {
+            initialAnalysisDone = true;
+            console.log("[INIT] Initial analysis complete. Starting microphone...");
+            systemState.innerText = "Analysis done. Starting microphone...";
+            const chatBody = document.getElementById('chatBody');
+            if (chatBody.querySelector('.animate-spin')) {
+                chatBody.innerHTML = '<div class="text-emerald-500 text-xs text-center mt-4 font-bold">Ready. Start speaking now.</div>';
+            }
+            startMicrophone();
+        }
+    }
+
+    // ===================== RENDERERS =====================
+
+    // --- LIVE STT (raw, no diarization) ---
+    function renderLiveSTT(lines) {
+        const body = document.getElementById('chatBody');
+        if (!lines || lines.length === 0) return;
+        body.innerHTML = lines.map((line, i) => `
+            <div class="mb-2 px-2">
+                <span class="text-[9px] text-gray-600 font-mono mr-2">${i + 1}</span>
+                <span class="text-gray-300 text-sm">${line}</span>
+            </div>`).join('') +
+            '<div class="text-[10px] text-blue-500 italic mt-2 px-2">Live transcription (speaker roles assigned after AI processing...)</div>';
+        body.scrollTop = body.scrollHeight;
+    }
+
+    // --- CHAT (Gemini diarized -- replaces live STT) ---
+    function renderChat(data) {
+        const body = document.getElementById('chatBody');
+        if (!Array.isArray(data)) {
+            body.innerHTML = `<pre class="json-raw">${JSON.stringify(data, null, 2)}</pre>`;
+            return;
+        }
+        body.innerHTML = data.map(item => {
+            const role = (item.role || "unknown").toLowerCase();
+            const isNurse = role.includes("nurse") || role.includes("doctor") || role.includes("clinician");
+            const cls = isNurse ? "nurse" : "patient";
+            const label = isNurse ? "Nurse" : "Patient";
+            return `
+                <div class="chat-msg ${cls}">
+                    <div class="role">${label}</div>
+                    <div class="bubble">${item.message || item.text || ""}</div>
+                </div>`;
+        }).join('');
+        body.scrollTop = body.scrollHeight;
+    }
+
+    // --- DIAGNOSIS ---
+    function renderDiagnosis(diagnoses) {
+        const body = document.getElementById('diagBody');
+        const sorted = (diagnoses || []).sort((a, b) => (a.rank || 99) - (b.rank || 99));
+        document.getElementById('diagCount').innerText = `${sorted.length} ranked`;
+
+        if (sorted.length === 0) {
+            body.innerHTML = '<div class="text-gray-600 text-xs italic text-center mt-4">Awaiting analysis...</div>';
+            return;
+        }
+
+        body.innerHTML = sorted.map(d => {
+            let border = 'border-blue-800';
+            let badge = 'bg-blue-900/50 text-blue-300';
+            if (d.rank === 1) { border = 'border-red-700'; badge = 'bg-red-900/50 text-red-300'; }
+            else if (d.rank === 2) { border = 'border-orange-700'; badge = 'bg-orange-900/50 text-orange-300'; }
+            else if (d.rank === 3) { border = 'border-yellow-800'; badge = 'bg-yellow-900/50 text-yellow-300'; }
+
+            const indicators = (d.indicators_point || []).map(ind =>
+                `<div class="flex items-start gap-1.5 text-[11px] leading-tight">
+                    <span class="${ind.check ? 'indicator-true' : 'indicator-false'}">${ind.check ? '+' : '-'}</span>
+                    <span class="${ind.check ? 'text-gray-300' : 'text-gray-500'}">${ind.criteria}</span>
+                </div>`
+            ).join('');
+
+            return `
+                <div class="d-card border-l-4 ${border} bg-gray-900/50 rounded-lg p-3 mb-3">
+                    <div class="flex items-start justify-between mb-1.5">
+                        <span class="text-[10px] font-black ${badge} px-2 py-0.5 rounded">RANK ${d.rank}</span>
+                        <span class="text-[9px] font-mono text-gray-500">${d.did || ''}</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-gray-100 mb-0.5">${d.headline || ''}</h3>
+                    <p class="text-[11px] text-gray-400 mb-2">${d.diagnosis || ''}</p>
+                    ${d.severity ? `<span class="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-black/40 text-gray-400 mb-2 inline-block">${d.severity}</span>` : ''}
+                    ${indicators ? `<div class="space-y-1 mt-2 border-t border-gray-800 pt-2">${indicators}</div>` : ''}
+                </div>`;
+        }).join('');
+    }
+
+    // --- QUESTIONS ---
+    function renderQuestions(questions) {
+        const body = document.getElementById('questionsBody');
+        const unasked = (questions || []).filter(q => q.status === null).sort((a, b) => (a.rank || 99) - (b.rank || 99));
+        const asked = (questions || []).filter(q => q.status === "asked");
+
+        document.getElementById('qCount').innerText = `${unasked.length} pending / ${asked.length} asked`;
+
+        let html = '';
+
+        // Unasked
+        if (unasked.length > 0) {
+            html += unasked.map(q => {
+                const isUrgent = q.rank <= 3;
+                return `
+                    <div class="q-card ${isUrgent ? 'border-l-red-500' : 'border-l-yellow-600'} bg-gray-900/50 rounded-lg p-3 mb-2">
+                        <div class="flex justify-between items-start mb-1">
+                            <span class="text-[9px] font-black bg-black/50 text-gray-400 px-1.5 py-0.5 rounded">RANK ${q.rank}</span>
+                            <span class="text-[9px] text-yellow-600 font-bold uppercase">${q.domain || ''}</span>
+                        </div>
+                        <h3 class="text-xs font-bold text-gray-100 mb-0.5">${q.headline || ''}</h3>
+                        <p class="text-[11px] text-gray-400 italic">"${q.content}"</p>
+                    </div>`;
+            }).join('');
+        } else {
+            html += '<div class="text-gray-600 text-xs italic text-center py-2">No pending questions</div>';
+        }
+
+        // Asked (collapsed section)
+        if (asked.length > 0) {
+            html += `<div class="border-t border-gray-800 mt-3 pt-2">
+                <div class="text-[9px] text-emerald-500 font-bold uppercase tracking-widest mb-2">Answered (${asked.length})</div>`;
+            html += asked.map(q => `
+                <div class="border-l-4 border-l-emerald-700 bg-gray-900/30 rounded-lg p-2 mb-1.5 opacity-70">
+                    <div class="flex justify-between mb-0.5">
+                        <span class="text-[8px] text-emerald-500 font-bold uppercase">${q.domain || ''}</span>
+                        <span class="text-[8px] font-mono text-gray-600">${q.qid || ''}</span>
+                    </div>
+                    <p class="text-[10px] text-gray-300">${q.content}</p>
+                    ${q.answer ? `<p class="text-[10px] text-emerald-400 mt-0.5">Ans: ${q.answer}</p>` : ''}
+                </div>`).join('');
+            html += '</div>';
+        }
+
+        body.innerHTML = html;
+    }
+
+    // --- ANALYTICS ---
+    function renderAnalytics(data) {
+        const body = document.getElementById('analyticsBody');
+        if (!data || !data.metrics) {
+            body.innerHTML = `<pre class="json-raw">${JSON.stringify(data, null, 2)}</pre>`;
+            return;
+        }
+        const m = data.metrics;
+        const scoreBar = (label, score, color) => `
+            <div class="mb-2">
+                <div class="flex justify-between text-[10px] mb-0.5">
+                    <span class="text-gray-400 font-bold uppercase">${label}</span>
+                    <span class="${color} font-mono font-bold">${score}/100</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-1.5">
+                    <div class="h-1.5 rounded-full ${color.replace('text-', 'bg-')}" style="width: ${score}%"></div>
+                </div>
+            </div>`;
+
+        body.innerHTML = `
+            <div class="mb-3">
+                <div class="text-center mb-2">
+                    <span class="text-2xl font-black text-white">${data.overall_score || '—'}</span>
+                    <span class="text-xs text-gray-500">/100</span>
+                </div>
+                ${m.empathy ? scoreBar('Empathy', m.empathy.score, 'text-pink-400') : ''}
+                ${m.clarity ? scoreBar('Clarity', m.clarity.score, 'text-blue-400') : ''}
+                ${m.information_gathering ? scoreBar('Info Gathering', m.information_gathering.score, 'text-yellow-400') : ''}
+                ${m.patient_engagement ? scoreBar('Engagement', m.patient_engagement.score, 'text-emerald-400') : ''}
+            </div>`;
+    }
+
+    // --- EDUCATION ---
+    function renderEducation(data) {
+        const body = document.getElementById('educationBody');
+        if (!Array.isArray(data) || data.length === 0) {
+            body.innerHTML = '<pre class="json-raw">No education points yet...</pre>';
+            return;
+        }
+        body.innerHTML = data.map(e => {
+            const urgencyColor = e.urgency === 'High' ? 'text-red-400' : e.urgency === 'Normal' ? 'text-yellow-400' : 'text-gray-400';
+            return `
+                <div class="border-l-2 border-emerald-700 pl-3 mb-3">
+                    <div class="flex justify-between items-start">
+                        <h4 class="text-xs font-bold text-emerald-300">${e.headline || ''}</h4>
+                        <span class="text-[9px] ${urgencyColor} font-bold uppercase">${e.urgency || ''}</span>
+                    </div>
+                    <p class="text-[11px] text-gray-400 mt-0.5">${e.content || ''}</p>
+                    ${e.category ? `<span class="text-[8px] text-gray-500 uppercase mt-1 inline-block">${e.category}</span>` : ''}
+                </div>`;
+        }).join('');
+    }
+
+    // --- CHECKLIST ---
+    function renderChecklist(data) {
+        const body = document.getElementById('checklistBody');
+        if (!Array.isArray(data) || data.length === 0) {
+            body.innerHTML = `<pre class="json-raw">${JSON.stringify(data, null, 2)}</pre>`;
+            return;
+        }
+        body.innerHTML = data.map(item => {
+            const prioColor = item.priority === 'high' ? 'text-red-400 border-red-700' :
+                              item.priority === 'medium' ? 'text-yellow-400 border-yellow-700' :
+                              'text-gray-400 border-gray-700';
+            const icon = item.completed ? '<span class="text-emerald-400 text-lg">&#10003;</span>' : '<span class="text-red-400 text-lg">&#10007;</span>';
+            return `
+                <div class="flex gap-3 items-start border-l-2 ${prioColor} pl-3 mb-3">
+                    <div class="mt-0.5">${icon}</div>
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-200">${item.title || ''}</h4>
+                        <p class="text-[11px] text-gray-400 mt-0.5">${item.description || ''}</p>
+                        ${item.reasoning ? `<p class="text-[10px] text-gray-500 mt-1 italic">${item.reasoning}</p>` : ''}
+                        <span class="text-[8px] uppercase font-bold ${prioColor} mt-1 inline-block">${item.priority || ''} / ${item.category || ''}</span>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    // --- REPORT ---
+    function renderReport(data) {
+        const body = document.getElementById('reportBody');
+        if (!data || (!data.clinical_handover && !data.audit_summary)) {
+            body.innerHTML = `<pre class="json-raw">${JSON.stringify(data, null, 2)}</pre>`;
+            return;
+        }
+        const ch = data.clinical_handover || {};
+        const au = data.audit_summary || {};
+        body.innerHTML = `
+            <div class="mb-4">
+                <h3 class="text-xs font-black text-red-400 uppercase mb-2">Clinical Handover</h3>
+                ${ch.hpi_narrative ? `<div class="mb-2"><span class="text-[9px] text-gray-500 uppercase font-bold">HPI Narrative</span><p class="text-xs text-gray-300 mt-0.5">${ch.hpi_narrative}</p></div>` : ''}
+                ${ch.key_biomarkers_extracted ? `<div class="mb-2"><span class="text-[9px] text-gray-500 uppercase font-bold">Key Biomarkers</span><div class="flex flex-wrap gap-1 mt-0.5">${ch.key_biomarkers_extracted.map(b => `<span class="text-[10px] bg-red-900/30 text-red-300 px-2 py-0.5 rounded">${b}</span>`).join('')}</div></div>` : ''}
+                ${ch.clinical_impression_summary ? `<div class="mb-2"><span class="text-[9px] text-gray-500 uppercase font-bold">Clinical Impression</span><p class="text-xs text-gray-300 mt-0.5">${ch.clinical_impression_summary}</p></div>` : ''}
+                ${ch.suggested_doctor_actions ? `<div class="mb-2"><span class="text-[9px] text-gray-500 uppercase font-bold">Suggested Actions</span><ul class="list-disc list-inside mt-0.5">${ch.suggested_doctor_actions.map(a => `<li class="text-[11px] text-gray-400">${a}</li>`).join('')}</ul></div>` : ''}
+            </div>
+            <div class="border-t border-gray-800 pt-3">
+                <h3 class="text-xs font-black text-orange-400 uppercase mb-2">Audit Summary</h3>
+                ${au.performance_narrative ? `<div class="mb-2"><span class="text-[9px] text-gray-500 uppercase font-bold">Performance</span><p class="text-xs text-gray-300 mt-0.5">${au.performance_narrative}</p></div>` : ''}
+                ${au.areas_for_improvement_summary ? `<div class="mb-2"><span class="text-[9px] text-gray-500 uppercase font-bold">Improvement Areas</span><p class="text-xs text-gray-300 mt-0.5">${au.areas_for_improvement_summary}</p></div>` : ''}
+            </div>`;
+    }
+
+    // ===================== AUDIO PROCESSING =====================
+    function downsampleToInt16(buffer, inputRate, outputRate) {
+        if (outputRate === inputRate) {
+            return floatToInt16(buffer).buffer;
+        }
+        const ratio = inputRate / outputRate;
+        const newLen = Math.round(buffer.length / ratio);
+        const result = new Int16Array(newLen);
+
+        for (let i = 0; i < newLen; i++) {
+            const start = Math.round(i * ratio);
+            const end = Math.round((i + 1) * ratio);
+            let sum = 0, count = 0;
+            for (let j = start; j < end && j < buffer.length; j++) {
+                sum += buffer[j];
+                count++;
+            }
+            let sample = count > 0 ? sum / count : 0;
+            sample = Math.max(-1, Math.min(1, sample));
+            result[i] = sample < 0 ? sample * 0x8000 : sample * 0x7FFF;
+        }
+        return result.buffer;
+    }
+
+    function floatToInt16(buffer) {
+        const out = new Int16Array(buffer.length);
+        for (let i = 0; i < buffer.length; i++) {
+            let s = Math.max(-1, Math.min(1, buffer[i]));
+            out[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+        return out;
+    }
+
+    // ===================== UTILITIES =====================
+    function flashIndicator(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.add('active');
+        setTimeout(() => el.classList.remove('active'), 1200);
+    }
+
+    function startTimer() {
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+            const s = String(elapsed % 60).padStart(2, '0');
+            timerEl.innerText = `${m}:${s}`;
+        }, 1000);
+    }
+
+    function stopAudio() {
+        if (mediaStream) mediaStream.getTracks().forEach(t => t.stop());
+        if (scriptProcessor) scriptProcessor.disconnect();
+        if (audioContext) audioContext.close();
+        mediaStream = null;
+        scriptProcessor = null;
+        audioContext = null;
+    }
+
+    function resetUI() {
+        isRunning = false;
+        if (timerInterval) clearInterval(timerInterval);
+        stopAudio();
+        if (ws) ws.close();
+        btnStart.disabled = false;
+        btnStart.innerText = "Start Consultation";
+        btnStart.classList.remove('recording-pulse', 'bg-red-700');
+        btnStart.classList.add('bg-blue-600', 'hover:bg-blue-500');
+        btnEnd.disabled = true;
+        btnEnd.innerText = "End Consultation";
+        micIndicator.classList.add('hidden');
+        systemState.innerText = "Ready for consultation";
+    }
+</script>
+</body>
+</html>

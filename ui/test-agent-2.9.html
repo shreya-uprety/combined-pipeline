@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent 2.9 - Chat Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .patient-selector {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .patient-selector label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .patient-selector input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+        .chat-box {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fafafa;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .message.user {
+            background: #007bff;
+            color: white;
+            margin-left: 20%;
+        }
+        .message.assistant {
+            background: #e9ecef;
+            margin-right: 20%;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+        .input-area textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+            font-family: inherit;
+        }
+        .input-area button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .input-area button:hover {
+            background: #0056b3;
+        }
+        .examples {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 5px;
+        }
+        .examples h3 {
+            margin-top: 0;
+            color: #856404;
+        }
+        .examples button {
+            margin: 5px;
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .examples button:hover {
+            background: #ffc107;
+        }
+        .tools {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .tool-btn {
+            padding: 12px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .tool-btn:hover {
+            background: #5a6268;
+        }
+        .tool-btn.diagnosis {
+            background: #dc3545;
+        }
+        .tool-btn.report {
+            background: #28a745;
+        }
+        .tool-btn.legal {
+            background: #6610f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 Agent 2.9 - Chat Test Interface</h1>
+        <p class="subtitle">Agent-2.9 Architecture with FAISS RAG, Tool Orchestration & Side Agent</p>
+        
+        <div class="patient-selector">
+            <label>Patient ID:</label>
+            <input type="text" id="patientId" value="p0001">
+            <a id="boardLink" href="https://iso-clinic-v3-481780815788.europe-west1.run.app/board/p0001" target="_blank" style="margin-left: 20px;">Open Board →</a>
+        </div>
+        
+        <div class="chat-box" id="chatBox"></div>
+        
+        <div class="input-area">
+            <textarea id="messageInput" rows="3" placeholder="Type your message..."></textarea>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        
+        <div class="examples">
+            <h3>📋 Example Queries</h3>
+            <button onclick="fillQuery('Tell me about the patient')">About Patient</button>
+            <button onclick="fillQuery('What are the latest lab results?')">Lab Results</button>
+            <button onclick="fillQuery('Show me medication timeline')">Medication Timeline</button>
+            <button onclick="fillQuery('What does EASL recommend for DILI?')">EASL DILI</button>
+            <button onclick="fillQuery('Create task to follow up on labs')">Create Task</button>
+        </div>
+        
+        <div class="tools">
+            <button class="tool-btn diagnosis" onclick="generateDiagnosis()">🩺 Generate DILI Diagnosis</button>
+            <button class="tool-btn report" onclick="generateReport()">📄 Generate Patient Report</button>
+            <button class="tool-btn legal" onclick="generateLegal()">⚖️ Generate Legal Report</button>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_URL = 'http://localhost:8080';
+        
+        document.getElementById('patientId').addEventListener('input', updateBoardLink);
+        
+        function updateBoardLink() {
+            const patientId = document.getElementById('patientId').value || 'p0001';
+            document.getElementById('boardLink').href = `https://iso-clinic-v3-481780815788.europe-west1.run.app/board/${patientId}`;
+        }
+        
+        function addMessage(role, content) {
+            const chatBox = document.getElementById('chatBox');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.textContent = content;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const patientId = document.getElementById('patientId').value;
+            
+            addMessage('user', message);
+            input.value = '';
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/send-chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify([{
+                        "role": "user",
+                        "content": message,
+                        "patient_id": patientId
+                    }])
+                });
+                
+                const data = await response.json();
+                addMessage('assistant', data.response || 'Response received');
+            } catch (error) {
+                addMessage('assistant', `Error: ${error.message}`);
+            }
+        }
+        
+        async function generateDiagnosis() {
+            const patientId = document.getElementById('patientId').value;
+            addMessage('user', '[Generating DILI Diagnosis...]');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/generate_diagnosis`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: patientId })
+                });
+                
+                const data = await response.json();
+                addMessage('assistant', `✅ DILI Diagnosis generated successfully. Status: ${data.status}`);
+            } catch (error) {
+                addMessage('assistant', `Error: ${error.message}`);
+            }
+        }
+        
+        async function generateReport() {
+            const patientId = document.getElementById('patientId').value;
+            addMessage('user', '[Generating Patient Report...]');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/generate_report`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: patientId })
+                });
+                
+                const data = await response.json();
+                addMessage('assistant', `✅ Patient Report generated successfully. Status: ${data.status}`);
+            } catch (error) {
+                addMessage('assistant', `Error: ${error.message}`);
+            }
+        }
+        
+        async function generateLegal() {
+            const patientId = document.getElementById('patientId').value;
+            addMessage('user', '[Generating Legal Report...]');
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/generate_legal`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ patient_id: patientId })
+                });
+                
+                const data = await response.json();
+                addMessage('assistant', `✅ Legal Report generated successfully. Status: ${data.status}`);
+            } catch (error) {
+                addMessage('assistant', `Error: ${error.message}`);
+            }
+        }
+        
+        function fillQuery(query) {
+            document.getElementById('messageInput').value = query;
+        }
+        
+        // Allow Enter to send (Shift+Enter for new line)
+        document.getElementById('messageInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        updateBoardLink();
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "type": "OBJECT",
+  "properties": {
+    "encounters": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "encounter_no": { "type": "INTEGER" },
+          "date": { "type": "STRING", "description": "YYYY-MM-DD" }
+        },
+        "required": ["encounter_no", "date"]
+      }
+    },
+    "medications": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "name": { "type": "STRING" },
+          "startDate": { "type": "STRING", "description": "YYYY-MM-DD" },
+          "endDate": { "type": "STRING", "nullable": true, "description": "YYYY-MM-DD or null if ongoing" },
+          "dose": { "type": "STRING" },
+          "indication": { "type": "STRING" }
+        },
+        "required": ["name", "startDate", "dose", "indication"]
+      }
+    }
+  },
+  "required": ["encounters", "medications"]
+}

@@ -1,0 +1,100 @@
+{
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {
+                    "encounter": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "encounter_no": {"type": "INTEGER"},
+                            "meta": {
+                                "type": "OBJECT",
+                                "properties": {
+                                    "visit_type": {"type": "STRING"},
+                                    "date_time": {"type": "STRING", "description": "ISO 8601 Format (YYYY-MM-DD)"},
+                                    "provider": {
+                                        "type": "OBJECT",
+                                        "properties": {
+                                            "name": {"type": "STRING"},
+                                            "specialty": {"type": "STRING"}
+                                        }
+                                    },
+                                    "ui_risk_color": {"type": "STRING", "enum": ["green", "yellow", "red"], "description": "Green=Routine, Yellow=Urgent, Red=Emergency"}
+                                }
+                            },
+                            "assessment": {
+                                "type": "OBJECT",
+                                "properties": {
+                                    "impression": {"type": "STRING"},
+                                    "differential": {"type": "ARRAY", "items": {"type": "STRING"}}
+                                }
+                            },
+                            "chief_complaint": {"type": "STRING"},
+                            "hpi": {"type": "STRING"},
+                            "medications_prior": {
+                                "type": "ARRAY", 
+                                "items": {
+                                    "type": "OBJECT", 
+                                    "properties": {
+                                        "name": {"type": "STRING"},
+                                        "route": {"type": "STRING"},
+                                        "indication": {"type": "STRING"}
+                                    }
+                                }
+                            },
+                            "physical_exam": {
+                                "type": "OBJECT",
+                                "properties": {
+                                    "general": {"type": "STRING"},
+                                    "head_neck": {"type": "STRING"},
+                                    "other_systems": {"type": "STRING"}
+                                }
+                            },
+                            "plan": {
+                                "type": "OBJECT",
+                                "properties": {
+                                    "investigations": {
+                                        "type": "OBJECT",
+                                        "properties": {
+                                            "labs": {"type": "ARRAY", "items": {"type": "STRING"}},
+                                            "imaging": {"type": "ARRAY", "items": {"type": "STRING"}}
+                                        }
+                                    },
+                                    "management": {
+                                        "type": "OBJECT",
+                                        "properties": {
+                                            "follow_up": {"type": "STRING"},
+                                            "instructions": {"type": "STRING"},
+                                            "medications_started": {
+                                                "type": "ARRAY",
+                                                "items": {
+                                                    "type": "OBJECT",
+                                                    "properties": {
+                                                        "name": {"type": "STRING"},
+                                                        "dose": {"type": "STRING"},
+                                                        "route": {"type": "STRING"},
+                                                        "frequency": {"type": "STRING"},
+                                                        "indication": {"type": "STRING"}
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "reason_for_visit": {"type": "STRING"}
+                        }
+                    },
+                    "patient": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "name": {"type": "STRING"},
+                            "sex": {"type": "STRING"},
+                            "age_at_first_encounter": {"type": "INTEGER"}
+                        }
+                    },
+                    "encounterIndex": {"type": "INTEGER"},
+                    "dataSource": {"type": "STRING"}
+                }
+            }
+        }

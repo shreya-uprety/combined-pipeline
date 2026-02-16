@@ -1,0 +1,15 @@
+{
+    "type": "OBJECT",
+    "properties": {
+        "type": {
+            "type": "STRING",
+            "enum": ["encounter", "lab", "imaging", "referral"],
+            "description": "The classification of the medical document."
+        },
+        "content": {
+            "type": "STRING",
+            "description": "The full text extracted verbatim from the image."
+        }
+    },
+    "required": ["type", "content"]
+}

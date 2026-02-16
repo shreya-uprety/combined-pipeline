@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedForce Agent - Integrated Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: grid;
+            grid-template-rows: auto 1fr;
+            height: calc(100vh - 40px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .patient-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+
+        .patient-selector label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .patient-selector input {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 120px;
+        }
+
+        .board-link-btn {
+            padding: 8px 16px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .board-link-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        .chat-section {
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .mode-tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+
+        .mode-tab {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .mode-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            background: white;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.assistant {
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #e0e0e0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group textarea {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            min-height: 60px;
+        }
+
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .tools-panel {
+            display: flex;
+            flex-direction: column;
+            background: #f8f9fa;
+            overflow-y: auto;
+        }
+
+        .panel-header {
+            padding: 20px;
+            background: white;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .panel-header h2 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .panel-header p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .tool-category {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tool-category h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .quick-action {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .quick-action-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 4px;
+        }
+
+        .quick-action-desc {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .voice-controls {
+            display: none;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .voice-controls.active {
+            display: block;
+        }
+
+        .voice-btn {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .voice-btn.listening {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7); }
+            50% { box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
+        }
+
+        .status-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .example-queries {
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            margin: 15px 20px;
+            border-radius: 4px;
+        }
+
+        .example-queries strong {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .example-queries ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .example-queries li {
+            padding: 5px 0;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .example-queries li:hover {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>🏥 MedForce Agent - Integrated System</h1>
+                <p>Chat, Voice, RAG, Canvas Tools & EASL Integration</p>
+            </div>
+            <div class="header-right">
+                <div class="patient-selector">
+                    <label>Patient ID:</label>
+                    <input type="text" id="patientId" value="p0001">
+                </div>
+                <a href="#" id="boardLink" class="board-link-btn" target="_blank">Open Board →</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-section">
+                <div class="mode-tabs">
+                    <button class="mode-tab active" onclick="switchMode('chat')">💬 Chat Mode</button>
+                    <button class="mode-tab" onclick="switchMode('voice')">🎤 Voice Mode</button>
+                </div>
+
+                <div id="chatMode" class="chat-container">
+                    <div class="messages" id="messages"></div>
+                    <div class="input-area">
+                        <div class="input-group">
+                            <textarea id="chatInput" placeholder="Ask about the patient, request tools, query EASL guidelines..."></textarea>
+                            <button class="send-btn" onclick="sendMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="voiceMode" class="voice-controls">
+                    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
+                    <div class="status-text" id="voiceStatus">Click microphone to start</div>
+                </div>
+            </div>
+
+            <div class="tools-panel">
+                <div class="panel-header">
+                    <h2>Quick Actions</h2>
+                    <p>Click to test tool operations</p>
+                </div>
+
+                <div class="example-queries">
+                    <strong>📋 Example Queries:</strong>
+                    <ul>
+                        <li onclick="fillQuery('Tell me about the patient')">• Tell me about the patient</li>
+                        <li onclick="fillQuery('What are the latest lab results?')">• What are the latest lab results?</li>
+                        <li onclick="fillQuery('Show me the medication timeline')">• Show me the medication timeline</li>
+                        <li onclick="fillQuery('What does EASL recommend for DILI?')">• What does EASL recommend for DILI?</li>
+                        <li onclick="fillQuery('Create a task to follow up on bilirubin trend')">• Create a task to follow up</li>
+                    </ul>
+                </div>
+
+                <div class="tool-category">
+                    <h3>🎯 Navigation Tools</h3>
+                    <div class="quick-action" onclick="testAction('focus_medication')">
+                        <div class="quick-action-title">Focus Medication Track</div>
+                        <div class="quick-action-desc">Navigate to medication timeline</div>
+                    </div>
+                    <div class="quick-action" onclick="testAction('focus_labs')">
+                        <div class="quick-action-title">Focus Lab Chart</div>
+                        <div class="quick-action-desc">Navigate to laboratory results</div>
+                    </div>
+                    <div class="quick-action" onclick="testAction('focus_encounters')">
+                        <div class="quick-action-title">Focus Encounters</div>
+                        <div class="quick-action-desc">Navigate to encounter timeline</div>
+                    </div>
+                </div>
+
+                <div class="tool-category">
+                    <h3>📋 Task Management</h3>
+                    <div class="quick-action" onclick="testAction('create_todo')">
+                        <div class="quick-action-title">Create TODO List</div>
+                        <div class="quick-action-desc">Generate follow-up tasks</div>
+                    </div>
+                    <div class="quick-action" onclick="testAction('create_schedule')">
+                        <div class="quick-action-title">Create Schedule</div>
+                        <div class="quick-action-desc">Schedule appointments</div>
+                    </div>
+                </div>
+
+                <div class="tool-category">
+                    <h3>📊 Reports</h3>
+                    <div class="quick-action" onclick="testAction('generate_diagnosis')">
+                        <div class="quick-action-title">DILI Diagnosis</div>
+                        <div class="quick-action-desc">Generate diagnostic report</div>
+                    </div>
+                    <div class="quick-action" onclick="testAction('generate_patient_report')">
+                        <div class="quick-action-title">Patient Summary</div>
+                        <div class="quick-action-desc">Generate patient report</div>
+                    </div>
+                    <div class="quick-action" onclick="testAction('generate_legal')">
+                        <div class="quick-action-title">Legal Report</div>
+                        <div class="quick-action-desc">Compliance documentation</div>
+                    </div>
+                </div>
+
+                <div class="tool-category">
+                    <h3>🏛️ EASL Queries</h3>
+                    <div class="quick-action" onclick="testAction('easl_dili')">
+                        <div class="quick-action-title">EASL DILI Guidelines</div>
+                        <div class="quick-action-desc">Query DILI assessment</div>
+                    </div>
+                    <div class="quick-action" onclick="testAction('easl_rucam')">
+                        <div class="quick-action-title">RUCAM Score</div>
+                        <div class="quick-action-desc">Query RUCAM calculation</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_URL = 'http://localhost:8080';
+        let currentMode = 'chat';
+        let voiceActive = false;
+        let ws = null;
+
+        // Update board link when patient ID changes
+        document.getElementById('patientId').addEventListener('input', updateBoardLink);
+        
+        function updateBoardLink() {
+            const patientId = document.getElementById('patientId').value || 'p0001';
+            const boardUrl = `https://iso-clinic-v3-481780815788.europe-west1.run.app/board/${patientId}`;
+            document.getElementById('boardLink').href = boardUrl;
+        }
+
+        updateBoardLink();
+
+        function switchMode(mode) {
+            currentMode = mode;
+            
+            document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('chatMode').style.display = mode === 'chat' ? 'flex' : 'none';
+            document.getElementById('voiceMode').classList.toggle('active', mode === 'voice');
+        }
+
+        function addMessage(role, content) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            messageDiv.textContent = content;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const patientId = document.getElementById('patientId').value;
+            
+            addMessage('user', message);
+            input.value = '';
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patient_id: patientId,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+                addMessage('assistant', data.response || data.message || 'Response received');
+            } catch (error) {
+                addMessage('assistant', `Error: ${error.message}`);
+            }
+        }
+
+        function toggleVoice() {
+            voiceActive = !voiceActive;
+            const btn = document.getElementById('voiceBtn');
+            const status = document.getElementById('voiceStatus');
+            
+            if (voiceActive) {
+                btn.classList.add('listening');
+                status.textContent = 'Listening...';
+                startVoiceSession();
+            } else {
+                btn.classList.remove('listening');
+                status.textContent = 'Click microphone to start';
+                stopVoiceSession();
+            }
+        }
+
+        function startVoiceSession() {
+            const patientId = document.getElementById('patientId').value;
+            ws = new WebSocket(`ws://localhost:8080/ws/voice/${patientId}`);
+            
+            ws.onopen = () => {
+                console.log('Voice session started');
+            };
+            
+            ws.onmessage = (event) => {
+                console.log('Voice response:', event.data);
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                toggleVoice();
+            };
+        }
+
+        function stopVoiceSession() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        }
+
+        function fillQuery(query) {
+            document.getElementById('chatInput').value = query;
+        }
+
+        async function testAction(action) {
+            const patientId = document.getElementById('patientId').value;
+            const queries = {
+                'focus_medication': 'Show me the medication track',
+                'focus_labs': 'Show me the lab chart',
+                'focus_encounters': 'Show me the encounter track',
+                'create_todo': 'Create a task to review lab results and schedule follow-up',
+                'create_schedule': 'Schedule liver function tests in 2 weeks',
+                'generate_diagnosis': 'Generate DILI diagnosis report',
+                'generate_patient_report': 'Generate patient summary report',
+                'generate_legal': 'Generate legal compliance report',
+                'easl_dili': 'What does EASL recommend for DILI assessment?',
+                'easl_rucam': 'What is the RUCAM score for this case?'
+            };
+
+            const query = queries[action];
+            if (query) {
+                document.getElementById('chatInput').value = query;
+                sendMessage();
+            }
+        }
+
+        // Allow Enter to send message (Shift+Enter for new line)
+        document.getElementById('chatInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

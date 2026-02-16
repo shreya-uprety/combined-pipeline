@@ -1,0 +1,59 @@
+{
+            "type": "OBJECT",
+            "properties": {
+                "patient_id": {"type": "STRING"},
+                "name": {"type": "STRING", "description": "Full Legal Name"},
+                "firstName": {"type": "STRING"},
+                "lastName": {"type": "STRING"},
+                "dob": {"type": "STRING", "description": "YYYY-MM-DD"},
+                "age": {"type": "INTEGER"},
+                "gender": {"type": "STRING"},
+                "occupation": {"type": "STRING"},
+                "maritalStatus": {"type": "STRING"},
+                "biometrics": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "height_cm": {"type": "INTEGER"},
+                        "weight_kg": {"type": "INTEGER"},
+                        "bmi": {"type": "NUMBER"}
+                    }
+                },
+                "contact": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "phone": {"type": "STRING"},
+                        "email": {"type": "STRING"},
+                        "address": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "street": {"type": "STRING"},
+                                "city": {"type": "STRING"},
+                                "state": {"type": "STRING"},
+                                "zipCode": {"type": "STRING"}
+                            }
+                        },
+                        "emergency": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "name": {"type": "STRING"},
+                                "relation": {"type": "STRING"},
+                                "phone": {"type": "STRING"}
+                            }
+                        }
+                    }
+                },
+                "complaint": {"type": "STRING"},
+                "medical_history": {"type": "ARRAY", "items": {"type": "STRING"}},
+                "social_history": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "smoking_status": {"type": "STRING"},
+                        "alcohol_consumption": {"type": "STRING"}
+                    }
+                },
+                "allergies": {"type": "ARRAY", "items": {"type": "STRING"}},
+                "description": {"type": "STRING", "description": "One sentence summary"},
+                "severity": {"type": "STRING", "enum": ["Low", "Medium", "High", "Critical"]}
+            },
+            "required": ["patient_id", "name", "dob", "contact", "complaint", "severity"]
+        }

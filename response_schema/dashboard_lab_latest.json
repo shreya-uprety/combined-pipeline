@@ -1,0 +1,24 @@
+{
+  "type": "ARRAY",
+  "items": {
+    "type": "OBJECT",
+    "properties": {
+      "name": { "type": "STRING", "description": "Standardized name of the lab test" },
+      "value": { "type": "NUMBER", "description": "The numeric result" },
+      "unit": { "type": "STRING", "description": "Measurement unit (e.g., mg/dL)" },
+      "normalRange": { "type": "STRING", "description": "Reference range string (e.g., '10-40')" },
+      "status": { 
+        "type": "STRING", 
+        "enum": ["normal", "high", "low", "critical"],
+        "description": "Clinical interpretation of the value"
+      },
+      "previousValue": { 
+        "type": "NUMBER", 
+        "nullable": true, 
+        "description": "The result from the immediately preceding test, if available" 
+      },
+      "date": { "type": "STRING", "description": "YYYY-MM-DD of the result" }
+    },
+    "required": ["name", "value", "unit", "status", "date"]
+  }
+}

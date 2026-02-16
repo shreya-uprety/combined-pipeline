@@ -1,0 +1,23 @@
+{
+  "type": "ARRAY",
+  "items": {
+    "type": "OBJECT",
+    "properties": {
+      "biomarker": { "type": "STRING", "description": "Name of the lab test (e.g., 'ALT')" },
+      "data": {
+        "type": "ARRAY",
+        "items": {
+          "type": "OBJECT",
+          "properties": {
+            "date": { "type": "STRING", "description": "YYYY-MM-DD" },
+            "value": { "type": "NUMBER", "description": "Numeric result value" },
+            "unit": { "type": "STRING", "description": "Unit of measurement (e.g. U/L, mg/dL)" }
+          },
+          "required": ["date", "value", "unit"]
+        },
+        "description": "Chronological list of data points for this biomarker"
+      }
+    },
+    "required": ["biomarker", "data"]
+  }
+}

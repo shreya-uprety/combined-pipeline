@@ -1,0 +1,22 @@
+{
+  "type": "ARRAY",
+  "items": {
+    "type": "OBJECT",
+    "properties": {
+      "diagnosis": { 
+        "type": "STRING", 
+        "description": "The name of the potential condition or disease" 
+      },
+      "status": { 
+        "type": "STRING", 
+        "enum": ["low", "medium", "high"],
+        "description": "The probability of this diagnosis being correct" 
+      },
+      "note": { 
+        "type": "STRING", 
+        "description": "Clinical reasoning justifying the diagnosis and status" 
+      }
+    },
+    "required": ["diagnosis", "status", "note"]
+  }
+}

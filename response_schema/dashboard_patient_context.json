@@ -1,0 +1,55 @@
+{
+            "type": "OBJECT",
+            "properties": {
+                "description": {"type": "STRING", "description": "One sentence summary of the patient's current presentation."},
+                "patient": {
+                    "type": "OBJECT",
+                    "properties": {
+                        "name": {"type": "STRING"},
+                        "date_of_birth": {"type": "STRING"},
+                        "age": {"type": "INTEGER"},
+                        "sex": {"type": "STRING"},
+                        "identifiers": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "mrn": {"type": "STRING"}
+                            }
+                        }
+                    }
+                },
+                "riskLevel": {
+                    "type": "STRING", 
+                    "enum": ["low", "medium", "high", "critical"]
+                },
+                "primaryDiagnosis": {"type": "STRING"},
+                "problem_list": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "name": {"type": "STRING"},
+                            "status": {"type": "STRING", "enum": ["active", "resolved", "investigating", "chronic"]}
+                        }
+                    }
+                },
+                "medication_timeline": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "name": {"type": "STRING"},
+                            "dose": {"type": "STRING"},
+                            "route": {"type": "STRING"},
+                            "frequency": {"type": "STRING"},
+                            "start": {"type": "STRING", "description": "YYYY-MM-DD"},
+                            "end": {"type": "STRING", "description": "YYYY-MM-DD or 'Ongoing'"}
+                        }
+                    }
+                },
+                "allergies": {
+                    "type": "ARRAY",
+                    "items": {"type": "STRING"}
+                }
+            },
+            "required": ["patient", "riskLevel", "primaryDiagnosis", "problem_list", "medication_timeline"]
+        }

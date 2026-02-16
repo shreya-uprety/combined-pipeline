@@ -1,0 +1,65 @@
+{
+  "type": "OBJECT",
+  "properties": {
+    "adverseEvents": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "event": { "type": "STRING" },
+          "severity": { "type": "STRING" },
+          "description": { "type": "STRING" }
+        },
+        "required": ["event", "severity", "description"]
+      }
+    },
+    "rucam_ctcae_analysis": {
+      "type": "OBJECT",
+      "properties": {
+        "rucam": {
+          "type": "OBJECT",
+          "properties": {
+            "title": { "type": "STRING" },
+            "columns": { 
+              "type": "ARRAY", 
+              "items": { "type": "STRING" } 
+            },
+            "rows": {
+              "type": "ARRAY",
+              "items": {
+                "type": "ARRAY",
+                "items": { "type": "STRING" }
+              },
+              "description": "Matrix of strings representing the table rows"
+            },
+            "total_score": { "type": "INTEGER" },
+            "causality_category": { "type": "STRING" }
+          },
+          "required": ["title", "columns", "rows", "total_score", "causality_category"]
+        },
+        "ctcae": {
+          "type": "OBJECT",
+          "properties": {
+            "title": { "type": "STRING" },
+            "columns": { 
+              "type": "ARRAY", 
+              "items": { "type": "STRING" } 
+            },
+            "rows": {
+              "type": "ARRAY",
+              "items": {
+                "type": "ARRAY",
+                "items": { "type": "STRING" }
+              }
+            },
+            "overall_grade": { "type": "STRING" }
+          },
+          "required": ["title", "columns", "rows", "overall_grade"]
+        },
+        "reasoning": { "type": "STRING" }
+      },
+      "required": ["rucam", "ctcae", "reasoning"]
+    }
+  },
+  "required": ["adverseEvents", "rucam_ctcae_analysis"]
+}

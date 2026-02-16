@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Consultation Agent Test - Linda</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .status-bar {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #dc3545;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-dot.connected {
+            background: #28a745;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .patient-info {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            display: flex;
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user {
+            justify-content: flex-end;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .message.admin .message-content {
+            background: white;
+            color: #212529;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .message-sender {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 4px;
+            opacity: 0.7;
+        }
+        
+        .message-text {
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            opacity: 0.6;
+            margin-top: 4px;
+        }
+        
+        .form-container {
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        
+        .form-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+        
+        .form-field {
+            margin-bottom: 16px;
+        }
+        
+        .form-field label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #495057;
+        }
+        
+        .form-field input, .form-field select, .form-field textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .slots-container {
+            background: white;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        
+        .slots-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #28a745;
+            margin-bottom: 16px;
+        }
+        
+        .slot-card {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .slot-card:hover {
+            border-color: #28a745;
+            background: #f8fff9;
+        }
+        
+        .slot-card.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .slot-date {
+            font-weight: 600;
+            color: #212529;
+        }
+        
+        .slot-time {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        .confirmation-box {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+            text-align: center;
+        }
+        
+        .confirmation-box h3 {
+            color: #28a745;
+            margin-bottom: 12px;
+        }
+        
+        .input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .input-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .input-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        #messageInput {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 24px;
+            font-size: 14px;
+            resize: none;
+            max-height: 100px;
+        }
+        
+        #messageInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 24px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-file {
+            background: #17a2b8;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-file input[type="file"] {
+            position: absolute;
+            top: 0;
+            right: 0;
+            min-width: 100%;
+            min-height: 100%;
+            font-size: 100px;
+            text-align: right;
+            filter: alpha(opacity=0);
+            opacity: 0;
+            outline: none;
+            cursor: inherit;
+            display: block;
+        }
+        
+        .typing-indicator {
+            display: none;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            width: 60px;
+            margin-bottom: 16px;
+        }
+        
+        .typing-indicator.active {
+            display: block;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+        
+        .attachment-preview {
+            margin-top: 8px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Pre-Consultation Agent</h1>
+            <p>Linda - Hepatology Clinic Admin</p>
+        </div>
+        
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Disconnected</span>
+            </div>
+            <div class="patient-info">
+                Patient ID: <strong id="patientId">p0001</strong>
+            </div>
+        </div>
+        
+        <div class="chat-container" id="chatContainer">
+            <div class="message admin">
+                <div class="message-content">
+                    <div class="message-sender">Linda (Admin)</div>
+                    <div class="message-text">Welcome! Click "Connect" to start your pre-consultation intake process.</div>
+                </div>
+            </div>
+            
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <div class="input-controls">
+                <button class="btn-primary" id="connectBtn" onclick="connect()">Connect</button>
+                <button class="btn-secondary" id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+                <label class="btn-file">
+                    📎 Attach File
+                    <input type="file" id="fileInput" accept="image/*,.pdf" onchange="handleFileSelect(event)">
+                </label>
+            </div>
+            
+            <div class="input-box">
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Type your message here..." 
+                    rows="1"
+                    onkeypress="handleKeyPress(event)"
+                ></textarea>
+                <button class="btn-primary" onclick="sendMessage()">Send</button>
+            </div>
+            
+            <div id="attachmentPreview"></div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let patientId = 'p0001';
+        let currentAttachment = null;
+        let currentForm = null;
+        let currentSlots = null;
+        
+        function connect() {
+            const wsUrl = `ws://localhost:8080/ws/pre-consult/${patientId}`;
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = () => {
+                updateStatus('connected', 'Connected');
+                document.getElementById('connectBtn').disabled = true;
+                document.getElementById('disconnectBtn').disabled = false;
+                addMessage('system', 'Connected to pre-consultation agent');
+            };
+            
+            ws.onclose = () => {
+                updateStatus('disconnected', 'Disconnected');
+                document.getElementById('connectBtn').disabled = false;
+                document.getElementById('disconnectBtn').disabled = true;
+                addMessage('system', 'Disconnected from server');
+            };
+            
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                addMessage('error', 'Connection error. Make sure server is running on port 8080.');
+            };
+            
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleServerMessage(data);
+                } catch (error) {
+                    console.error('Error parsing message:', error);
+                }
+            };
+        }
+        
+        function disconnect() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message && !currentAttachment) return;
+            
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                addMessage('error', 'Not connected. Click "Connect" first.');
+                return;
+            }
+            
+            // Build request payload
+            const payload = {
+                patient_message: message,
+                patient_attachment: currentAttachment ? [currentAttachment] : [],
+                patient_form: {}
+            };
+            
+            // Send to server
+            ws.send(JSON.stringify(payload));
+            
+            // Show user message
+            if (message) {
+                addMessage('user', message);
+            }
+            if (currentAttachment) {
+                addMessage('user', `📎 Attached: ${currentAttachment.name}`);
+            }
+            
+            // Clear input
+            input.value = '';
+            currentAttachment = null;
+            document.getElementById('attachmentPreview').innerHTML = '';
+            
+            // Show typing indicator
+            showTyping(true);
+        }
+        
+        function handleServerMessage(data) {
+            console.log('Server message:', data);
+            
+            // Handle different message types
+            if (data.type === 'error') {
+                addMessage('error', data.error || data.content);
+                return;
+            }
+            
+            // Handle typing indicators
+            if (data.type === 'typing') {
+                showTyping(data.is_typing);
+                return;
+            }
+            
+            // Handle status messages
+            if (data.type === 'status') {
+                console.log('Status:', data.status, data.message);
+                return;
+            }
+            
+            // Stop typing indicator when text arrives
+            if (data.type === 'text') {
+                showTyping(false);
+            }
+            
+            // Pre-consult agent response - check both 'message' and 'content'
+            const messageText = data.message || data.content || data.data?.message;
+            if (messageText) {
+                addMessage('admin', messageText);
+            }
+            
+            // Handle different action types
+            const actionType = data.action_type || data.data?.action_type;
+            switch (actionType) {
+                case 'SEND_FORM':
+                    const formData = data.form_request || data.data?.form_request;
+                    if (formData) renderForm(formData);
+                    break;
+                    
+                case 'OFFER_SLOTS':
+                    const slotsData = data.available_slots || data.data?.available_slots;
+                    if (slotsData) renderSlots(slotsData);
+                    break;
+                    
+                case 'CONFIRM_APPOINTMENT':
+                    const confirmData = data.confirmed_appointment || data.data?.confirmed_appointment;
+                    if (confirmData) renderConfirmation(confirmData);
+                    break;
+            }
+        }
+        
+        function renderForm(formData) {
+            if (!formData) return;
+            
+            currentForm = formData;
+            
+            const formHtml = `
+                <div class="form-container">
+                    <div class="form-title">📋 Patient Intake Form</div>
+                    <form id="intakeForm" onsubmit="submitForm(event)">
+                        <div class="form-field">
+                            <label>First Name *</label>
+                            <input type="text" name="firstName" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Last Name *</label>
+                            <input type="text" name="lastName" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Date of Birth *</label>
+                            <input type="date" name="dob" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Gender *</label>
+                            <select name="gender" required>
+                                <option value="">Select...</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label>Phone Number *</label>
+                            <input type="tel" name="phone" required>
+                        </div>
+                        <div class="form-field">
+                            <label>Email</label>
+                            <input type="email" name="email">
+                        </div>
+                        <div class="form-field">
+                            <label>Chief Complaint *</label>
+                            <textarea name="complaint" rows="3" required placeholder="Describe your main symptoms..."></textarea>
+                        </div>
+                        <div class="form-field">
+                            <label>Known Allergies</label>
+                            <input type="text" name="allergies" placeholder="e.g., Penicillin, Peanuts">
+                        </div>
+                        <button type="submit" class="btn-success">Submit Form</button>
+                    </form>
+                </div>
+            `;
+            
+            const container = document.getElementById('chatContainer');
+            container.insertAdjacentHTML('beforeend', formHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function submitForm(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const formObject = {};
+            
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+            
+            // Send form data
+            const payload = {
+                patient_message: "Form submitted",
+                patient_attachment: [],
+                patient_form: formObject
+            };
+            
+            ws.send(JSON.stringify(payload));
+            
+            addMessage('user', '✅ Form submitted');
+            form.parentElement.remove();
+            showTyping(true);
+        }
+        
+        function renderSlots(slotsData) {
+            if (!slotsData) return;
+            
+            currentSlots = slotsData;
+            
+            let slotsHtml = `
+                <div class="slots-container">
+                    <div class="slots-title">📅 Available Appointments</div>
+                    <p style="margin-bottom: 16px; color: #6c757d;">
+                        Doctor: <strong>${slotsData.doctorName}</strong> 
+                        (${slotsData.specialty})
+                    </p>
+            `;
+            
+            slotsData.slots.forEach(slot => {
+                slotsHtml += `
+                    <div class="slot-card" onclick="selectSlot('${slot.slotId}')">
+                        <div class="slot-date">${slot.date} - ${slot.time}</div>
+                        <div class="slot-time">${slot.type}</div>
+                    </div>
+                `;
+            });
+            
+            slotsHtml += '</div>';
+            
+            const container = document.getElementById('chatContainer');
+            container.insertAdjacentHTML('beforeend', slotsHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function selectSlot(slotId) {
+            // Highlight selected slot
+            document.querySelectorAll('.slot-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.slot-card').classList.add('selected');
+            
+            // Send selection to server
+            const payload = {
+                patient_message: `I'd like to book ${slotId}`,
+                patient_attachment: [],
+                patient_form: {}
+            };
+            
+            ws.send(JSON.stringify(payload));
+            addMessage('user', `Selected appointment slot: ${slotId}`);
+            showTyping(true);
+        }
+        
+        function renderConfirmation(confirmationData) {
+            if (!confirmationData) return;
+            
+            const confirmHtml = `
+                <div class="confirmation-box">
+                    <h3>✅ Appointment Confirmed!</h3>
+                    <p><strong>Appointment ID:</strong> ${confirmationData.appointmentId}</p>
+                    <p><strong>Date:</strong> ${confirmationData.schedule.date}</p>
+                    <p><strong>Time:</strong> ${confirmationData.schedule.time}</p>
+                    <p><strong>Provider:</strong> ${confirmationData.schedule.provider}</p>
+                    <p><strong>Location:</strong> ${confirmationData.schedule.location}</p>
+                    <p style="margin-top: 12px; font-size: 14px;">${confirmationData.schedule.instructions}</p>
+                </div>
+            `;
+            
+            const container = document.getElementById('chatContainer');
+            container.insertAdjacentHTML('beforeend', confirmHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Convert to base64
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                currentAttachment = {
+                    name: file.name,
+                    type: file.type,
+                    data: e.target.result.split(',')[1] // Get base64 without prefix
+                };
+                
+                document.getElementById('attachmentPreview').innerHTML = `
+                    <div class="attachment-preview">
+                        📎 Ready to send: ${file.name} (${(file.size / 1024).toFixed(1)} KB)
+                        <button onclick="clearAttachment()" style="margin-left: 10px; padding: 4px 8px; font-size: 12px;">Remove</button>
+                    </div>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function clearAttachment() {
+            currentAttachment = null;
+            document.getElementById('attachmentPreview').innerHTML = '';
+            document.getElementById('fileInput').value = '';
+        }
+        
+        function addMessage(sender, text) {
+            const container = document.getElementById('chatContainer');
+            const typingIndicator = document.getElementById('typingIndicator');
+            
+            const messageClass = sender === 'user' ? 'user' : (sender === 'error' ? 'admin' : 'admin');
+            const senderName = sender === 'user' ? 'You' : (sender === 'error' ? 'System Error' : 'Linda (Admin)');
+            
+            const messageHtml = `
+                <div class="message ${messageClass}">
+                    <div class="message-content ${sender === 'error' ? 'error-message' : ''}">
+                        <div class="message-sender">${senderName}</div>
+                        <div class="message-text">${text}</div>
+                        <div class="message-time">${new Date().toLocaleTimeString()}</div>
+                    </div>
+                </div>
+            `;
+            
+            typingIndicator.insertAdjacentHTML('beforebegin', messageHtml);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        function showTyping(show) {
+            const indicator = document.getElementById('typingIndicator');
+            if (show) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        }
+        
+        function updateStatus(status, text) {
+            const dot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            if (status === 'connected') {
+                dot.classList.add('connected');
+            } else {
+                dot.classList.remove('connected');
+            }
+            
+            statusText.textContent = text;
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+        
+        // Auto-resize textarea
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        });
+    </script>
+</body>
+</html>

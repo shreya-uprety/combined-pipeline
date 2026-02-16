@@ -1,0 +1,97 @@
+[
+    {
+        "question": "Current Medications",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 1
+    },
+    {
+        "question": "Can you estimate how many Extra Strength Tylenol or Tylenol PM pills you have been taking daily over the past few weeks?",
+        "education" : "You must be warned that excessive use of acetaminophen (Tylenol), even regular strength, can cause severe liver damage",
+        "is_finished" : false,
+        "index" : 2
+    },
+    {
+        "question": "Have you experienced any nausea, vomiting, or abdominal pain since starting the Augmentin?",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 3
+    },
+    {
+        "question": "When did you start noticing the yellowing of your eyes and the itching after you finished your Augmentin prescription?",
+        "education" : "You must be aware that yellowing of the skin and eyes (jaundice) and severe itching (pruritus) can indicate serious liver issues.",
+        "is_finished" : false,
+        "index" : 4
+
+    },
+    {
+        "question": "Have you had any recent travel, new sexual partners, or exposure to anyone with hepatitis in the past few months?",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 5
+
+    },
+    {
+        "question": "Have you experienced any confusion or changes in your mental state recently?",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 6
+
+    },
+    {
+        "question": "Have you had any recent fevers, chills, or flu-like symptoms in the past month?",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 7
+
+    },
+    {
+        "question": "Have you noticed any changes in the color of your urine or stools since your eyes started to yellow?",
+        "education" : "You must be aware that urine appearing as 'Coke-colored' and stools that are white or pale are critical indicators of potential liver dysfunction.",
+        "is_finished" : false,
+        "index" : 8
+
+    },
+    {
+        "question": "Have you consumed any alcohol in the past month?",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 9
+
+    },
+    {
+        "question": "Have you experienced any unintentional weight loss recently?",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 10
+
+    },
+    {
+        "question": "Drug Allergies",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 11
+
+    },
+    {
+        "question": "Past Surgeries",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 12
+
+    },
+    {
+        "question": "Have you had any recent skin piercings or tattoos?",
+        "education" : "",
+        "is_finished" : false,
+        "index" : 13
+
+    },
+    {
+        "question": "",
+        "education" : "",
+        "is_finished" : true,
+        "index" : 14
+
+    }
+]

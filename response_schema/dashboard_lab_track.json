@@ -1,0 +1,30 @@
+{
+  "type": "ARRAY",
+  "items": {
+    "type": "OBJECT",
+    "properties": {
+      "biomarker": { "type": "STRING" },
+      "unit": { "type": "STRING" },
+      "referenceRange": {
+        "type": "OBJECT",
+        "properties": {
+          "min": { "type": "NUMBER", "nullable": true },
+          "max": { "type": "NUMBER", "nullable": true }
+        },
+        "required": ["min", "max"]
+      },
+      "values": {
+        "type": "ARRAY",
+        "items": {
+          "type": "OBJECT",
+          "properties": {
+            "t": { "type": "STRING", "description": "ISO 8601 format YYYY-MM-DDTHH:MM:SS" },
+            "value": { "type": "NUMBER" }
+          },
+          "required": ["t", "value"]
+        }
+      }
+    },
+    "required": ["biomarker", "unit", "referenceRange", "values"]
+  }
+}

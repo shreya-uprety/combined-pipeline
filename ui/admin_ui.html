@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedForce Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f8f9fa; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        .navbar { border-bottom: 1px solid #dee2e6; background: white; height: 60px; }
+        .main-layout { display: flex; flex: 1; overflow: hidden; }
+        
+        /* Sidebar */
+        .sidebar { width: 300px; overflow-y: auto; border-right: 1px solid #dee2e6; background: #fff; display: flex; flex-direction: column; }
+        .list-item { cursor: pointer; padding: 10px 15px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; transition: 0.1s; }
+        .list-item:hover { background-color: #f8f9fa; }
+        .list-item.active { background-color: #e7f1ff; color: #0d6efd; border-left: 4px solid #0d6efd; }
+        .list-icon { margin-right: 10px; font-size: 1.1em; }
+        
+        /* Editor */
+        .editor-container { flex: 1; display: flex; flex-direction: column; background: #fff; }
+        #fileEditor { flex-grow: 1; font-family: 'Courier New', Courier, monospace; border: none; padding: 20px; outline: none; background-color: #fdfdfd; resize: none; font-size: 14px; }
+        .editor-toolbar { padding: 10px; border-bottom: 1px solid #eee; background: #fcfcfc; display: flex; justify-content: space-between; align-items: center; }
+        .empty-state { flex: 1; display: flex; align-items: center; justify-content: center; color: #aaa; flex-direction: column; }
+    </style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="navbar px-3">
+    <div class="d-flex align-items-center">
+        <span class="navbar-brand mb-0 h1 me-3">🏥 MedForce Admin</span>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0" id="breadcrumbs">
+                <li class="breadcrumb-item active">Patients</li>
+            </ol>
+        </nav>
+    </div>
+    <div id="topActions">
+        <button class="btn btn-sm btn-success" onclick="createPatientPrompt()">
+            <i class="bi bi-folder-plus"></i> New Patient
+        </button>
+    </div>
+</nav>
+
+<div class="main-layout">
+    <!-- Sidebar List -->
+    <div class="sidebar">
+        <div class="p-2 border-bottom bg-light d-flex justify-content-between">
+            <small class="text-uppercase fw-bold text-muted" id="listHeader">Patient Folders</small>
+            <button class="btn btn-sm btn-outline-secondary py-0" onclick="refreshCurrentView()"><i class="bi bi-arrow-clockwise"></i></button>
+        </div>
+        <div id="listContainer">
+            <!-- Items injected here -->
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="editor-container">
+        <!-- Toolbar (Hidden when no file selected) -->
+        <div class="editor-toolbar" id="editorToolbar" style="display:none;">
+            <div>
+                <strong id="currentFileName">filename.txt</strong>
+                <span id="saveStatus" class="text-muted ms-2 small"></span>
+            </div>
+            <div>
+                <button class="btn btn-sm btn-outline-danger me-2" onclick="deleteCurrentFile()">
+                    <i class="bi bi-trash"></i> Delete
+                </button>
+                <button class="btn btn-sm btn-primary" onclick="saveCurrentFile()" id="btnSave">
+                    <i class="bi bi-floppy"></i> Save Changes
+                </button>
+            </div>
+        </div>
+
+        <textarea id="fileEditor" spellcheck="false" style="display:none;"></textarea>
+        
+        <div class="empty-state" id="emptyState">
+            <i class="bi bi-folder2-open" style="font-size: 3rem;"></i>
+            <p class="mt-2">Select a folder to view files</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = ""; // Relative path for deployed version
+    
+    // State
+    let currentView = 'PATIENTS'; // 'PATIENTS' or 'FILES'
+    let currentPid = null;
+    let currentFile = null;
+
+    // --- INIT ---
+    document.addEventListener('DOMContentLoaded', () => {
+        loadPatients();
+    });
+
+    // --- NAVIGATION LOGIC ---
+    async function loadPatients() {
+        currentView = 'PATIENTS';
+        currentPid = null;
+        currentFile = null;
+        
+        updateBreadcrumbs();
+        updateTopActions();
+        resetEditor();
+
+        const container = document.getElementById('listContainer');
+        container.innerHTML = '<div class="text-center p-3 text-muted">Loading...</div>';
+
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/list-patients`);
+            const data = await res.json();
+            
+            container.innerHTML = '';
+            document.getElementById('listHeader').innerText = "All Patients";
+
+            if(data.patients.length === 0) {
+                container.innerHTML = '<div class="p-3 text-muted text-center">No patients found.</div>';
+                return;
+            }
+
+            data.patients.forEach(pid => {
+                const el = document.createElement('div');
+                el.className = 'list-item';
+                el.innerHTML = `
+                    <div><i class="bi bi-folder-fill list-icon text-warning"></i> ${pid}</div>
+                    <button class="btn btn-sm btn-link text-danger p-0" onclick="deletePatientPrompt('${pid}', event)" title="Delete Folder"><i class="bi bi-x-circle"></i></button>
+                `;
+                el.onclick = (e) => {
+                    // Prevent triggering if delete button clicked
+                    if(e.target.closest('button')) return;
+                    enterPatientFolder(pid);
+                };
+                container.appendChild(el);
+            });
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<div class="text-danger p-3">Error loading patients.</div>';
+        }
+    }
+
+    async function enterPatientFolder(pid) {
+        currentView = 'FILES';
+        currentPid = pid;
+        currentFile = null;
+
+        updateBreadcrumbs();
+        updateTopActions();
+        resetEditor();
+
+        const container = document.getElementById('listContainer');
+        container.innerHTML = '<div class="text-center p-3 text-muted">Loading files...</div>';
+        document.getElementById('emptyState').innerHTML = `<i class="bi bi-file-earmark-text" style="font-size:3rem"></i><p>Select a file to edit</p>`;
+
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/list-files/${pid}`);
+            const data = await res.json();
+            
+            container.innerHTML = '';
+            document.getElementById('listHeader').innerText = `Files in /${pid}`;
+
+            // Add "Back" item logic visually handled by Breadcrumbs, 
+            // but we can add a visual separator if needed.
+
+            if(data.files.length === 0) {
+                container.innerHTML = '<div class="p-3 text-muted text-center">Empty folder.</div>';
+                return;
+            }
+
+            data.files.forEach(file => {
+                const el = document.createElement('div');
+                el.className = 'list-item';
+                el.innerHTML = `<div><i class="bi bi-file-earmark-text list-icon text-primary"></i> ${file.name}</div>`;
+                el.onclick = () => loadFileContent(file.name, el);
+                container.appendChild(el);
+            });
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<div class="text-danger p-3">Error loading files.</div>';
+        }
+    }
+
+    async function loadFileContent(filename, domElement) {
+        currentFile = filename;
+        
+        // Highlight active
+        document.querySelectorAll('.list-item').forEach(e => e.classList.remove('active'));
+        if(domElement) domElement.classList.add('active');
+
+        // Show Editor
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('fileEditor').style.display = 'block';
+        document.getElementById('editorToolbar').style.display = 'flex';
+        document.getElementById('currentFileName').innerText = filename;
+        document.getElementById('fileEditor').value = "Loading content...";
+        document.getElementById('btnSave').disabled = true;
+
+        try {
+            const res = await fetch(`${API_BASE}/api/get-patient-file`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pid: currentPid, file_name: filename })
+            });
+
+            const contentType = res.headers.get("content-type");
+            if (contentType && (contentType.includes("image") || contentType.includes("octet"))) {
+                document.getElementById('fileEditor').value = `[Binary File: ${contentType}] - Cannot Edit`;
+            } else {
+                const text = await res.text();
+                // Pretty print JSON
+                if(filename.endsWith('.json')) {
+                    try {
+                         document.getElementById('fileEditor').value = JSON.stringify(JSON.parse(text), null, 4);
+                    } catch(e) { document.getElementById('fileEditor').value = text; }
+                } else {
+                    document.getElementById('fileEditor').value = text;
+                }
+                document.getElementById('btnSave').disabled = false;
+            }
+        } catch (e) {
+            document.getElementById('fileEditor').value = "Error loading file.";
+        }
+    }
+
+    // --- ACTIONS ---
+
+    // 1. Patient Actions
+    async function createPatientPrompt() {
+        const pid = prompt("Enter new Patient ID (e.g., p005):");
+        if(!pid) return;
+        
+        // Simple validation to ensure folder-safe name
+        const safePid = pid.replace(/[^a-zA-Z0-9_-]/g, "");
+
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/create-patient`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ pid: safePid })
+            });
+            if(res.ok) {
+                // Determine if we should reload list or enter folder
+                if(currentView === 'PATIENTS') loadPatients();
+                else enterPatientFolder(safePid); // Switch to the new guy
+            } else {
+                const err = await res.json();
+                alert("Error: " + err.error);
+            }
+        } catch(e) { alert("Failed to create patient"); }
+    }
+
+    async function deletePatientPrompt(pid, event) {
+        event.stopPropagation();
+        if(!confirm(`⚠️ DANGER ⚠️\n\nThis will delete the folder '${pid}' and ALL files inside it.\n\nAre you sure?`)) return;
+
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/delete-patient?pid=${pid}`, { method: "DELETE" });
+            if(res.ok) loadPatients();
+            else alert("Failed to delete.");
+        } catch(e) { alert("Error deleting patient"); }
+    }
+
+    // 2. File Actions
+    async function createFilePrompt() {
+        const name = prompt("Enter file name (e.g., history.md):");
+        if(!name) return;
+
+        // Create empty file immediately to refresh list
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/save-file`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ pid: currentPid, file_name: name, content: "" })
+            });
+            if(res.ok) {
+                await enterPatientFolder(currentPid); // Refresh list
+                // Find and click the new file (simple heuristic: generic refresh)
+            }
+        } catch(e) { alert("Error creating file"); }
+    }
+
+    async function saveCurrentFile() {
+        const content = document.getElementById('fileEditor').value;
+        const btn = document.getElementById('btnSave');
+        const status = document.getElementById('saveStatus');
+        
+        btn.disabled = true;
+        status.innerText = "Saving...";
+
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/save-file`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ pid: currentPid, file_name: currentFile, content: content })
+            });
+            if(res.ok) {
+                status.innerText = "Saved!";
+                setTimeout(() => status.innerText = "", 2000);
+            } else {
+                status.innerText = "Error!";
+            }
+        } catch(e) {
+            status.innerText = "Req Failed";
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function deleteCurrentFile() {
+        if(!confirm(`Delete file ${currentFile}?`)) return;
+        try {
+            const res = await fetch(`${API_BASE}/api/admin/delete-file?pid=${currentPid}&file_name=${currentFile}`, { method: "DELETE" });
+            if(res.ok) enterPatientFolder(currentPid); // Refresh list, clear editor
+        } catch(e) { alert("Error deleting file"); }
+    }
+
+    // --- UTILS ---
+    function refreshCurrentView() {
+        if(currentView === 'PATIENTS') loadPatients();
+        else enterPatientFolder(currentPid);
+    }
+
+    function resetEditor() {
+        document.getElementById('fileEditor').style.display = 'none';
+        document.getElementById('editorToolbar').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'flex';
+        if(currentView === 'PATIENTS') {
+            document.getElementById('emptyState').innerHTML = `<i class="bi bi-folder2-open" style="font-size:3rem"></i><p>Select a patient folder</p>`;
+        }
+    }
+
+    function updateBreadcrumbs() {
+        const bc = document.getElementById('breadcrumbs');
+        if(currentView === 'PATIENTS') {
+            bc.innerHTML = `<li class="breadcrumb-item active">Patients</li>`;
+        } else {
+            bc.innerHTML = `
+                <li class="breadcrumb-item"><a href="#" onclick="loadPatients()">Patients</a></li>
+                <li class="breadcrumb-item active">${currentPid}</li>
+            `;
+        }
+    }
+
+    function updateTopActions() {
+        const div = document.getElementById('topActions');
+        if(currentView === 'PATIENTS') {
+            div.innerHTML = `
+                <button class="btn btn-sm btn-success" onclick="createPatientPrompt()">
+                    <i class="bi bi-folder-plus"></i> New Patient
+                </button>`;
+        } else {
+            div.innerHTML = `
+                <button class="btn btn-sm btn-outline-primary" onclick="createFilePrompt()">
+                    <i class="bi bi-file-earmark-plus"></i> New File
+                </button>`;
+        }
+    }
+</script>
+
+</body>
+</html>

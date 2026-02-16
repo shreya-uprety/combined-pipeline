@@ -1,0 +1,21 @@
+{
+            "type": "OBJECT",
+            "properties": {
+                "conversation": {
+                    "type": "ARRAY",
+                    "items": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "sender": {"type": "STRING", "enum": ["admin", "patient"]},
+                            "message": {"type": "STRING"},
+                            "attachment": {
+                                "type": "ARRAY",
+                                "items": {"type": "STRING"},
+                                "description": "List of filenames if the user uploads a document."
+                            }
+                        },
+                        "required": ["sender", "message"]
+                    }
+                }
+            }
+        }

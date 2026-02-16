@@ -1,0 +1,31 @@
+# MedForce Unified Server Dependencies
+# Core web framework
+fastapi
+uvicorn[standard]
+
+# WebSockets (compatible with google-genai)
+websockets
+
+# Utilities
+python-dotenv
+requests
+httpx
+aiohttp
+
+# Google GenAI SDK (new SDK for voice/chat)
+google-genai
+
+# Google Generative AI SDK (for chat_model and side_agent)
+google-generativeai
+
+# Google Cloud
+google-cloud-storage
+google-cloud-speech
+
+# Data processing
+numpy
+pandas
+Pillow
+
+# Pydantic (implied by fastapi, but explicit)
+pydantic

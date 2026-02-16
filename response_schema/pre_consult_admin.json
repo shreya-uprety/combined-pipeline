@@ -1,0 +1,75 @@
+{
+  "type": "OBJECT",
+  "properties": {
+    "message": {
+      "type": "STRING",
+      "description": "The text response from the admin."
+    },
+    "action_type": {
+      "type": "STRING",
+      "enum": ["TEXT_ONLY", "SEND_FORM", "OFFER_SLOTS", "CONFIRM_APPOINTMENT"],
+      "description": "Internal flag to help frontend render the correct UI."
+    },
+    "form_request": {
+      "type": "OBJECT",
+      "description": "Only present if action_type is SEND_FORM. Represents the blank intake form.",
+      "nullable": true,
+      "properties": {
+        "form_id": {"type": "STRING"},
+        "fields": {
+          "type": "ARRAY",
+          "description": "List of form fields to be filled",
+          "items": {
+            "type": "OBJECT",
+            "properties": {
+              "field_name": {"type": "STRING"},
+              "field_type": {"type": "STRING"},
+              "field_value": {"type": "STRING"}
+            }
+          }
+        }
+      }
+    },
+    "available_slots": {
+      "type": "OBJECT",
+      "description": "Only present if action_type is OFFER_SLOTS.",
+      "nullable": true,
+      "properties": {
+        "doctorName": {"type": "STRING"},
+        "specialty": {"type": "STRING"},
+        "slots": {
+          "type": "ARRAY",
+          "items": {
+            "type": "OBJECT",
+            "properties": {
+              "slotId": {"type": "STRING"},
+              "date": {"type": "STRING"},
+              "time": {"type": "STRING"},
+              "type": {"type": "STRING"}
+            }
+          }
+        }
+      }
+    },
+    "confirmed_appointment": {
+      "type": "OBJECT",
+      "description": "Only present if action_type is CONFIRM_APPOINTMENT.",
+      "nullable": true,
+      "properties": {
+        "appointmentId": {"type": "STRING"},
+        "status": {"type": "STRING"},
+        "schedule": {
+            "type": "OBJECT",
+            "properties": {
+                "date": {"type": "STRING"},
+                "time": {"type": "STRING"},
+                "provider": {"type": "STRING"},
+                "location": {"type": "STRING"},
+                "instructions": {"type": "STRING"}
+            }
+        }
+      }
+    }
+  },
+  "required": ["message", "action_type"]
+}

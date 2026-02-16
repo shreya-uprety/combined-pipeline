@@ -1,0 +1,68 @@
+[
+    {
+        "content": "What brings you in today?",
+        "qid": "00001",
+        "rank": 1,
+        "status": null,
+        "answer": null,
+        "headline": "Chief Complaint",
+        "domain": "Initial Assessment",
+        "system_affected": "General",
+        "clinical_intent": "To identify the primary reason for the medical encounter and understand the patient's most pressing symptoms or concerns.",
+        "tags": [
+            "intake",
+            "triage",
+            "symptoms",
+            "reason-for-visit"
+        ]
+    },
+    {
+        "content": "Current Medications",
+        "qid": "00004",
+        "rank": 2,
+        "status": null,
+        "answer": null,
+        "headline": "Current Medications",
+        "domain": "Medication Review",
+        "system_affected": "General",
+        "clinical_intent": "To obtain a comprehensive list of all current medications the patient is taking.",
+        "tags": [
+            "medication",
+            "prescription",
+            "over-the-counter"
+        ]
+    },
+    {
+        "content": "Drug Allergies",
+        "qid": "00005",
+        "rank": 3,
+        "status": null,
+        "answer": null,
+        "headline": "Drug Allergies",
+        "domain": "Medical History",
+        "system_affected": "General",
+        "clinical_intent": "To identify any known allergies to medications to prevent adverse drug reactions and ensure patient safety.",
+        "tags": [
+            "allergy",
+            "drug",
+            "adverse reaction",
+            "safety"
+        ]
+    },
+    {
+        "content": "Past Surgeries",
+        "qid": "00006",
+        "rank": 4,
+        "status": null,
+        "answer": null,
+        "headline": "Past Surgical History",
+        "domain": "Surgical History",
+        "system_affected": "General",
+        "clinical_intent": "To gather information about previous surgical interventions that may impact current health status or treatment plans.",
+        "tags": [
+            "surgery",
+            "operative history",
+            "past procedures"
+        ]
+    }
+]

@@ -1,0 +1,29 @@
+{
+  "type": "ARRAY",
+  "items": {
+    "type": "OBJECT",
+    "properties": {
+      "encounter_no": { "type": "INTEGER" },
+      "date": { "type": "STRING", "description": "YYYY-MM-DD" },
+      "type": { "type": "STRING", "description": "Type of visit (e.g., Walk-In, Telehealth)" },
+      "provider": { "type": "STRING" },
+      "chief_complaint": { "type": "STRING" },
+      "medications": { 
+        "type": "ARRAY", 
+        "items": { "type": "STRING" },
+        "description": "Medications prescribed, modified, or noted during this specific encounter"
+      },
+      "impression": { "type": "STRING", "description": "Final diagnosis or impression for this visit" },
+      "differential_diagnosis": { 
+        "type": "ARRAY", 
+        "items": { "type": "STRING" } 
+      },
+      "notes": { "type": "STRING", "description": "Brief summary of the plan or outcome" },
+      "casual_reason": { 
+        "type": "STRING", 
+        "description": "The narrative relevance of this encounter to the patient's current condition (e.g., missed cues, drug initiation)" 
+      }
+    },
+    "required": ["encounter_no", "date", "type", "provider", "chief_complaint", "medications", "impression", "notes", "casual_reason"]
+  }
+}

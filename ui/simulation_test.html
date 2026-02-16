@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedForce Raw Data Dashboard</title>
+    <style>
+        /* --- VS Code Dark Theme Style --- */
+        :root {
+            --bg-color: #1e1e1e;
+            --panel-bg: #252526;
+            --header-bg: #333333;
+            --border-color: #3e3e42;
+            --text-color: #d4d4d4;
+            --accent-color: #0e639c;
+            --json-string: #ce9178;
+            --json-key: #9cdcfe;
+            --json-bool: #569cd6;
+            --json-num: #b5cea8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- Header --- */
+        header {
+            background: var(--panel-bg);
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        h1 { margin: 0; font-size: 1.2rem; font-weight: 600; color: #fff; margin-right: auto; }
+
+        select {
+            background: #3c3c3c;
+            color: white;
+            padding: 6px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            background: #3c3c3c;
+            border: 1px solid #555;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 4px;
+            width: 350px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        button {
+            padding: 6px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        #btnStart { background: var(--accent-color); color: white; }
+        #btnStart:hover { background: #1177bb; }
+        #btnStart:disabled { background: #4b4b4b; color: #888; cursor: not-allowed; }
+        #btnStop { background: #a1260d; color: white; }
+        #btnStop:hover { background: #c42e10; }
+
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; background: #555; display: inline-block; }
+        .status-dot.connected { background: #4ec9b0; box-shadow: 0 0 5px #4ec9b0; }
+
+        /* --- Grid Layout --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr; 
+            grid-template-rows: 1fr 1fr 1fr; 
+            gap: 15px;
+            flex-grow: 1;
+            min-height: 0; 
+        }
+
+        /* --- Grid Placements --- */
+        #container-chat { grid-column: 1; grid-row: 1 / span 3; }
+        
+        #container-questions { grid-column: 2; grid-row: 1; }
+        #container-analytics { grid-column: 2; grid-row: 2; }
+        #container-checklist { grid-column: 2; grid-row: 3; }
+
+        #container-diagnosis { grid-column: 3; grid-row: 1; }
+        #container-education { grid-column: 3; grid-row: 2; }
+        #container-report    { grid-column: 3; grid-row: 3; }
+
+
+        /* --- Panel Styles --- */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            background: var(--header-bg);
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .update-flash { color: #4ec9b0; opacity: 0; transition: opacity 0.5s; }
+        .update-flash.active { opacity: 1; }
+
+        .json-content {
+            flex-grow: 1;
+            padding: 10px;
+            overflow: auto;
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            line-height: 1.4;
+            color: var(--json-string);
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="status-dot" id="statusDot"></div>
+        <h1>MedForce Scenario Monitor</h1>
+        
+        <!-- Environment Selector -->
+        <select id="envSelect" onchange="updateUrl()">
+            <option value="local">Localhost</option>
+            <option value="cloud">Cloud (Deployed)</option>
+        </select>
+
+        <input type="text" id="wsUrl" value="ws://localhost:8080/ws/simulation/audio">
+        
+        <button id="btnStart" onclick="startSimulation()">Connect</button>
+        <button id="btnStop" onclick="stopSimulation()" disabled>Stop</button>
+    </header>
+
+    <div class="dashboard-grid">
+        
+        <!-- COL 1: CHAT HISTORY -->
+        <div class="panel" id="container-chat">
+            <div class="panel-header">
+                <span>Chat History</span>
+                <span id="flash-chat" class="update-flash">● UPDATED</span>
+            </div>
+            <pre id="json-chat" class="json-content">Waiting...</pre>
+        </div>
+
+        <!-- COL 2, ROW 1: QUESTIONS -->
+        <div class="panel" id="container-questions">
+            <div class="panel-header">
+                <span>Clinical Questions</span>
+                <span id="flash-questions" class="update-flash">● UPDATED</span>
+            </div>
+            <pre id="json-questions" class="json-content">Waiting...</pre>
+        </div>
+
+        <!-- COL 3, ROW 1: DIAGNOSIS -->
+        <div class="panel" id="container-diagnosis">
+            <div class="panel-header">
+                <span>Diagnosis</span>
+                <span id="flash-diagnosis" class="update-flash">● UPDATED</span>
+            </div>
+            <pre id="json-diagnosis" class="json-content">Waiting...</pre>
+        </div>
+
+        <!-- COL 2, ROW 2: ANALYTICS -->
+        <div class="panel" id="container-analytics">
+            <div class="panel-header">
+                <span>Analytics</span>
+                <span id="flash-analytics" class="update-flash">● UPDATED</span>
+            </div>
+            <pre id="json-analytics" class="json-content">Waiting...</pre>
+        </div>
+
+        <!-- COL 3, ROW 2: EDUCATION -->
+        <div class="panel" id="container-education">
+            <div class="panel-header">
+                <span>Education</span>
+                <span id="flash-education" class="update-flash">● UPDATED</span>
+            </div>
+            <pre id="json-education" class="json-content">Waiting...</pre>
+        </div>
+
+        <!-- COL 2, ROW 3: CHECKLIST (NEW) -->
+        <div class="panel" id="container-checklist">
+            <div class="panel-header">
+                <span>Checklist</span>
+                <span id="flash-checklist" class="update-flash">● UPDATED</span>
+            </div>
+            <pre id="json-checklist" class="json-content">Waiting...</pre>
+        </div>
+
+        <!-- COL 3, ROW 3: REPORT (NEW) -->
+        <div class="panel" id="container-report">
+            <div class="panel-header">
+                <span>Report</span>
+                <span id="flash-report" class="update-flash">● UPDATED</span>
+            </div>
+            <pre id="json-report" class="json-content">Waiting...</pre>
+        </div>
+
+    </div>
+
+    <script>
+        let ws;
+        let audioQueue = [];
+        let isPlaying = false;
+        let currentAudioChunks = [];
+
+        // --- URL SWITCHER LOGIC ---
+        function updateUrl() {
+            const select = document.getElementById('envSelect');
+            const input = document.getElementById('wsUrl');
+            
+            if (select.value === 'local') {
+                input.value = "ws://localhost:8080/ws/simulation/audio";
+            } else {
+                // Cloud Run requires Secure WebSocket (wss://)
+                input.value = "wss://clinic-hepa-v2-481780815788.europe-west1.run.app/ws/simulation/audio";
+            }
+        }
+
+        function startSimulation() {
+            const url = document.getElementById('wsUrl').value;
+            try {
+                ws = new WebSocket(url);
+            } catch (e) {
+                console.error("Invalid URL");
+                return;
+            }
+            
+            ws.onopen = () => {
+                setStatus(true);
+                // Send Start
+                ws.send(JSON.stringify({
+                    type: "start",
+                    patient_id: "P001",
+                    script_file: "scenario_script.json"
+                }));
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                switch(data.type) {
+                    case "chat":
+                        updatePanel("json-chat", "flash-chat", data.questions);
+                        break;
+                    
+                    case "questions":
+                        updatePanel("json-questions", "flash-questions", data.questions);
+                        break;
+                    
+                    case "diagnosis":
+                        updatePanel("json-diagnosis", "flash-diagnosis", data.diagnosis);
+                        break;
+                    
+                    case "education":
+                        updatePanel("json-education", "flash-education", data.data);
+                        break;
+                    
+                    case "analytics":
+                        updatePanel("json-analytics", "flash-analytics", data.data);
+                        break;
+
+                    case "checklist":
+                        updatePanel("json-checklist", "flash-checklist", data.data || data.checklist);
+                        break;
+
+                    case "report":
+                        updatePanel("json-report", "flash-report", data.data || data.report);
+                        break;
+
+                    case "audio":
+                        handleAudioPacket(data);
+                        break;
+
+                    case "turn":
+                        if(data.data === "end") stopSimulation();
+                        break;
+                }
+            };
+
+            ws.onclose = () => setStatus(false);
+            ws.onerror = (e) => { console.error(e); setStatus(false); };
+        }
+
+        function stopSimulation() {
+            if (ws) ws.close();
+            setStatus(false);
+        }
+
+        function updatePanel(elementId, flashId, jsonData) {
+            const el = document.getElementById(elementId);
+            el.textContent = JSON.stringify(jsonData, null, 2);
+            
+            const flash = document.getElementById(flashId);
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 1000);
+        }
+
+        // --- Audio Logic ---
+        function handleAudioPacket(data) {
+            if (data.data) {
+                const binaryString = window.atob(data.data);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                    bytes[i] = binaryString.charCodeAt(i);
+                }
+                currentAudioChunks.push(bytes);
+            }
+
+            if (data.isFinal) {
+                if (currentAudioChunks.length > 0) {
+                    const blob = new Blob(currentAudioChunks, { type: 'audio/mp3' });
+                    const url = URL.createObjectURL(blob);
+                    audioQueue.push(url);
+                    playNextAudio();
+                    currentAudioChunks = [];
+                }
+            }
+        }
+
+        function playNextAudio() {
+            if (isPlaying || audioQueue.length === 0) return;
+            isPlaying = true;
+            const audio = new Audio(audioQueue.shift());
+            audio.play().catch(e => console.error(e));
+            audio.onended = () => {
+                isPlaying = false;
+                playNextAudio();
+            };
+        }
+
+        function setStatus(connected) {
+            const dot = document.getElementById('statusDot');
+            const btnStart = document.getElementById('btnStart');
+            const btnStop = document.getElementById('btnStop');
+
+            if (connected) {
+                dot.classList.add('connected');
+                btnStart.disabled = true;
+                btnStop.disabled = false;
+            } else {
+                dot.classList.remove('connected');
+                btnStart.disabled = false;
+                btnStop.disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+            "type": "ARRAY",
+            "items": {
+                "type": "OBJECT",
+                "properties": {
+                    "biomarker": {"type": "STRING", "description": "Name of the test (e.g., ALT, Hemoglobin)"},
+                    "unit": {"type": "STRING", "description": "Measurement unit (e.g., U/L, g/dL)"},
+                    "referenceRange": {
+                        "type": "OBJECT",
+                        "properties": {
+                            "min": {"type": "NUMBER"},
+                            "max": {"type": "NUMBER"}
+                        },
+                        "required": ["min", "max"]
+                    },
+                    "values": {
+                        "type": "ARRAY",
+                        "description": "Historical data points matching the encounter dates",
+                        "items": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "t": {"type": "STRING", "description": "ISO 8601 Date from the corresponding encounter"},
+                                "value": {"type": "NUMBER", "description": "The numeric result for that date"}
+                            },
+                            "required": ["t", "value"]
+                        }
+                    }
+                },
+                "required": ["biomarker", "unit", "referenceRange", "values"]
+            }
+        }

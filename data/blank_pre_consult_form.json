@@ -1,0 +1,28 @@
+{
+    "name": "",
+    "firstName": "",
+    "lastName": "",
+    "dob": "",
+    "age": null,
+    "gender": "",
+    "occupation": "",
+    "maritalStatus": "",
+    "contact": {
+        "phone": "",
+        "email": "",
+        "address": {
+            "street": "",
+            "city": "",
+            "state": "",
+            "zipCode": ""
+        },
+        "emergency": {
+            "name": "",
+            "relation": "",
+            "phone": ""
+        }
+    },
+    "complaint": "",
+    "medical_history": [],
+    "allergies": []
+}

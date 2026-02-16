@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Agent Test - Direct WebSocket</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        .card {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h1 { color: #00d4ff; margin-bottom: 10px; }
+        h2 { color: #00d4ff; font-size: 18px; margin-top: 0; }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        .status.connecting { background: #ffa500; color: #000; }
+        .status.connected { background: #4caf50; color: #fff; }
+        .status.error { background: #f44336; color: #fff; }
+        .status.disconnected { background: #757575; color: #fff; }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 600;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.95); }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-connect {
+            background: #00d4ff;
+            color: #000;
+        }
+        .btn-disconnect {
+            background: #f44336;
+            color: #fff;
+        }
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffa500;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .log {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #00d4ff;
+            padding-left: 10px;
+        }
+        .log-entry.error { border-left-color: #f44336; color: #ff9999; }
+        .log-entry.success { border-left-color: #4caf50; color: #99ff99; }
+        .info {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .info code {
+            background: #1a1a2e;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #ffa500;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎙️ Voice Agent Test - Direct WebSocket</h1>
+    <div class="info">
+        <strong>Direct Connection Mode</strong><br>
+        Endpoint: <code>/ws/voice/p0001</code><br>
+        Note: Connection takes ~85 seconds due to Gemini Live API initialization
+    </div>
+
+    <div class="card">
+        <h2>Connection</h2>
+        <div id="status" class="status disconnected">Disconnected</div>
+        <div id="timer" class="timer" style="display: none;">Connecting: <span id="elapsed">0</span>s</div>
+        <button id="connectBtn" class="btn-connect" onclick="connect()">Connect Voice Agent</button>
+        <button id="disconnectBtn" class="btn-disconnect" onclick="disconnect()" disabled>Disconnect</button>
+    </div>
+
+    <div class="card">
+        <h2>Event Log</h2>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        let ws = null;
+        let connectionTimer = null;
+        let startTime = null;
+        let audioContext = null;
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function updateStatus(text, className) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = text;
+            statusDiv.className = `status ${className}`;
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            document.getElementById('timer').style.display = 'block';
+            connectionTimer = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('elapsed').textContent = elapsed;
+            }, 100);
+        }
+
+        function stopTimer() {
+            if (connectionTimer) {
+                clearInterval(connectionTimer);
+                connectionTimer = null;
+            }
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('timer').style.display = 'none';
+            return elapsed;
+        }
+
+        async function connect() {
+            const patientId = 'p0001';
+            const wsUrl = `ws://localhost:8080/ws/voice/${patientId}`;
+            
+            log(`Connecting to: ${wsUrl}`, 'info');
+            updateStatus('Connecting...', 'connecting');
+            document.getElementById('connectBtn').disabled = true;
+            startTimer();
+
+            try {
+                ws = new WebSocket(wsUrl);
+                
+                ws.onopen = () => {
+                    const elapsed = stopTimer();
+                    log(`✅ WebSocket connected in ${elapsed}s`, 'success');
+                    log('Waiting for Gemini Live API to connect (this takes ~85 seconds)...', 'info');
+                    startTimer(); // Restart timer for Gemini connection
+                };
+
+                ws.onmessage = async (event) => {
+                    if (typeof event.data === 'string') {
+                        // JSON message
+                        try {
+                            const data = JSON.parse(event.data);
+                            handleJsonMessage(data);
+                        } catch (e) {
+                            log(`Received text: ${event.data}`, 'info');
+                        }
+                    } else {
+                        // Binary audio data
+                        // In a full implementation, you'd play this audio
+                        log(`📥 Received audio chunk (${event.data.size} bytes)`, 'info');
+                    }
+                };
+
+                ws.onerror = (error) => {
+                    stopTimer();
+                    log(`❌ WebSocket error: ${error.message || 'Unknown error'}`, 'error');
+                    updateStatus('Error', 'error');
+                };
+
+                ws.onclose = () => {
+                    stopTimer();
+                    log('🔌 WebSocket closed', 'info');
+                    updateStatus('Disconnected', 'disconnected');
+                    document.getElementById('connectBtn').disabled = false;
+                    document.getElementById('disconnectBtn').disabled = true;
+                };
+
+            } catch (error) {
+                stopTimer();
+                log(`❌ Connection failed: ${error.message}`, 'error');
+                updateStatus('Error', 'error');
+                document.getElementById('connectBtn').disabled = false;
+            }
+        }
+
+        function handleJsonMessage(data) {
+            const type = data.type;
+            
+            if (type === 'status') {
+                const status = data.status;
+                const message = data.message;
+                
+                if (status === 'connecting') {
+                    log(`⏳ ${message}`, 'info');
+                    updateStatus(message, 'connecting');
+                } else if (status === 'connected') {
+                    const elapsed = stopTimer();
+                    log(`✅ ${message} (Total time: ${elapsed}s)`, 'success');
+                    updateStatus('Connected & Ready', 'connected');
+                    document.getElementById('disconnectBtn').disabled = false;
+                } else if (status === 'error') {
+                    stopTimer();
+                    log(`❌ ${message}`, 'error');
+                    updateStatus(`Error: ${message}`, 'error');
+                }
+            } else if (type === 'tool_call') {
+                log(`🔧 Tool: ${data.tool} - ${data.status}`, 'info');
+            } else {
+                log(`📨 Message: ${JSON.stringify(data)}`, 'info');
+            }
+        }
+
+        function disconnect() {
+            if (ws) {
+                log('Disconnecting...', 'info');
+                ws.close();
+                ws = null;
+            }
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (ws) {
+                ws.close();
+            }
+        });
+    </script>
+</body>
+</html>

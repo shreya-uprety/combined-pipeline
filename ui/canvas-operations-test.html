@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Operations Test - MedForce Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .panel {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .panel h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .patient-selector {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+        }
+
+        .patient-selector label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .patient-selector input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .patient-selector input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .board-link {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .board-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .board-link a:hover {
+            text-decoration: underline;
+        }
+
+        .tool-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tool-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .tool-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .response-area {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 2px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .response-area.success {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .response-area.error {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-indicator.connected {
+            background: #28a745;
+            box-shadow: 0 0 8px #28a745;
+        }
+
+        .status-indicator.disconnected {
+            background: #dc3545;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #666;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .quick-action {
+            padding: 15px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .quick-action h4 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .quick-action p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Canvas Operations Test</h1>
+            <p>Test all canvas manipulation tools for MedForce Agent</p>
+            <div style="margin-top: 15px;">
+                <span class="status-indicator" id="statusIndicator"></span>
+                <span id="statusText">Checking connection...</span>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Left Column: Patient Selection & Quick Actions -->
+            <div class="panel">
+                <h2>Patient & Quick Actions</h2>
+                
+                <div class="patient-selector">
+                    <label for="patientId">Patient ID:</label>
+                    <input type="text" id="patientId" value="p0001" placeholder="Enter patient ID (e.g., p0001)">
+                    <div class="board-link">
+                        Board URL: <a href="#" id="boardLink" target="_blank">-</a>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('navigation')">Navigation</button>
+                    <button class="tab" onclick="switchTab('tasks')">Tasks</button>
+                    <button class="tab" onclick="switchTab('reports')">Reports</button>
+                </div>
+
+                <div id="navigation" class="tab-content active">
+                    <div class="tool-section">
+                        <h3>🎯 Focus on Board Item</h3>
+                        <p class="tool-description">Navigate to specific board components</p>
+                        <div style="padding: 10px; background: #fff3cd; border-left: 4px solid #ffc107; margin-bottom: 15px; border-radius: 4px;">
+                            <strong>📌 Two ways to use:</strong><br>
+                            <strong>Option 1 - Auto (Recommended):</strong><br>
+                            • Keep board tab open from first test<br>
+                            • Select item and click "Focus on Item"<br>
+                            • Board will receive the event and zoom<br>
+                            <br>
+                            <strong>Option 2 - Manual:</strong><br>
+                            • First open board manually and keep it open<br>
+                            • Then use "Focus on Item" - it will work instantly<br>
+                            <br>
+                            <strong>⚠️ Note:</strong> Board must be open BEFORE sending focus request to receive the event.
+                        </div>
+                        <div class="input-group">
+                            <label>Select Item:</label>
+                            <select id="focusItem">
+                                <option value="medication-track-1">Medication Track</option>
+                                <option value="dashboard-item-lab-chart">Lab Chart</option>
+                                <option value="dashboard-item-lab-table">Lab Table</option>
+                                <option value="lab-track-1">Lab Track</option>
+                                <option value="encounter-track-1">Encounter Track</option>
+                                <option value="risk-track-1">Risk Track</option>
+                                <option value="key-events-track-1">Key Events Track</option>
+                                <option value="adverse-event-analytics">Adverse Event Analytics</option>
+                                <option value="differential-diagnosis">Differential Diagnosis</option>
+                                <option value="iframe-item-easl-interface">EASL Interface</option>
+                                <option value="monitoring-summary-card">Monitoring Summary</option>
+                                <option value="monitoring-action-card">Monitoring Actions</option>
+                                <option value="monitoring-patient-chat">Patient Chat</option>
+                            </select>
+                        </div>
+                        <div style="padding: 8px; background: #e3f2fd; border-radius: 4px; margin-bottom: 10px; font-size: 13px;">
+                            💡 <strong>Tip:</strong> These are the actual board node IDs from the console output.
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="openBoardOnly()" style="flex: 1; background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">1. Open Board First</button>
+                            <button onclick="focusBoardItemOnly()" style="flex: 1;">2. Send Focus</button>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button onclick="focusBoardItem()">Do Both (Auto)</button>
+                        </div>
+                        <div id="focusResponse" class="response-area" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <div id="tasks" class="tab-content">
+                    <div class="tool-section">
+                        <h3>📋 Create TODO List</h3>
+                        <p class="tool-description">Add task lists to the board</p>
+                        <div class="input-group">
+                            <label>Title:</label>
+                            <input type="text" id="todoTitle" placeholder="e.g., Follow-up Actions">
+                        </div>
+                        <div class="input-group">
+                            <label>Description:</label>
+                            <input type="text" id="todoDescription" placeholder="Brief description">
+                        </div>
+                        <div class="input-group">
+                            <label>Tasks (one per line):</label>
+                            <textarea id="todoTasks" placeholder="Schedule follow-up appointment&#10;Review lab results&#10;Update medication list"></textarea>
+                        </div>
+                        <button onclick="createTodo()">Create TODO</button>
+                        <div id="todoResponse" class="response-area" style="display:none;"></div>
+                    </div>
+
+                    <div class="tool-section">
+                        <h3>📅 Create Schedule</h3>
+                        <p class="tool-description">Add scheduling panels</p>
+                        <div class="input-group">
+                            <label>Title:</label>
+                            <input type="text" id="scheduleTitle" placeholder="e.g., Follow-up Appointments">
+                        </div>
+                        <div class="input-group">
+                            <label>Details:</label>
+                            <textarea id="scheduleDetails" placeholder="Appointment details..."></textarea>
+                        </div>
+                        <button onclick="createSchedule()">Create Schedule</button>
+                        <div id="scheduleResponse" class="response-area" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <div id="reports" class="tab-content">
+                    <div class="tool-section">
+                        <h3>📊 Create Diagnosis Report</h3>
+                        <p class="tool-description">Generate DILI diagnostic report</p>
+                        <div class="input-group">
+                            <label>Summary:</label>
+                            <textarea id="diagnosisSummary" placeholder="Diagnostic summary..."></textarea>
+                        </div>
+                        <button onclick="createDiagnosisReport()">Create Diagnosis</button>
+                        <div id="diagnosisResponse" class="response-area" style="display:none;"></div>
+                    </div>
+
+                    <div class="tool-section">
+                        <h3>📄 Create Patient Report</h3>
+                        <p class="tool-description">Generate patient summary</p>
+                        <div class="input-group">
+                            <label>Summary:</label>
+                            <textarea id="patientReportSummary" placeholder="Patient summary..."></textarea>
+                        </div>
+                        <button onclick="createPatientReport()">Create Report</button>
+                        <div id="patientReportResponse" class="response-area" style="display:none;"></div>
+                    </div>
+
+                    <div class="tool-section">
+                        <h3>⚖️ Create Legal Report</h3>
+                        <p class="tool-description">Generate compliance report</p>
+                        <div class="input-group">
+                            <label>Summary:</label>
+                            <textarea id="legalReportSummary" placeholder="Legal compliance summary..."></textarea>
+                        </div>
+                        <button onclick="createLegalReport()">Create Legal Report</button>
+                        <div id="legalReportResponse" class="response-area" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: EASL & Notifications -->
+            <div class="panel">
+                <h2>EASL & Notifications</h2>
+
+                <div class="tool-section">
+                    <h3>🏛️ EASL Query</h3>
+                    <p class="tool-description">Send questions to EASL guideline system</p>
+                    <div class="input-group">
+                        <label>Clinical Question:</label>
+                        <textarea id="easlQuestion" placeholder="e.g., What is the RUCAM score for this DILI case?"></textarea>
+                    </div>
+                    <button onclick="sendEaslQuery()">Send to EASL</button>
+                    <div id="easlResponse" class="response-area" style="display:none;"></div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>🔔 Send Notification</h3>
+                    <p class="tool-description">Notify care team</p>
+                    <div class="input-group">
+                        <label>Message:</label>
+                        <textarea id="notificationMessage" placeholder="Notification message..."></textarea>
+                    </div>
+                    <button onclick="sendNotification()">Send Notification</button>
+                    <div id="notificationResponse" class="response-area" style="display:none;"></div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>🎯 Quick Test Actions</h3>
+                    <div class="quick-actions">
+                        <div class="quick-action" onclick="quickTest('focus')">
+                            <h4>Test Focus</h4>
+                            <p>Focus on medication timeline</p>
+                        </div>
+                        <div class="quick-action" onclick="quickTest('todo')">
+                            <h4>Test TODO</h4>
+                            <p>Create sample task list</p>
+                        </div>
+                        <div class="quick-action" onclick="quickTest('easl')">
+                            <h4>Test EASL</h4>
+                            <p>Send sample query</p>
+                        </div>
+                        <div class="quick-action" onclick="quickTest('notification')">
+                            <h4>Test Notification</h4>
+                            <p>Send test message</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-section">
+                    <h3>📋 Test Log</h3>
+                    <div id="testLog" class="response-area" style="display:block; max-height: 400px;">
+                        Waiting for tests...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_URL = 'http://localhost:8080';
+        let testLogEntries = [];
+
+        // Update board link when patient ID changes
+        document.getElementById('patientId').addEventListener('input', updateBoardLink);
+        
+        function updateBoardLink() {
+            const patientId = document.getElementById('patientId').value || 'p0001';
+            const boardUrl = `https://iso-clinic-v3-481780815788.europe-west1.run.app/board/${patientId}`;
+            document.getElementById('boardLink').href = boardUrl;
+            document.getElementById('boardLink').textContent = boardUrl;
+        }
+
+        // Initialize
+        updateBoardLink();
+        checkServerConnection();
+
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function checkServerConnection() {
+            try {
+                const response = await fetch(`${SERVER_URL}/health`);
+                if (response.ok) {
+                    document.getElementById('statusIndicator').classList.add('connected');
+                    document.getElementById('statusText').textContent = 'Connected to Server';
+                    addLog('✅ Server connection established');
+                } else {
+                    throw new Error('Server not responding');
+                }
+            } catch (error) {
+                document.getElementById('statusIndicator').classList.add('disconnected');
+                document.getElementById('statusText').textContent = 'Server Offline';
+                addLog('❌ Server connection failed');
+            }
+        }
+
+        function addLog(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            testLogEntries.unshift(`[${timestamp}] ${message}`);
+            if (testLogEntries.length > 50) testLogEntries.pop();
+            document.getElementById('testLog').textContent = testLogEntries.join('\n');
+        }
+
+        function showResponse(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.textContent = JSON.stringify(data, null, 2);
+            element.className = isError ? 'response-area error' : 'response-area success';
+        }
+
+        async function focusBoardItem() {
+            const patientId = document.getElementById('patientId').value;
+            const description = document.getElementById('focusItem').value;
+            addLog(`Focusing on: ${description}`);
+            
+            try {
+                // First, ensure board is open
+                const boardUrl = `https://iso-clinic-v3-481780815788.europe-west1.run.app/board/${patientId}`;
+                const boardWindow = window.open(boardUrl, 'medforce-board');
+                
+                if (boardWindow) {
+                    addLog(`📱 Opening board, waiting 4 seconds for full initialization...`);
+                    // Wait longer for board to fully load and establish event connection
+                    await new Promise(resolve => setTimeout(resolve, 4000));
+                }
+                
+                // Now send the focus request
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/focus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        objectId: description,
+                        focusOptions: { 
+                            zoom: 0.8, 
+                            highlight: true,
+                            duration: 1200,
+                            scrollIntoView: true
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('focusResponse', data, !response.ok);
+                if (response.ok) {
+                    addLog(`✅ Focus request sent for ${description}`);
+                    addLog(`🔍 Check the board tab - should see zoom animation now`);
+                } else {
+                    addLog(`❌ Focus failed: ${data.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                showResponse('focusResponse', { error: error.message }, true);
+                addLog(`❌ Focus error: ${error.message}`);
+            }
+        }
+
+        function openBoardOnly() {
+            const patientId = document.getElementById('patientId').value;
+            const boardUrl = `https://iso-clinic-v3-481780815788.europe-west1.run.app/board/${patientId}`;
+            window.open(boardUrl, 'medforce-board');
+            addLog(`📱 Board opened - keep this tab open and use "Send Focus" button`);
+        }
+
+        async function focusBoardItemOnly() {
+            const patientId = document.getElementById('patientId').value;
+            const description = document.getElementById('focusItem').value;
+            addLog(`📤 Sending focus request for: ${description}`);
+            
+            try {
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/focus', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        objectId: description,
+                        focusOptions: { 
+                            zoom: 0.8, 
+                            highlight: true,
+                            duration: 1200,
+                            scrollIntoView: true
+                        }
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('focusResponse', data, !response.ok);
+                if (response.ok) {
+                    addLog(`✅ Focus event sent - check board tab now`);
+                } else {
+                    addLog(`❌ Focus failed: ${data.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                showResponse('focusResponse', { error: error.message }, true);
+                addLog(`❌ Focus error: ${error.message}`);
+            }
+        }
+
+        async function createTodo() {
+            const patientId = document.getElementById('patientId').value;
+            const title = document.getElementById('todoTitle').value;
+            const description = document.getElementById('todoDescription').value;
+            const tasksText = document.getElementById('todoTasks').value;
+            const tasks = tasksText.split('\n').filter(t => t.trim()).map((task, idx) => ({
+                id: `task-${idx + 1}`,
+                text: task.trim(),
+                status: 'pending',
+                agent: 'Care Team',
+                subTodos: []
+            }));
+            
+            addLog(`Creating TODO: ${title}`);
+            
+            try {
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/create-todo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        title: title,
+                        description: description,
+                        todos: tasks
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('todoResponse', data, !response.ok);
+                if (response.ok) {
+                    addLog(`✅ Created TODO: ${title}`);
+                    const boardUrl = `https://iso-clinic-v3-481780815788.europe-west1.run.app/board/${patientId}`;
+                    window.open(boardUrl, 'medforce-board');
+                } else {
+                    addLog(`❌ TODO creation failed: ${data.error || 'Unknown error'}`);
+                }
+            } catch (error) {
+                showResponse('todoResponse', { error: error.message }, true);
+                addLog(`❌ TODO error: ${error.message}`);
+            }
+        }
+
+        async function sendEaslQuery() {
+            const patientId = document.getElementById('patientId').value;
+            const question = document.getElementById('easlQuestion').value;
+            addLog(`Sending EASL query...`);
+            
+            try {
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/send-to-easl', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        question: question
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('easlResponse', data, !response.ok);
+                addLog(response.ok ? `✅ EASL query sent` : `❌ EASL query failed`);
+            } catch (error) {
+                showResponse('easlResponse', { error: error.message }, true);
+                addLog(`❌ EASL error: ${error.message}`);
+            }
+        }
+
+        async function createSchedule() {
+            const patientId = document.getElementById('patientId').value;
+            const title = document.getElementById('scheduleTitle').value;
+            const details = document.getElementById('scheduleDetails').value;
+            addLog(`Creating schedule: ${title}`);
+            
+            try {
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/create-schedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        title: title,
+                        details: details,
+                        currentStatus: 'Pending'
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('scheduleResponse', data, !response.ok);
+                addLog(response.ok ? `✅ Schedule created` : `❌ Schedule creation failed`);
+            } catch (error) {
+                showResponse('scheduleResponse', { error: error.message }, true);
+                addLog(`❌ Schedule error: ${error.message}`);
+            }
+        }
+
+        async function sendNotification() {
+            const patientId = document.getElementById('patientId').value;
+            const message = document.getElementById('notificationMessage').value;
+            addLog(`Sending notification...`);
+            
+            try {
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/send-notification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        message: message
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('notificationResponse', data, !response.ok);
+                addLog(response.ok ? `✅ Notification sent` : `❌ Notification failed`);
+            } catch (error) {
+                showResponse('notificationResponse', { error: error.message }, true);
+                addLog(`❌ Notification error: ${error.message}`);
+            }
+        }
+
+        async function createDiagnosisReport() {
+            const patientId = document.getElementById('patientId').value;
+            const summary = document.getElementById('diagnosisSummary').value;
+            addLog(`Creating diagnosis report...`);
+            
+            try {
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/create-diagnosis', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        summary: summary
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('diagnosisResponse', data, !response.ok);
+                addLog(response.ok ? `✅ Diagnosis report created` : `❌ Diagnosis creation failed`);
+            } catch (error) {
+                showResponse('diagnosisResponse', { error: error.message }, true);
+                addLog(`❌ Diagnosis error: ${error.message}`);
+            }
+        }
+
+        async function createPatientReport() {
+            const patientId = document.getElementById('patientId').value;
+            const summary = document.getElementById('patientReportSummary').value;
+            addLog(`Creating patient report...`);
+            
+            try {
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/create-patient-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        summary: summary
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('patientReportResponse', data, !response.ok);
+                addLog(response.ok ? `✅ Patient report created` : `❌ Patient report failed`);
+            } catch (error) {
+                showResponse('patientReportResponse', { error: error.message }, true);
+                addLog(`❌ Patient report error: ${error.message}`);
+            }
+        }
+
+        async function createLegalReport() {
+            const patientId = document.getElementById('patientId').value;
+            const summary = document.getElementById('legalReportSummary').value;
+            addLog(`Creating legal report...`);
+            
+            try {
+                const response = await fetch('https://iso-clinic-v3-481780815788.europe-west1.run.app/api/create-legal-report', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patientId: patientId,
+                        summary: summary
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('legalReportResponse', data, !response.ok);
+                addLog(response.ok ? `✅ Legal report created` : `❌ Legal report failed`);
+            } catch (error) {
+                showResponse('legalReportResponse', { error: error.message }, true);
+                addLog(`❌ Legal report error: ${error.message}`);
+            }
+        }
+
+        function quickTest(type) {
+            const patientId = document.getElementById('patientId').value;
+            const boardUrl = `https://iso-clinic-v3-481780815788.europe-west1.run.app/board/${patientId}`;
+            
+            switch(type) {
+                case 'focus':
+                    document.getElementById('focusItem').value = 'medication-track-1';
+                    addLog(`🎯 Quick Test: Focus on medication track`);
+                    focusBoardItemOnly();
+                    break;
+                case 'todo':
+                    document.getElementById('todoTitle').value = 'Quick Test Tasks';
+                    document.getElementById('todoDescription').value = 'Testing TODO creation';
+                    document.getElementById('todoTasks').value = 'Review patient chart\nCheck lab results\nUpdate care plan';
+                    addLog(`📋 Quick Test: Creating TODO list`);
+                    createTodo();
+                    break;
+                case 'easl':
+                    document.getElementById('easlQuestion').value = 'What is the recommended treatment approach for this patient based on EASL guidelines?';
+                    addLog(`🏛️ Quick Test: EASL query`);
+                    sendEaslQuery();
+                    break;
+                case 'notification':
+                    document.getElementById('notificationMessage').value = 'Test notification from canvas operations test';
+                    addLog(`🔔 Quick Test: Sending notification`);
+                    sendNotification();
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>

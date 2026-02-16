@@ -1,0 +1,16 @@
+{
+  "type": "OBJECT",
+  "properties": {
+    "date": { "type": "STRING", "description": "YYYY-MM-DD" },
+    "visitType": { "type": "STRING" },
+    "provider": { "type": "STRING" },
+    "studyType": { "type": "STRING" },
+    "specialty": { "type": "STRING" },
+    "dataSource": { "type": "STRING" },
+    "highlights": { 
+      "type": "ARRAY", 
+      "items": { "type": "STRING" }
+    }
+  },
+  "required": ["date", "visitType", "provider", "studyType", "specialty", "dataSource", "highlights"]
+}
