@@ -1,0 +1,58 @@
+{
+    "general_diagnosis": [
+        {
+            "did": "a1b2c",
+            "diagnosis": "Drug-Induced Liver Injury, Acetaminophen-Related, Acute",
+            "indicators_point": [
+                "Patient presents with jaundice (eyes are yellow).",
+                "Elevated AST (450 U/L) and ALT (620 U/L).",
+                "Elevated Alk Phos (180 U/L).",
+                "Elevated Total Bilirubin (5.2 mg/dL).",
+                "Patient reports taking 6-8 Extra Strength Tylenol or Tylenol PM pills daily for several weeks.",
+                "Patient stopped Tylenol yesterday."
+            ],
+            "reasoning": "The patient's presentation of jaundice, significantly elevated liver enzymes (AST, ALT, Alk Phos), and high bilirubin, coupled with a history of excessive acetaminophen (Tylenol) intake, strongly suggests drug-induced liver injury (DILI) due to acetaminophen toxicity. The timing of symptom onset relative to high Tylenol use and the resolution after cessation further supports this diagnosis. The INR is borderline, which can be seen in liver dysfunction.",
+            "followup_question": "Have you consumed any alcohol in the past month?"
+        },
+        {
+            "did": "d3e4f",
+            "diagnosis": "Cholestasis, Biliary Obstruction, Secondary to Unknown Cause, Acute",
+            "indicators_point": [
+                "Patient presents with jaundice (eyes are yellow).",
+                "Elevated Alk Phos (180 U/L).",
+                "Elevated Total Bilirubin (5.2 mg/dL).",
+                "Patient reports significant itching."
+            ],
+            "reasoning": "The elevated alkaline phosphatase and bilirubin, along with the symptom of itching (pruritus), are indicative of cholestasis, a condition where bile flow is impaired. While acetaminophen toxicity can cause cholestatic features, the prominent itching and the possibility of other causes warrant considering biliary obstruction as a differential. The recent dental abscess and antibiotic use (Augmentin) could potentially be linked to ascending cholangitis or other biliary issues, though less common.",
+            "followup_question": "Have you had any recent fevers or chills?"
+        }
+    ],
+    "hepato_diagnosis": [
+        {
+            "did": "a1b2c",
+            "diagnosis": "Acetaminophen-Induced Hepatotoxicity Acute",
+            "indicators_point": [
+                "My eyes are yellow",
+                "I take Lisinopril for my blood pressure.",
+                "I stopped taking Tylenol yesterday.",
+                "I was taking a bunch of it for toothache.",
+                "It was probably six to eight pills a day."
+            ],
+            "reasoning": "The patient presents with overt jaundice (yellow eyes) and elevated liver enzymes (AST, ALT, Alk Phos) with a borderline INR, strongly suggesting acute liver injury. The patient admits to taking 6-8 extra strength or Tylenol PM pills daily for several weeks for a toothache, which is a significant overdose of acetaminophen. Acetaminophen overdose is a common cause of acute liver injury, and the timing aligns with the reported symptoms and lab abnormalities.",
+            "followup_question": "Have you consumed any alcohol in the past month?"
+        },
+        {
+            "did": "d3e4f",
+            "diagnosis": "Cholestasis Secondary to Drug-Induced Liver Injury",
+            "indicators_point": [
+                "My eyes are yellow",
+                "I can\u2019t stop itching.",
+                "I take Lisinopril for my blood pressure.",
+                "I was taking a bunch of it for toothache.",
+                "It was probably six to eight pills a day."
+            ],
+            "reasoning": "The patient's chief complaint includes jaundice ('eyes are yellow') and significant pruritus ('can't stop itching'). While the acetaminophen overdose is a primary concern for hepatocellular injury, the cholestatic features (elevated Alk Phos, jaundice, pruritus) suggest a component of cholestasis. Drug-induced liver injury (DILI) can present with cholestatic patterns, and the recent history of high-dose acetaminophen use, along with other medications like Lisinopril, makes DILI a strong differential. The elevated bilirubin and itching are key indicators of impaired bile flow.",
+            "followup_question": "Have you noticed any changes in the color of your stools, such as pale or clay-colored stools?"
+        }
+    ]
+}

@@ -23,9 +23,7 @@ RANKER_MODEL = "gemini-2.5-flash-lite"
 class BaseLogicAgent:
     def __init__(self):
         self.client = genai.Client(
-            vertexai=True, 
-            project=os.getenv("PROJECT_ID"), 
-            location=os.getenv("PROJECT_LOCATION", "us-central1")
+            api_key=os.getenv("GOOGLE_API_KEY")
             )
 
 
@@ -35,9 +33,7 @@ class TextBridgeAgent:
         self.system_instruction = system_instruction
         self.voice_name = voice_name
         self.client = genai.Client(
-            vertexai=True, 
-            project=os.getenv("PROJECT_ID"), 
-            location=os.getenv("PROJECT_LOCATION", "us-central1")
+            api_key=os.getenv("GOOGLE_API_KEY")
         )
         self.session = None
 

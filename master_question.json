@@ -1,0 +1,323 @@
+[
+    {
+        "content": "What brings you in today?",
+        "qid": "00001",
+        "rank": 999,
+        "status": "asked",
+        "answer": "My eyes are yellow, my sister saw it, two days ago. Now I look like I have a bad tan that won't go away.",
+        "headline": "Chief Complaint",
+        "domain": "Symptom Triage",
+        "system_affected": "General",
+        "clinical_intent": "To understand the primary reason for the patient's visit and initiate the clinical encounter.",
+        "tags": [
+            "reason for visit",
+            "chief complaint",
+            "presenting problem"
+        ]
+    },
+    {
+        "content": "Current Medications",
+        "qid": "00004",
+        "rank": 999,
+        "status": "asked",
+        "answer": "Lisinopril for my blood pressure.",
+        "headline": "Current Medications",
+        "domain": "Medication Review",
+        "system_affected": "General",
+        "clinical_intent": "To gather a comprehensive list of all current medications the patient is taking, including prescription, over-the-counter, and supplements, to assess for potential interactions, adherence, and appropriateness.",
+        "tags": [
+            "medication",
+            "current",
+            "list",
+            "review"
+        ]
+    },
+    {
+        "content": "Drug Allergies",
+        "qid": "00005",
+        "rank": 999,
+        "status": "asked",
+        "answer": "I take Lisinopril for my blood pressure. I stopped taking Tylenol yesterday. I was taking a bunch of it for toothache.",
+        "headline": "Drug Allergies",
+        "domain": "Medical History",
+        "system_affected": "General",
+        "clinical_intent": "To identify potential adverse drug reactions and contraindications for future treatments.",
+        "tags": [
+            "allergy",
+            "medication",
+            "adverse reaction"
+        ]
+    },
+    {
+        "content": "Past Surgeries",
+        "qid": "00006",
+        "rank": 999,
+        "status": "asked",
+        "answer": "It was probably six to eight pills a day.",
+        "headline": "Past Surgical History",
+        "domain": "Surgical History",
+        "system_affected": "General",
+        "clinical_intent": "To understand past medical interventions and their potential impact on current health status.",
+        "tags": [
+            "surgery",
+            "procedure",
+            "medical history"
+        ]
+    },
+    {
+        "qid": "a1b2c",
+        "content": "Have you traveled recently or been exposed to anyone with similar symptoms?",
+        "status": null,
+        "answer": null,
+        "rank": 11,
+        "headline": "Recent Travel/Exposure",
+        "domain": "Symptom Triage",
+        "system_affected": "General",
+        "clinical_intent": "To identify potential infectious exposures or environmental triggers for current symptoms.",
+        "tags": [
+            "travel",
+            "exposure",
+            "infectious disease",
+            "symptoms"
+        ]
+    },
+    {
+        "qid": "d3e4f",
+        "content": "Have you had any recent changes in your diet or appetite?",
+        "status": null,
+        "answer": null,
+        "rank": 13,
+        "headline": "Dietary Changes",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess potential gastrointestinal causes related to recent dietary modifications or appetite changes.",
+        "tags": [
+            "diet",
+            "appetite",
+            "gastrointestinal",
+            "symptoms"
+        ]
+    },
+    {
+        "qid": "7bb28eea-d500-424e-9070-f69afb7610c4",
+        "content": "Have you experienced any abdominal pain, particularly in the upper right side?",
+        "status": null,
+        "answer": null,
+        "rank": 9,
+        "headline": "Upper Right Abdominal Pain",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess for symptoms suggestive of hepatobiliary or gallbladder pathology.",
+        "tags": [
+            "abdominal pain",
+            "right upper quadrant",
+            "gastrointestinal",
+            "hepatobiliary"
+        ]
+    },
+    {
+        "qid": "f3844e29-90e9-4972-a719-97329a109d6e",
+        "content": "Have you noticed any changes in the color of your urine or stools?",
+        "status": null,
+        "answer": null,
+        "rank": 3,
+        "headline": "Urine/Stool Color Change",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To identify potential signs of liver dysfunction or biliary obstruction.",
+        "tags": [
+            "urine color",
+            "stool color",
+            "liver function",
+            "biliary obstruction"
+        ]
+    },
+    {
+        "qid": "da01ed07-f481-407b-8c8e-051410962c65",
+        "content": "Have you experienced any nausea, vomiting, or abdominal pain, particularly in the upper right quadrant?",
+        "status": null,
+        "answer": null,
+        "rank": 4,
+        "headline": "Nausea/Vomiting/Abdominal Pain",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess for symptoms indicative of acute gastrointestinal distress or inflammation.",
+        "tags": [
+            "nausea",
+            "vomiting",
+            "abdominal pain",
+            "gastrointestinal"
+        ]
+    },
+    {
+        "qid": "cdae47da-535f-4077-807d-19d98cf934cd",
+        "content": "Have you noticed any changes in the color of your urine or stools, such as dark urine or pale/clay-colored stools?",
+        "status": null,
+        "answer": null,
+        "rank": 1,
+        "headline": "Urine/Stool Color Changes",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To evaluate for potential hepatobiliary or gastrointestinal issues indicated by changes in excretory product color.",
+        "tags": [
+            "urine color",
+            "stool color",
+            "hepatobiliary",
+            "gastrointestinal"
+        ]
+    },
+    {
+        "qid": "3ee7d1a7-6d97-4e65-b0d5-0b653c3a79e9",
+        "content": "How much Tylenol, in milligrams, would you estimate you take per day, and for how long have you been taking it regularly?",
+        "status": "asked",
+        "answer": "I stopped taking Tylenol yesterday. I was taking a bunch of it for toothache.",
+        "rank": 999,
+        "headline": "Tylenol Use Assessment",
+        "domain": "Medication Review",
+        "system_affected": "General",
+        "clinical_intent": "To quantify the daily dosage and duration of Tylenol (acetaminophen) use to assess for potential hepatotoxicity or overuse.",
+        "tags": [
+            "Tylenol",
+            "acetaminophen",
+            "dosage",
+            "duration",
+            "hepatotoxicity"
+        ]
+    },
+    {
+        "qid": "e5115c2e-781a-4609-96e1-67ebd328ecb7",
+        "content": "Have you experienced any fever or chills recently?",
+        "status": null,
+        "answer": null,
+        "rank": 6,
+        "headline": "Fever/Chills",
+        "domain": "Symptom Triage",
+        "system_affected": "General",
+        "clinical_intent": "To screen for signs of infection or inflammatory processes.",
+        "tags": [
+            "fever",
+            "chills",
+            "infection",
+            "inflammation"
+        ]
+    },
+    {
+        "qid": "0dd8e868-f166-45cb-bb34-d17f34695d20",
+        "content": "Have you experienced any itching or skin rashes recently?",
+        "status": null,
+        "answer": null,
+        "rank": 12,
+        "headline": "Itching/Rash",
+        "domain": "Symptom Triage",
+        "system_affected": "Integumentary",
+        "clinical_intent": "To assess for dermatological manifestations of allergic reactions, infections, or systemic diseases.",
+        "tags": [
+            "itching",
+            "rash",
+            "dermatology",
+            "systemic disease"
+        ]
+    },
+    {
+        "qid": "dae0601d-a6f8-4458-a115-842317fdb0f4",
+        "content": "Have you had any recent fevers, body aches, or fatigue?",
+        "status": null,
+        "answer": null,
+        "rank": 8,
+        "headline": "Fever/Body Aches/Fatigue",
+        "domain": "Symptom Triage",
+        "system_affected": "General",
+        "clinical_intent": "To screen for systemic symptoms suggestive of viral illness, infection, or inflammatory conditions.",
+        "tags": [
+            "fever",
+            "body aches",
+            "fatigue",
+            "systemic illness"
+        ]
+    },
+    {
+        "qid": "242dc819-d0fb-420b-8083-402a9b2f630e",
+        "content": "Have you experienced any confusion or changes in your mental state recently?",
+        "status": null,
+        "answer": null,
+        "rank": 14,
+        "headline": "Mental State Changes",
+        "domain": "Symptom Triage",
+        "system_affected": "Neurological",
+        "clinical_intent": "To identify potential neurological or metabolic derangements affecting cognitive function.",
+        "tags": [
+            "confusion",
+            "mental state",
+            "neurological",
+            "cognitive function"
+        ]
+    },
+    {
+        "qid": "f88f8f7a-1e97-4f80-b5b4-767ea86f7fe4",
+        "content": "Have you experienced any nausea or vomiting since your symptoms began?",
+        "status": null,
+        "answer": null,
+        "rank": 5,
+        "headline": "Nausea/Vomiting",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess for gastrointestinal distress, particularly in the context of other reported symptoms.",
+        "tags": [
+            "nausea",
+            "vomiting",
+            "gastrointestinal",
+            "symptoms"
+        ]
+    },
+    {
+        "qid": "e2bba688-80b5-4265-b126-87ef02fb9f7f",
+        "content": "Have you consumed any alcohol in the past month?",
+        "status": null,
+        "answer": null,
+        "rank": 10,
+        "headline": "Recent Alcohol Consumption",
+        "domain": "Social History",
+        "system_affected": "General",
+        "clinical_intent": "To gather information on alcohol use, which can impact various health conditions and treatments.",
+        "tags": [
+            "alcohol",
+            "substance use",
+            "social history",
+            "liver"
+        ]
+    },
+    {
+        "qid": "48e30b32-8f9d-4874-8d8f-1d44b9b9d7d9",
+        "content": "Have you noticed any changes in the color of your stools, such as pale or clay-colored stools?",
+        "status": null,
+        "answer": null,
+        "rank": 2,
+        "headline": "Pale Stool Color",
+        "domain": "Symptom Triage",
+        "system_affected": "Gastrointestinal",
+        "clinical_intent": "To assess for potential biliary obstruction or malabsorption issues.",
+        "tags": [
+            "stool color",
+            "pale stool",
+            "biliary obstruction",
+            "malabsorption"
+        ]
+    },
+    {
+        "qid": "58415264-17e9-447d-87e9-9f5fb9fdc4da",
+        "content": "Have you had any recent fevers or chills?",
+        "status": null,
+        "answer": null,
+        "rank": 7,
+        "headline": "Recent Fever/Chills",
+        "domain": "Symptom Triage",
+        "system_affected": "General",
+        "clinical_intent": "To screen for signs of infection or inflammatory processes.",
+        "tags": [
+            "fever",
+            "chills",
+            "infection",
+            "inflammation"
+        ]
+    }
+]
