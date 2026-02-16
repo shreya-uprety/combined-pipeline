@@ -1061,11 +1061,19 @@ class PreConsulteAgent(BaseLogicAgent):
 
         # 4. Construct Prompt Context
         # We inject the slots into the prompt so the LLM knows what to offer when the time comes
+        # Build the latest input section including attachments
+        latest_input = current_user_message
+        if user_attachments:
+            attachment_names = ", ".join(user_attachments) if isinstance(user_attachments, list) else str(user_attachments)
+            latest_input += f"\n[Patient uploaded file(s): {attachment_names}]"
+        if user_form_data:
+            latest_input += f"\n[Patient submitted form data: {json.dumps(user_form_data)}]"
+
         prompt_content = (
             f"### CONVERSATION HISTORY (JSON) ###\n"
             f"{json.dumps(history, indent=2)}\n\n"
             f"### LATEST USER INPUT ###\n"
-            f"{current_user_message}\n\n"
+            f"{latest_input}\n\n"
             f"### AVAILABLE SLOTS (Use this data if Action is OFFER_SLOTS) ###\n"
             f"{json.dumps(available_slots, indent=2)}\n\n"
             f"### TASK ###\n"

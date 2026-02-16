@@ -37,8 +37,17 @@ logger = logging.getLogger("websocket-agent")
 GEMINI_LIVE_MODEL = "gemini-live-2.5-flash-preview-native-audio-09-2025"
 VOICE_ENABLED = True  # Gemini Live handles audio natively
 
-# Import existing agents (PreConsulteAgent removed - not needed for board agents)
+# Import existing agents
 from chat_agent import ChatAgent
+
+# Import PreConsulteAgent for pre-consultation (Linda)
+try:
+    from my_agents import PreConsulteAgent
+    _PreConsulteAgent = PreConsulteAgent
+    logger.info("PreConsulteAgent imported for pre-consult WebSocket")
+except Exception as e:
+    _PreConsulteAgent = None
+    logger.warning(f"PreConsulteAgent not available for WebSocket: {e}")
 
 
 class MessageType(str, Enum):
@@ -283,7 +292,7 @@ class WebSocketLiveAgent:
     def __init__(self):
         """Initialize WebSocket live agent."""
         self.connection_manager = WebSocketConnectionManager()
-        self.pre_consult_agent = None  # Pre-consult agent removed - not needed for board agents
+        self.pre_consult_agent = None  # Lazy-initialized PreConsulteAgent
         self.gemini_client = None
         
         # Chat agents are the primary interface for board agents
@@ -454,18 +463,128 @@ Assist the clinician with patient care. Communicate only in English. Be concise.
         finally:
             self.connection_manager.disconnect(session.session_id)
     
+    def _get_pre_consult_agent(self):
+        """Lazy initialization of PreConsulteAgent for pre-consultation chat."""
+        if self.pre_consult_agent is None and _PreConsulteAgent is not None:
+            try:
+                logger.info("Initializing PreConsulteAgent for WebSocket...")
+                self.pre_consult_agent = _PreConsulteAgent()
+                logger.info("PreConsulteAgent initialized successfully")
+            except Exception as e:
+                logger.error(f"PreConsulteAgent initialization failed: {e}")
+        return self.pre_consult_agent
+
     async def _handle_pre_consult_message(self, session: WebSocketSession, data: Dict[str, Any]):
         """
         Handle message for PreConsulteAgent (Linda the admin).
-        NOTE: This functionality has been removed for board agents.
-        Redirect to chat agent instead.
-        
+
         Args:
             session: WebSocket session
-            data: Message data
+            data: Message data containing message, attachments, form_data
         """
-        # Pre-consult agent removed - redirect to chat agent
-        await self._handle_chat_message(session, data)
+        try:
+            agent = self._get_pre_consult_agent()
+            if agent is None:
+                await session.send_error("PreConsulteAgent not available")
+                return
+
+            # Frontend sends: patient_message, patient_attachment, patient_form
+            # Also support: message, attachments, form_data (generic WS format)
+            user_message = data.get("patient_message") or data.get("message", "")
+            attachments = data.get("patient_attachment") or data.get("attachments", [])
+            form_data = data.get("patient_form") or data.get("form_data", None)
+
+            # Handle file attachments (Base64 -> GCS)
+            # Frontend sends: [{name, type, data}] where data is base64
+            filenames_for_agent = []
+            if attachments:
+                for att in attachments:
+                    try:
+                        # Support both frontend format (name/data) and generic (filename/content_base64)
+                        filename = att.get("name") or att.get("filename", "")
+                        content_b64 = att.get("data") or att.get("content_base64", "")
+                        if not filename or not content_b64:
+                            continue
+
+                        if "," in content_b64:
+                            _, encoded = content_b64.split(",", 1)
+                        else:
+                            encoded = content_b64
+
+                        file_bytes = base64.b64decode(encoded)
+                        file_path = f"patient_data/{session.patient_id}/raw_data/{filename}"
+
+                        content_type = att.get("type", "application/octet-stream")
+                        if not content_type or content_type == "application/octet-stream":
+                            if filename.lower().endswith(".png"): content_type = "image/png"
+                            elif filename.lower().endswith(".jpg"): content_type = "image/jpeg"
+                            elif filename.lower().endswith(".pdf"): content_type = "application/pdf"
+
+                        agent.gcs.create_file_from_string(
+                            file_bytes, file_path, content_type=content_type
+                        )
+                        filenames_for_agent.append(filename)
+                        logger.info(f"Saved attachment: {filename}")
+                    except Exception as e:
+                        logger.error(f"Failed to process attachment: {e}")
+
+            # Build agent input
+            agent_input = {
+                "patient_message": user_message,
+                "patient_attachment": filenames_for_agent,
+                "patient_form": form_data
+            }
+
+            await session.send_typing_indicator(True)
+
+            # Call PreConsulteAgent
+            response_data = await agent.pre_consulte_agent(
+                user_request=agent_input,
+                patient_id=session.patient_id
+            )
+
+            await session.send_typing_indicator(False)
+
+            # Send structured response back
+            if isinstance(response_data, dict):
+                # Check for form requests
+                if response_data.get("action") == "SEND_FORM" or response_data.get("form_request"):
+                    await session.send_json({
+                        "type": MessageType.FORM.value,
+                        "data": response_data,
+                        "timestamp": datetime.now().isoformat()
+                    })
+                # Check for slot offerings
+                elif response_data.get("action") == "OFFER_SLOTS" or response_data.get("available_slots"):
+                    await session.send_json({
+                        "type": MessageType.SLOTS.value,
+                        "data": response_data,
+                        "timestamp": datetime.now().isoformat()
+                    })
+                else:
+                    # Standard text response
+                    message_text = response_data.get("message", response_data.get("response", str(response_data)))
+                    await session.send_json({
+                        "type": MessageType.TEXT.value,
+                        "content": message_text,
+                        "data": response_data,
+                        "timestamp": datetime.now().isoformat()
+                    })
+            else:
+                await session.send_json({
+                    "type": MessageType.TEXT.value,
+                    "content": str(response_data),
+                    "timestamp": datetime.now().isoformat()
+                })
+
+            logger.info(f"Pre-consult response sent to session {session.session_id}")
+
+        except Exception as e:
+            logger.error(f"Pre-consult error: {e}")
+            import traceback
+            traceback.print_exc()
+            await session.send_typing_indicator(False)
+            await session.send_error(f"Error processing message: {str(e)}")
     
     async def _handle_chat_message(self, session: WebSocketSession, data: Dict[str, Any]):
         """
