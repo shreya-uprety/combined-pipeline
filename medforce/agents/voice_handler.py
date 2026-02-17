@@ -47,7 +47,7 @@ class VoiceWebSocketHandler:
         self.last_user_query = ""  # Track last user query for auto-focus fallback
         self._last_response_time = 0  # Track when last response was sent
         self._response_cooldown_seconds = 3  # Cooldown before accepting new queries
-        self._suppress_follow_up_audio = False  # Suppress duplicate audio after tool follow-ups
+        # Audio suppression removed - was causing tool call responses to be silenced
         self._last_auto_focus_item = None  # Track auto-focus to prevent duplicate focus_board_item calls
         self._last_auto_focus_time = 0
     
@@ -2262,10 +2262,6 @@ This analysis was generated via Voice Agent at {now.isoformat()}"""
                     data = message["bytes"]
                     chunk_count += 1
 
-                    # Reset audio suppression when user sends new audio
-                    if chunk_count == 1 or self._calculate_audio_energy(data) > 300:
-                        self._suppress_follow_up_audio = False
-
                     # Send ALL audio to Gemini — let server-side VAD handle detection
                     await self.out_queue.put({"data": data, "mime_type": "audio/pcm"})
 
@@ -2310,13 +2306,6 @@ This analysis was generated via Voice Agent at {now.isoformat()}"""
 
                 response_count = 0
                 audio_chunks = 0
-                tool_call_after_audio = False
-
-                # If previous turn had audio then a tool call, suppress this turn's audio
-                suppress_this_turn = self._suppress_follow_up_audio
-                if suppress_this_turn:
-                    logger.info(f"🔇 Turn {turn_number}: Suppressing follow-up audio (previous turn already spoke)")
-                    self._suppress_follow_up_audio = False
 
                 async for response in turn:
                     response_count += 1
@@ -2342,11 +2331,6 @@ This analysis was generated via Voice Agent at {now.isoformat()}"""
                     # Handle audio data - stream immediately for low latency
                     if data := response.data:
                         if not self.should_stop:
-                            # Suppress duplicate audio from tool follow-ups
-                            if suppress_this_turn or tool_call_after_audio:
-                                logger.info(f"🔇 Suppressing duplicate audio chunk ({len(data)} bytes)")
-                                continue
-
                             # Debug first audio chunk to verify format
                             if not first_audio_logged:
                                 logger.info(f"🎵 First audio chunk: {len(data)} bytes, type: {type(data)}")
@@ -2359,19 +2343,13 @@ This analysis was generated via Voice Agent at {now.isoformat()}"""
 
                     # Handle tool calls - await them to ensure proper execution
                     if hasattr(response, 'tool_call') and response.tool_call:
-                        if audio_chunks > 0:
-                            # Audio was already spoken in this turn BEFORE this tool call
-                            # Any audio Gemini generates after this tool's response will be a repeat
-                            tool_call_after_audio = True
-                            self._suppress_follow_up_audio = True
-                            logger.info(f"🔇 Audio already spoken ({audio_chunks} chunks), will suppress follow-up audio")
                         await self.handle_tool_call(response.tool_call)
 
                 # Log turn summary
                 if audio_chunks > 0:
                     logger.info(f"🔊 Turn {turn_number}: {audio_chunks} audio chunks sent to client")
 
-                logger.info(f"🔄 === TURN {turn_number} END (responses: {response_count}, audio: {audio_chunks}, suppressed: {suppress_this_turn or tool_call_after_audio}) ===")
+                logger.info(f"🔄 === TURN {turn_number} END (responses: {response_count}, audio: {audio_chunks}) ===")
                         
         except Exception as e:
             logger.error(f"Error receiving audio: {e}")
