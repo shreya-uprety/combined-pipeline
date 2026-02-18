@@ -24,7 +24,7 @@ async def get_admin_ui():
 @router.post("/api/get-patient-file")
 def get_patient_file(request: PatientFileRequest):
     """Retrieves a file from GCS for a patient."""
-    BUCKET_NAME = "clinic_sim"
+    BUCKET_NAME = "clinic_sim_dev"
     blob_path = f"patient_profile/{request.pid}/{request.file_name}"
 
     logger.info(f"Fetching GCS: gs://{BUCKET_NAME}/{blob_path}")
@@ -68,7 +68,7 @@ def get_patient_file(request: PatientFileRequest):
 @router.get("/api/admin/list-files/{pid}")
 def list_patient_files(pid: str):
     """Lists all files in GCS for a specific patient ID."""
-    BUCKET_NAME = "clinic_sim"
+    BUCKET_NAME = "clinic_sim_dev"
     prefix = f"patient_profile/{pid}/"
 
     try:
@@ -95,7 +95,7 @@ def list_patient_files(pid: str):
 @router.post("/api/admin/save-file")
 def save_patient_file(request: AdminFileSaveRequest):
     """Creates or updates a text-based file."""
-    BUCKET_NAME = "clinic_sim"
+    BUCKET_NAME = "clinic_sim_dev"
     blob_path = f"patient_profile/{request.pid}/{request.file_name}"
 
     try:
@@ -115,7 +115,7 @@ def save_patient_file(request: AdminFileSaveRequest):
 @router.delete("/api/admin/delete-file")
 def delete_admin_file(pid: str, file_name: str):
     """Deletes a file."""
-    BUCKET_NAME = "clinic_sim"
+    BUCKET_NAME = "clinic_sim_dev"
     blob_path = f"patient_profile/{pid}/{file_name}"
 
     try:
@@ -138,7 +138,7 @@ def delete_admin_file(pid: str, file_name: str):
 @router.get("/api/admin/list-patients")
 def list_admin_patients():
     """Lists all patient folders."""
-    BUCKET_NAME = "clinic_sim"
+    BUCKET_NAME = "clinic_sim_dev"
     prefix = "patient_profile/"
 
     try:
@@ -162,7 +162,7 @@ def list_admin_patients():
 @router.post("/api/admin/create-patient")
 def create_admin_patient(request: AdminPatientRequest):
     """Creates a new patient folder by creating an initial empty file."""
-    BUCKET_NAME = "clinic_sim"
+    BUCKET_NAME = "clinic_sim_dev"
     blob_path = f"patient_profile/{request.pid}/patient_info.md"
 
     try:
@@ -183,7 +183,7 @@ def create_admin_patient(request: AdminPatientRequest):
 @router.delete("/api/admin/delete-patient")
 def delete_admin_patient(pid: str):
     """Deletes a patient folder and ALL files inside it."""
-    BUCKET_NAME = "clinic_sim"
+    BUCKET_NAME = "clinic_sim_dev"
     prefix = f"patient_profile/{pid}/"
 
     try:

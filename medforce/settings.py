@@ -20,7 +20,7 @@ SCENARIO_DUMPS_DIR = "scenario_dumps"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # --- GCS ---
-GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME", "clinic_sim")
+GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME", "clinic_sim_dev")
 
 # --- Canvas / Board ---
 CANVAS_URL = os.getenv(

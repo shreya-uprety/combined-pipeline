@@ -48,7 +48,7 @@ class PatientManager(BaseLogicAgent):
 
         self.bucket_path = f"patient_data/{self.args.get('patient_id')}"
 
-        self.gcs = bucket_ops.GCSBucketManager(bucket_name="clinic_sim")
+        self.gcs = bucket_ops.GCSBucketManager(bucket_name="clinic_sim_dev")
 
         self.patient_profile = ""
         self.patient_system_prompt = ""
@@ -1010,7 +1010,7 @@ class PatientManager(BaseLogicAgent):
 class PreConsulteAgent(BaseLogicAgent):
     def __init__(self):
         super().__init__()  
-        self.gcs = bucket_ops.GCSBucketManager(bucket_name="clinic_sim")
+        self.gcs = bucket_ops.GCSBucketManager(bucket_name="clinic_sim_dev")
 
     def _get_available_slots(self):
         """
@@ -1139,7 +1139,7 @@ class PreConsulteAgent(BaseLogicAgent):
 class RawDataProcessing(BaseLogicAgent):
     def __init__(self):
         super().__init__()  
-        self.gcs = bucket_ops.GCSBucketManager(bucket_name="clinic_sim")
+        self.gcs = bucket_ops.GCSBucketManager(bucket_name="clinic_sim_dev")
 
     
     async def get_text_doc(self, image_path: str):

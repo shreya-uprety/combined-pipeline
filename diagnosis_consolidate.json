@@ -22,20 +22,53 @@
             },
             {
                 "criteria": "Pruritus",
-                "check": true
+                "check": false
             },
             {
                 "criteria": "Nausea or vomiting",
-                "check": false
+                "check": true
             }
         ],
-        "reasoning": "The patient's frequent use of acetaminophen (Tylenol PM and Extra Strength Tylenol) for jaw pain, combined with significantly elevated AST and ALT levels, overt jaundice, and pruritus, strongly suggests drug-induced liver injury, specifically from acetaminophen overdose. The acute presentation aligns with the recent dental abscess treatment and ongoing pain management.",
-        "followup_question": "Have you consumed any alcohol in the past month?"
+        "reasoning": "The patient's frequent use of acetaminophen (Tylenol PM and Extra Strength Tylenol) for jaw pain, combined with significantly elevated AST and ALT levels, overt jaundice, and nausea, strongly suggests drug-induced liver injury, specifically from acetaminophen overdose. The acute presentation aligns with the recent dental abscess treatment and ongoing pain management.",
+        "followup_question": "Have you taken any other over-the-counter medications or herbal supplements recently?"
     },
     {
         "did": "d3e4f",
         "headline": "Cholestasis",
-        "diagnosis": "Cholestasis Secondary to Drug-Induced Liver Injury",
+        "diagnosis": "Cholestatic Liver Injury secondary to Biliary Obstruction Acute",
+        "indicators_point": [
+            {
+                "criteria": "Jaundice",
+                "check": true
+            },
+            {
+                "criteria": "Pruritus",
+                "check": false
+            },
+            {
+                "criteria": "Elevated Alk Phos",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Total Bilirubin",
+                "check": true
+            },
+            {
+                "criteria": "Recent antibiotic use (Augmentin)",
+                "check": false
+            },
+            {
+                "criteria": "Changes in stool or urine color",
+                "check": false
+            }
+        ],
+        "reasoning": "The presence of jaundice, elevated alkaline phosphatase, and elevated total bilirubin are classic signs of cholestasis. The recent course of Augmentin is noted, but the primary suspicion for cholestasis is now secondary to a potential biliary obstruction given the new information. The acuity is 'Acute' given the recent onset and referral.",
+        "followup_question": "Have you experienced any itching or pruritus recently?"
+    },
+    {
+        "did": "a1b2c",
+        "headline": "Cholestatic Hepatitis",
+        "diagnosis": "Cholestatic Hepatitis secondary to Drug Reaction Acute",
         "indicators_point": [
             {
                 "criteria": "Jaundice",
@@ -46,6 +79,47 @@
                 "check": true
             },
             {
+                "criteria": "Elevated AST",
+                "check": true
+            },
+            {
+                "criteria": "Elevated ALT",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Alk Phos",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Total Bilirubin",
+                "check": true
+            },
+            {
+                "criteria": "Recent antibiotic use (Augmentin)",
+                "check": true
+            },
+            {
+                "criteria": "Frequent analgesic use (Tylenol)",
+                "check": true
+            }
+        ],
+        "reasoning": "The patient's presentation of jaundice, elevated liver enzymes (AST, ALT, Alk Phos, Bilirubin), and itching strongly suggests a hepatobiliary process. The recent use of Amoxicillin-Clavulanate, a known cause of drug-induced liver injury, particularly cholestatic patterns, makes this a leading differential. The timing of symptom onset (around 3 weeks after starting Augmentin) is consistent with a drug reaction.",
+        "followup_question": "Have you experienced any fatigue or a general feeling of being unwell?"
+    },
+    {
+        "did": "d3e4f",
+        "headline": "Biliary Obstruction",
+        "diagnosis": "Biliary Obstruction Secondary to Gallstones of Unknown Etiology Acute",
+        "indicators_point": [
+            {
+                "criteria": "Jaundice",
+                "check": true
+            },
+            {
+                "criteria": "Pruritus",
+                "check": false
+            },
+            {
                 "criteria": "Elevated Total Bilirubin",
                 "check": true
             },
@@ -54,19 +128,188 @@
                 "check": true
             },
             {
+                "criteria": "Elevated AST",
+                "check": true
+            },
+            {
+                "criteria": "Elevated ALT",
+                "check": true
+            },
+            {
                 "criteria": "Changes in stool or urine color",
                 "check": false
+            }
+        ],
+        "reasoning": "The constellation of jaundice, and elevated liver enzymes, particularly the disproportionate elevation of Alk Phos and Bilirubin compared to AST/ALT, can be indicative of a biliary obstruction. Gallstones are a common cause of such obstruction. The acuity is 'Acute' due to the recent presentation and referral.",
+        "followup_question": "Have you experienced any itching or pruritus recently?"
+    },
+    {
+        "did": "a1b2c",
+        "headline": "Hepatitis",
+        "diagnosis": "Hepatitis of Unknown Etiology Acute",
+        "indicators_point": [
+            {
+                "criteria": "Jaundice",
+                "check": true
             },
             {
-                "criteria": "Recent prescription of Amoxicillin-Clavulanate (Augmentin)",
+                "criteria": "Elevated AST",
+                "check": true
+            },
+            {
+                "criteria": "Elevated ALT",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Total Bilirubin",
+                "check": true
+            },
+            {
+                "criteria": "Pruritus",
+                "check": false
+            }
+        ],
+        "reasoning": "The patient exhibits overt jaundice and significantly elevated liver enzymes, indicating acute hepatocellular injury. While a drug reaction is highly suspected given the recent Augmentin use, other causes of hepatitis, such as viral hepatitis, must be considered, especially if the drug reaction is ruled out. The elevated bilirubin and enzymes point to an acute inflammatory process within the liver.",
+        "followup_question": "Have you had any recent fever or chills?"
+    },
+    {
+        "did": "a1b2c",
+        "headline": "Drug-Induced Liver Injury",
+        "diagnosis": "Drug-Induced Liver Injury secondary to Acetaminophen Overuse Acute",
+        "indicators_point": [
+            {
+                "criteria": "Frequent acetaminophen use",
+                "check": true
+            },
+            {
+                "criteria": "Elevated AST",
+                "check": true
+            },
+            {
+                "criteria": "Elevated ALT",
+                "check": true
+            },
+            {
+                "criteria": "Overt Jaundice",
+                "check": true
+            },
+            {
+                "criteria": "Pruritus",
                 "check": false
             },
             {
-                "criteria": "Frequent use of Tylenol PM and Extra Strength Tylenol",
+                "criteria": "Nausea or vomiting",
                 "check": true
             }
         ],
-        "reasoning": "The patient's chief complaint includes jaundice ('eyes are yellow') and significant pruritus ('can't stop itching'). While the acetaminophen overdose is a primary concern for hepatocellular injury, the cholestatic features (elevated Alk Phos, jaundice, pruritus) suggest a component of cholestasis. Drug-induced liver injury (DILI) can present with cholestatic patterns, and the recent history of high-dose acetaminophen use makes DILI a strong differential. The elevated bilirubin and itching are key indicators of impaired bile flow.",
-        "followup_question": "Have you noticed any changes in the color of your stools, such as pale or clay-colored stools?"
+        "reasoning": "The patient's recent frequent use of acetaminophen (Tylenol) for pain, coupled with significantly elevated AST and ALT levels and overt jaundice, strongly suggests drug-induced liver injury (DILI). Acetaminophen is a common cause of DILI, especially with overuse. The acute elevation in liver enzymes and bilirubin points to an acute process.",
+        "followup_question": "Have you taken any other over-the-counter medications or herbal supplements recently?"
+    },
+    {
+        "did": "d3e4f",
+        "headline": "Cholestatic Liver Disease",
+        "diagnosis": "Cholestatic Liver Disease secondary to Biliary Obstruction Suspected",
+        "indicators_point": [
+            {
+                "criteria": "Jaundice",
+                "check": true
+            },
+            {
+                "criteria": "Pruritus",
+                "check": false
+            },
+            {
+                "criteria": "Elevated Alk Phos",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Total Bilirubin",
+                "check": true
+            },
+            {
+                "criteria": "Denies abdominal pain",
+                "check": true
+            }
+        ],
+        "reasoning": "The elevated alkaline phosphatase and total bilirubin, along with jaundice, are indicative of cholestasis, suggesting a problem with bile flow. While the patient denies RUQ pain, this does not rule out biliary obstruction, which can sometimes present with less specific symptoms or primarily with jaundice and elevated cholestatic markers. The denial of RUQ pain makes gallstone cholecystitis less likely but doesn't exclude other forms of obstruction.",
+        "followup_question": "Have you experienced any itching or pruritus recently?"
+    },
+    {
+        "did": "a1b2c",
+        "headline": "Cholestatic Hepatitis",
+        "diagnosis": "Cholestatic Hepatitis secondary to Drug Reaction Acute",
+        "indicators_point": [
+            {
+                "criteria": "Jaundice",
+                "check": true
+            },
+            {
+                "criteria": "Pruritus",
+                "check": true
+            },
+            {
+                "criteria": "Elevated AST",
+                "check": true
+            },
+            {
+                "criteria": "Elevated ALT",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Alk Phos",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Total Bilirubin",
+                "check": true
+            },
+            {
+                "criteria": "Recent antibiotic use (Augmentin)",
+                "check": true
+            },
+            {
+                "criteria": "Nausea",
+                "check": true
+            }
+        ],
+        "reasoning": "The patient's presentation of jaundice, significantly elevated liver enzymes (AST, ALT, Alk Phos, Bilirubin), and pruritus are highly suggestive of a cholestatic process. The recent course of Amoxicillin-Clavulanate, a known hepatotoxic agent, strongly points towards a drug-induced liver injury (DILI) as the likely cause, particularly a cholestatic pattern. The nausea is also consistent with liver dysfunction. The INR is only borderline elevated, suggesting the synthetic function of the liver is not yet severely compromised.",
+        "followup_question": "Have you experienced any fatigue or a general feeling of being unwell?"
+    },
+    {
+        "did": "d3e4f",
+        "headline": "Viral Hepatitis",
+        "diagnosis": "Viral Hepatitis of Unknown Etiology Acute",
+        "indicators_point": [
+            {
+                "criteria": "Jaundice",
+                "check": true
+            },
+            {
+                "criteria": "Elevated AST",
+                "check": true
+            },
+            {
+                "criteria": "Elevated ALT",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Alk Phos",
+                "check": true
+            },
+            {
+                "criteria": "Elevated Total Bilirubin",
+                "check": true
+            },
+            {
+                "criteria": "Nausea",
+                "check": true
+            },
+            {
+                "criteria": "Pruritus",
+                "check": true
+            }
+        ],
+        "reasoning": "The constellation of jaundice, elevated transaminases (AST, ALT), and alkaline phosphatase, along with symptoms like nausea and pruritus, are classic signs of hepatitis. While drug-induced hepatitis is a strong consideration given the recent Augmentin use, viral hepatitis (e.g., Hepatitis A, B, or C) remains a significant differential diagnosis that needs to be ruled out, especially given the acute presentation and elevated bilirubin.",
+        "followup_question": "Have you had any recent fever or chills?"
     }
 ]

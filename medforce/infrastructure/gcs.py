@@ -196,9 +196,9 @@ class GCSBucketManager:
 # ─────────────────────────────────────────────
 
 class GCSManager:
-    def __init__(self, bucket_name="clinic_sim"):
+    def __init__(self, bucket_name="clinic_sim_dev"):
         self.project_id = os.getenv("PROJECT_ID")
-        self.bucket_name = bucket_name or os.getenv("BUCKET_NAME", "clinic_sim")
+        self.bucket_name = bucket_name or os.getenv("BUCKET_NAME", "clinic_sim_dev")
 
         try:
             self.storage_client = storage.Client(project=self.project_id)
@@ -258,7 +258,7 @@ class GCSManager:
 
 def fetch_gcs_text_internal(pid: str, filename: str) -> str:
     """Fetches text content from GCS for internal logic use."""
-    BUCKET_NAME = "clinic_sim"
+    BUCKET_NAME = "clinic_sim_dev"
     try:
         storage_client = storage.Client()
         bucket = storage_client.bucket(BUCKET_NAME)

@@ -32,7 +32,7 @@ def get_gcs():
         try:
             from medforce.infrastructure.gcs import GCSBucketManager
             logger.info("Initializing GCS Bucket Manager (lazy)...")
-            gcs = GCSBucketManager(bucket_name="clinic_sim")
+            gcs = GCSBucketManager(bucket_name="clinic_sim_dev")
             logger.info("GCS Bucket Manager initialized successfully")
         except Exception as e:
             logger.error(f"GCS Bucket Manager initialization failed: {e}")
