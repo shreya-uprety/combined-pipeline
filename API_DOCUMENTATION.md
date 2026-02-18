@@ -1,6 +1,6 @@
 # MedForce Backend API Documentation
 
-**Base URL:** `https://combined-pipeline-481780815788.europe-west1.run.app`
+**Base URL:** `https://combined-pipeline-235758602997.europe-west1.run.app`
 
 **Protocol:** HTTPS for REST endpoints, WSS for WebSocket endpoints
 
@@ -129,7 +129,7 @@ Send a chat message to the board agent (doctor-facing AI assistant). Accepts ful
 ### `WSS /ws/chat/{patient_id}`
 WebSocket endpoint for real-time board chat with RAG + tools.
 
-**Connect:** `wss://combined-pipeline-481780815788.europe-west1.run.app/ws/chat/{patient_id}`
+**Connect:** `wss://combined-pipeline-235758602997.europe-west1.run.app/ws/chat/{patient_id}`
 
 **Client sends (JSON):**
 ```json
@@ -192,7 +192,7 @@ WebSocket endpoint for real-time board chat with RAG + tools.
 ### `WSS /ws/voice-session/{session_id}`
 **Phase 3** — Connect WebSocket to a pre-connected voice session. Use the `session_id` returned from Phase 1 after status is `ready`.
 
-**Connect:** `wss://combined-pipeline-481780815788.europe-west1.run.app/ws/voice-session/{session_id}`
+**Connect:** `wss://combined-pipeline-235758602997.europe-west1.run.app/ws/voice-session/{session_id}`
 
 **Client sends:**
 - **Binary (bytes):** Raw PCM audio (16-bit, 16kHz or 24kHz)
@@ -207,7 +207,7 @@ WebSocket endpoint for real-time board chat with RAG + tools.
 ### `WSS /ws/voice/{patient_id}`
 Direct voice connection (no pre-connect). Slower initial connection (~30-85 seconds), but simpler flow.
 
-**Connect:** `wss://combined-pipeline-481780815788.europe-west1.run.app/ws/voice/{patient_id}`
+**Connect:** `wss://combined-pipeline-235758602997.europe-west1.run.app/ws/voice/{patient_id}`
 
 Same binary/JSON message format as `/ws/voice-session/`.
 
@@ -702,7 +702,7 @@ Register a new patient.
 ### `WSS /ws/pre-consult/{patient_id}`
 WebSocket endpoint for real-time pre-consultation chat (Linda the admin).
 
-**Connect:** `wss://combined-pipeline-481780815788.europe-west1.run.app/ws/pre-consult/{patient_id}`
+**Connect:** `wss://combined-pipeline-235758602997.europe-west1.run.app/ws/pre-consult/{patient_id}`
 
 ---
 
@@ -874,7 +874,7 @@ Get available (empty) appointment slots.
 ### `WSS /ws/simulation`
 WebSocket endpoint for text-based clinical simulation (AI patient + AI doctor interaction).
 
-**Connect:** `wss://combined-pipeline-481780815788.europe-west1.run.app/ws/simulation`
+**Connect:** `wss://combined-pipeline-235758602997.europe-west1.run.app/ws/simulation`
 
 **Client sends (first message must be start command):**
 ```json
@@ -892,7 +892,7 @@ WebSocket endpoint for text-based clinical simulation (AI patient + AI doctor in
 ### `WSS /ws/simulation/audio`
 WebSocket endpoint for scripted audio simulation.
 
-**Connect:** `wss://combined-pipeline-481780815788.europe-west1.run.app/ws/simulation/audio`
+**Connect:** `wss://combined-pipeline-235758602997.europe-west1.run.app/ws/simulation/audio`
 
 **Client sends (first message):**
 ```json
@@ -910,7 +910,7 @@ WebSocket endpoint for scripted audio simulation.
 ### `WSS /ws/transcriber`
 AI Transcriber WebSocket. Receives live audio, performs speech-to-text, and generates AI clinical analysis in real-time.
 
-**Connect:** `wss://combined-pipeline-481780815788.europe-west1.run.app/ws/transcriber`
+**Connect:** `wss://combined-pipeline-235758602997.europe-west1.run.app/ws/transcriber`
 
 **Client sends:**
 
